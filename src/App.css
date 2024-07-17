@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: #e58411;
+    --red-tag: #e01a29;
+    --red-tag-darker: #a7000d;
+    /* ... */
+  }
+}
