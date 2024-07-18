@@ -9,7 +9,7 @@ import Timer from './Timer';
 
 const otpSize = import.meta.env.VITE_OTP_SIZE;
 
-const VerifyOTP = ({ handleSetProcess, title }) => {
+const VerifyOTP = ({ handleSetProcess, title, onSuccess }) => {
   const inputId = useId();
   const [canReSend, setCanReSend] = useState(true);
   const initialValues = Array.from({ length: otpSize }).reduce(
@@ -31,11 +31,10 @@ const VerifyOTP = ({ handleSetProcess, title }) => {
   const handleSubmitForm = async (values, actions) => {
     console.log({ values, actions });
     await dummyTimeout()
-      .then((res) =>
-        toast.success('OK', {
-          onClose: () => handleSetProcess(3),
-        })
-      )
+      .then((res) => {
+        toast.success('OK');
+        if (onSuccess) onSuccess(values);
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -43,12 +42,10 @@ const VerifyOTP = ({ handleSetProcess, title }) => {
 
   const handleReSendOTP = async () => {
     await dummyTimeout(500)
-      .then((res) =>
-        toast.success('OK', {
-          autoClose: 1000,
-          onClose: () => setCanReSend(false),
-        })
-      )
+      .then((res) => {
+        toast.success('OK');
+        setCanReSend(false);
+      })
       .catch((error) => {
         console.log(error);
       });

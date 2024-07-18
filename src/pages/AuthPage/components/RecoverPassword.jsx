@@ -26,18 +26,14 @@ const RecoverPassword = ({ handleSetProcess, handleSetData }) => {
   const handleSubmitForm = async (values, actions) => {
     console.log({ values, actions });
     await dummyTimeout()
-      .then((res) =>
-        toast.success(res, {
-          onClose: () => {
-            handleSetData((prev) => ({
-              ...prev,
-              email: values.email,
-              password: values.newPassword,
-            }));
-            navigate('/auth/login', { replace: true });
-          },
-        })
-      )
+      .then((res) => {
+        toast.success(res);
+        handleSetData((prev) => ({
+          ...prev,
+          password: values.password,
+        }));
+        handleSetProcess(4);
+      })
       .catch((error) => {
         console.log(error);
       });

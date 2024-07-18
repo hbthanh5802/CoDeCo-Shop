@@ -26,24 +26,21 @@ const VerifyEmail = ({ handleSetProcess, handleSetData }) => {
   const handleSubmitForm = async (values, actions) => {
     console.log({ values, actions });
     await dummyTimeout()
-      .then((res) =>
-        toast.success('OK', {
-          onClose: () => {
-            handleSetData((prev) => ({
-              ...prev,
-              email: values.email,
-            }));
-            handleSetProcess(2);
-          },
-        })
-      )
+      .then((res) => {
+        toast.success('OK');
+        handleSetData((prev) => ({
+          ...prev,
+          email: values.email,
+        }));
+        handleSetProcess(2);
+      })
       .catch((error) => {
         console.log(error);
       });
   };
 
   const handleReCaptchaChange = (value) => {
-    console.log('ReCAPTCHA', value);
+    // console.log('ReCAPTCHA', value);
     setReCaptcha(value);
   };
 

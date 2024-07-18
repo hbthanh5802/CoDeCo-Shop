@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Background from '../components/Background';
 import VerifyOTP from '../components/VerifyOTP';
+import SuccessView from '../components/SuccessView';
 
 const Register = () => {
   const [process, setProcess] = useState(1);
@@ -35,11 +36,10 @@ const Register = () => {
   const handleSubmitForm = async (values, actions) => {
     console.log({ values, actions });
     await dummyTimeout()
-      .then((res) =>
-        toast.success(res, {
-          onClose: () => setProcess(2),
-        })
-      )
+      .then((res) => {
+        toast.success(res);
+        setProcess(2);
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -159,7 +159,17 @@ const Register = () => {
         <VerifyOTP
           title={'Xác minh Email'}
           handleSetProcess={(value) => setProcess(value)}
+          onSuccess={() => setProcess(3)}
         />
+      )}
+      {process === 3 && (
+        <SuccessView>
+          <p className="text-center">
+            Tài khoản của quý khách đã được xác thực thành công. Hãy đi đến
+            trang chủ để tiếp tục mua sắm với{' '}
+            <span className="font-medium">CoDeco</span>.
+          </p>
+        </SuccessView>
       )}
     </div>
   );
