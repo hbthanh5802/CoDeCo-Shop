@@ -1,7 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 const Home = () => {
-  return <div>Home</div>;
+  const currentUser = useSelector((state) => state.auth.currentUser);
+  return <div>{JSON.stringify(currentUser)}</div>;
 };
 
 export default Home;

@@ -1,8 +1,13 @@
 import { Fragment, useEffect, useId, useState } from 'react';
 import './App.css';
 import routes from '@/routers/index';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import {
+  Route,
+  Routes,
+  unstable_HistoryRouter as HistoryRouter,
+} from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { customHistory } from '@/utils/history';
 
 import 'react-toastify/dist/ReactToastify.css';
 import DefaultLayout from '@/layouts/DefaultLayout';
@@ -12,7 +17,7 @@ function App() {
   const pathname = window.location.pathname;
 
   return (
-    <BrowserRouter>
+    <HistoryRouter history={customHistory}>
       <div
         className={[
           'App font-body container min-h-screen flex flex-col items-center',
@@ -51,7 +56,7 @@ function App() {
         autoClose={1500}
         theme="colored"
       />
-    </BrowserRouter>
+    </HistoryRouter>
   );
 }
 

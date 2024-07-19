@@ -11,30 +11,43 @@ import { FcGoogle } from 'react-icons/fc';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Background from '../components/Background';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '@/store/slices/authSlice';
+import { customHistory } from '@/utils/history';
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [reCaptcha, setReCaptcha] = useState('');
   const initialValues = {
     email: '',
     password: '',
-    confirmPassword: '',
   };
 
-  const dummyTimeout = () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve('OK');
-      }, 1000);
-    });
-  };
+  // const dummyTimeout = () => {
+  //   return new Promise((resolve) => {
+  //     setTimeout(() => {
+  //       resolve('OK');
+  //     }, 1000);
+  //   });
+  // };
 
   const handleSubmitForm = async (values, actions) => {
     console.log({ values, actions });
-    await dummyTimeout()
-      .then((res) => toast.success('OK'))
-      .catch((error) => {
-        console.log(error);
+    try {
+      const data = {
+        username: values.username,
+        password: values.password,
+      };
+      const loginResponse = await dispatch(loginUser(data)).unwrap();
+      console.log('loginResponse', loginResponse);
+      toast.success('Đăng nhập thành công');
+      customHistory.replace('/');
+    } catch (error) {
+      console.log(error);
+      toast.error('Email hoặc mật khẩu không chính xác', {
+        autoClose: 500,
       });
+    }
   };
 
   const handleReCaptchaChange = (value) => {
