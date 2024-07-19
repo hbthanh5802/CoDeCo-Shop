@@ -33,7 +33,7 @@ const registerSchema = yup.object().shape({
 
 const loginSchema = yup.object().shape({
   email: emailSchema,
-  password: passwordSchema,
+  password: yup.string().required('Thông tin này không được để trống'),
 });
 
 const verifyEmailSchema = yup.object().shape({

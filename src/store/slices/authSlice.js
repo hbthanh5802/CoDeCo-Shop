@@ -1,5 +1,4 @@
 import { buildCreateSlice, asyncThunkCreator } from '@reduxjs/toolkit';
-import userApi from '@/api/userApi';
 import authApi from '@/api/authApi';
 
 const initialState = {
@@ -23,7 +22,6 @@ const authSlice = createAppSlice({
     }),
     loginUser: create.asyncThunk(
       async (args, thunkApi) => {
-        console.log('thunkApi', thunkApi);
         return await authApi.loginUser({
           email: args.username,
           password: args.password,
@@ -47,8 +45,37 @@ const authSlice = createAppSlice({
         },
       }
     ),
+    logoutUser: create.asyncThunk(
+      async (args, thunkApi) => {
+        const accessToken = thunkApi.getState()?.auth?.accessToken;
+        return await authApi.logoutUser({ accessToken });
+      },
+      {
+        pending: (state) => {
+          state.loading = true;
+        },
+        fulfilled: (state) => {
+          state.currentUser = null;
+          state.accessToken = null;
+          state.errorMessage = null;
+        },
+        rejected: (state, action) => {
+          state.errorMessage = action.error.message;
+        },
+        settled: (state) => {
+          state.loading = false;
+        },
+      }
+    ),
+    clearState: create.reducer((state) => {
+      state.loading = null;
+      state.currentUser = null;
+      state.accessToken = null;
+      state.errorMessage = null;
+    }),
   }),
 });
 
-export const { addToken, loginUser } = authSlice.actions;
+export const { addToken, loginUser, clearState, logoutUser } =
+  authSlice.actions;
 export default authSlice.reducer;

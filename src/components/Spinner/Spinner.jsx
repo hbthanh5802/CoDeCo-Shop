@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Spinner = ({ size }) => {
+const Spinner = ({ size, color }) => {
   return (
     <>
       <svg
@@ -9,7 +9,9 @@ const Spinner = ({ size }) => {
           height: size || 16,
           width: size || 16,
         }}
-        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+        className={`animate-spin -ml-1 mr-3 h-5 w-5 ${
+          color ? color : 'text-white'
+        }`}
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -34,6 +36,7 @@ const Spinner = ({ size }) => {
 
 Spinner.propTypes = {
   size: PropTypes.number,
+  color: PropTypes.string,
 };
 
 export default Spinner;

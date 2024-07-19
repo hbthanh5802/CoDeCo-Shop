@@ -23,14 +23,6 @@ const Login = () => {
     password: '',
   };
 
-  // const dummyTimeout = () => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => {
-  //       resolve('OK');
-  //     }, 1000);
-  //   });
-  // };
-
   const handleSubmitForm = async (values, actions) => {
     console.log({ values, actions });
     try {
@@ -51,7 +43,6 @@ const Login = () => {
   };
 
   const handleReCaptchaChange = (value) => {
-    console.log('ReCAPTCHA', value);
     setReCaptcha(value);
   };
 
