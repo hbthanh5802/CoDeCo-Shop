@@ -4,7 +4,6 @@ import Dot from './Dot';
 
 const Background = ({ imageUrl }) => {
   const bgRef = useRef();
-  const dotRef = useRef();
   const [position, setPosition] = useState({
     dot1: ['50%', '50%'], // top, right
     dot2: ['30%', '50%'], // top, right

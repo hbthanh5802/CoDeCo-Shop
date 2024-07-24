@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useId, useState } from 'react';
 import './App.css';
+
 import routes from '@/routers/index';
 import {
   Route,
@@ -14,17 +15,11 @@ import DefaultLayout from '@/layouts/DefaultLayout';
 
 function App() {
   const routeId = useId();
-  const pathname = window.location.pathname;
 
   return (
     <HistoryRouter history={customHistory}>
       <div
-        className={[
-          'App font-body container min-h-screen flex flex-col items-center',
-          pathname.startsWith('/auth/')
-            ? 'max-w-full'
-            : 'px-[80px] max-w-[1440px]',
-        ].join(' ')}
+        className={`'App font-body min-h-screen flex flex-col items-center w-full`}
       >
         <Routes>
           {routes.map((route, index) => {
