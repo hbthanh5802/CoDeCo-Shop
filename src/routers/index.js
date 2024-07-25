@@ -2,11 +2,16 @@ import ForgotPassword from '@/pages/AuthPage/ForgotPassword';
 import Login from '@/pages/AuthPage/Login';
 import Register from '@/pages/AuthPage/Register';
 import Home from '@/pages/Home';
+import Shop from '@/pages/Shop';
 
 const routes = [
   {
     path: '/',
     component: Home,
+  },
+  {
+    path: '/shop',
+    component: Shop,
   },
   {
     path: '/auth/register',

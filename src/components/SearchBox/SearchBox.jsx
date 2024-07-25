@@ -1,18 +1,30 @@
 import React, { useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
+import { useLocation } from 'react-router-dom';
 
 const SearchBox = ({ className = '', onSearchClick = () => {} }) => {
   const [inputValue, setInputValue] = useState();
+  const pathname = useLocation().pathname;
 
   const handleInputChange = (e) => {};
 
   return (
     <div
-      className={`flex justify-between min-w-[340px] pl-[20px] py-[8px] pr-[8px] border border-white/60 bg-white/15 rounded-full has-[input:focus]:bg-white/10 has-[input:focus]:border-white/80 duration-300 ${className}`}
+      className={`flex justify-between min-w-[340px] pl-[20px] py-[8px] pr-[8px] border ${
+        pathname === '/'
+          ? 'border-white/60 bg-white/15 has-[input:focus]:bg-white/10 has-[input:focus]:border-white/80'
+          : 'border-[#ccc] has-[input:focus]:border-slate-400 text-[#333]'
+      } rounded-full duration-300`}
     >
       <input
         type="text"
-        className="bg-transparent outline-none text-white placeholder:text-white/70 focus:placeholder:text-white/50"
+        className={`bg-transparent outline-none ${
+          pathname === '/' && 'text-white'
+        } ${
+          pathname === '/'
+            ? 'placeholder:text-white/70 focus:placeholder:text-white/50'
+            : 'placeholder:text-black/70 focus:placeholder:text-black/50'
+        } duration-150`}
         placeholder="Tìm kiếm nội thất..."
       />
 

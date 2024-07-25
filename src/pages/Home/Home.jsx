@@ -7,9 +7,11 @@ import SearchBox from '@/components/SearchBox';
 import Segmented from '@/components/Segmented';
 import ProductCard from '@/components/ProductCard';
 import CustomSwiper from '@/components/CustomSwiper';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { GoArrowRight } from 'react-icons/go';
 import CustomerReview from '@/components/CustomerReview';
+import { useDispatch } from 'react-redux';
+import { resetHistory } from '@/store/slices/historySlice';
 
 const bestSellerSegmentedList = [
   {
@@ -63,7 +65,11 @@ const customerReviewList = [
 ];
 
 const Home = () => {
+  const dispatch = useDispatch();
   const customerReviewId = useId();
+
+  dispatch(resetHistory());
+
   const handleSegmentedChange = (value) => {
     console.log(value);
   };

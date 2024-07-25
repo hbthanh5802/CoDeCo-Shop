@@ -8,38 +8,52 @@ import schemas from '@/schemas';
 import Spinner from '@/components/Spinner';
 import { MdChevronLeft } from 'react-icons/md';
 import { FcGoogle } from 'react-icons/fc';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Background from '../components/Background';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '@/store/slices/authSlice';
 import { customHistory } from '@/utils/history';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '@/configs/firebase';
+import { goBackHistory } from '@/store/slices/historySlice';
 
 const Login = () => {
   const dispatch = useDispatch();
   const [reCaptcha, setReCaptcha] = useState('');
+
   const initialValues = {
     email: '',
     password: '',
   };
 
   const handleSubmitForm = async (values, actions) => {
-    console.log({ values, actions });
+    // console.log({ values, actions });
     try {
       const data = {
         username: values.username,
         password: values.password,
       };
       const loginResponse = await dispatch(loginUser(data)).unwrap();
-      console.log('loginResponse', loginResponse);
       toast.success('Đăng nhập thành công');
-      customHistory.replace('/');
+      // customHistory.replace('/');
+      dispatch(goBackHistory());
     } catch (error) {
       console.log(error);
       toast.error('Email hoặc mật khẩu không chính xác', {
         autoClose: 500,
       });
     }
+  };
+
+  const handleLoginWithGoogle = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleReCaptchaChange = (value) => {
@@ -119,7 +133,10 @@ const Login = () => {
 
         <div className="other-method flex flex-col items-center space-y-6">
           <h3 className="text-sm uppercase">Hoặc</h3>
-          <button className="flex space-x-2 items-center justify-center px-6 py-3 text-base border border-slate-300 w-full rounded-lg hover:bg-slate-100 duration-150">
+          <button
+            className="flex space-x-2 items-center justify-center px-6 py-3 text-base border border-slate-300 w-full rounded-lg hover:bg-slate-100 duration-150"
+            onClick={handleLoginWithGoogle}
+          >
             <FcGoogle className="w-5 h-5" />
             <p>Đăng nhập bằng Google</p>
           </button>

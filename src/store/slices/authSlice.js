@@ -1,5 +1,5 @@
-import { buildCreateSlice, asyncThunkCreator } from '@reduxjs/toolkit';
 import authApi from '@/api/authApi';
+import { createAppSlice } from './createAppSlice';
 
 const initialState = {
   loading: false,
@@ -7,10 +7,6 @@ const initialState = {
   accessToken: null,
   currentUser: null,
 };
-
-const createAppSlice = buildCreateSlice({
-  creators: { asyncThunk: asyncThunkCreator },
-});
 
 const authSlice = createAppSlice({
   name: 'auth',

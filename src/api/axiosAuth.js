@@ -1,10 +1,11 @@
 import axios from 'axios';
 import queryString from 'query-string';
+import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
 import authApi from './authApi';
 import { addToken, clearState } from '@/store/slices/authSlice';
 import { customHistory } from '@/utils/history';
-import { toast } from 'react-toastify';
+import { resetHistory } from '@/store/slices/historySlice';
 
 const axiosAuth = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -38,6 +39,7 @@ export function setupAuthAxios(store) {
         refreshTokenRequest = null;
       } catch (error) {
         console.log('Refresh Token Failed');
+        store.dispatch(resetHistory());
         if (error.status === 401) {
           toast.error('Có lỗi xảy ra, Vui lòng đăng nhập lại.', {
             autoClose: 2000,

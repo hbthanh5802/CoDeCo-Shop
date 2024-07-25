@@ -1,10 +1,10 @@
 import Spinner from '@/components/Spinner';
-import React from 'react';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearState, logoutUser } from '@/store/slices/authSlice';
 import { customHistory } from '@/utils/history';
 
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Menu from '@/components/Popper/Menu';
 
@@ -13,6 +13,7 @@ import { FaUser } from 'react-icons/fa6';
 import { FaCaretDown } from 'react-icons/fa6';
 import { BiSolidCartAlt } from 'react-icons/bi';
 import Badge from '@/components/Badge';
+import SearchBox from '@/components/SearchBox';
 
 const headerNavItems = [
   {
@@ -58,9 +59,16 @@ const accountMenuList = [
   },
 ];
 
-const Header = () => {
+const Header = forwardRef((props, ref) => {
+  const headerRef = useRef(null);
+  const { pathname, search } = useLocation();
   const { currentUser, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  useImperativeHandle(ref, () => ({
+    getHeight: () => headerRef.current.offsetHeight,
+    getWidth: () => headerRef.current.offsetWidth,
+  }));
 
   const handleLogoutUser = async () => {
     try {
@@ -87,45 +95,71 @@ const Header = () => {
   };
 
   return (
-    <div className="Header-container flex justify-between items-baseline w-full py-[36px] px-[var(--spacing-padding-container)] absolute top-0 left-0 right-0 z-10">
+    <div
+      ref={headerRef}
+      className="Header-container flex justify-between items-baseline w-full py-[36px] px-[var(--spacing-padding-container)] absolute top-0 left-0 right-0 z-10"
+    >
       <div className="logo">
-        <Link to={'/'} className="text-[28px] text-white font-bold">
+        <Link
+          to={'/'}
+          className={`text-[28px] ${
+            pathname === '/' && 'text-white'
+          } font-bold`}
+        >
           CoDeCo
         </Link>
       </div>
 
-      <div className="hidden lg:flex items-center space-x-[40px] text-[18px] text-white">
-        <Menu
-          items={headerNavItems}
-          onClick={(value) => {
-            console.log(value);
-          }}
+      {pathname === '/' ? (
+        <div
+          className={`hidden lg:flex items-center space-x-[40px] text-[18px] text-white`}
         >
-          <Link to={'#'}>Nội thất</Link>
-        </Menu>
-        <Link
-          to={'#'}
-          className="px-2 py-1 hover:bg-black/10 rounded-lg duration-150"
-        >
-          Shop
-        </Link>
-        <Link
-          to={'#'}
-          className="px-2 py-1 hover:bg-black/10 rounded-lg duration-150"
-        >
-          Liên hệ
-        </Link>
-      </div>
+          <Menu
+            items={headerNavItems}
+            onClick={(value) => {
+              console.log(value);
+            }}
+          >
+            <Link to={'#'}>Nội thất</Link>
+          </Menu>
+          <Link
+            to={'/shop'}
+            className="px-2 py-1 hover:bg-black/10 rounded-lg duration-150"
+          >
+            Shop
+          </Link>
+          <Link
+            to={'#'}
+            className="px-2 py-1 hover:bg-black/10 rounded-lg duration-150"
+          >
+            Liên hệ
+          </Link>
+        </div>
+      ) : (
+        <div>
+          <SearchBox />
+        </div>
+      )}
 
       {!currentUser ? (
         <div className="flex items-center space-x-[24px]">
-          <button className="text-[18px] text-white px-[20px] py-[10px] hover:bg-black/25 rounded-lg duration-150">
+          <button
+            className={`text-[18px] ${
+              pathname === '/'
+                ? 'text-white hover:bg-black/25 rounded-lg duration-150'
+                : 'hover:text-[var(--color-primary)]'
+            } px-[20px] py-[10px] duration-150`}
+          >
             <Link to={'/auth/register'}>Đăng ký</Link>
           </button>
-          <button className="text-[18px] text-white">
+          <button className="text-[18px]">
             <Link
               to={'/auth/login'}
-              className="px-[20px] py-[10px] border border-white rounded-lg hover:bg-white/25 duration-150"
+              className={`px-[20px] py-[10px] border ${
+                pathname === '/'
+                  ? 'border-white text-white hover:bg-white/25 duration-150'
+                  : 'border-[var(--color-primary)] text-white bg-[var(--color-primary)] hover:brightness-105'
+              } rounded-lg duration-150`}
             >
               Đăng nhập
             </Link>
@@ -134,7 +168,11 @@ const Header = () => {
       ) : (
         <div className="flex items-center space-x-1">
           <Badge value={12}>
-            <button className="text-white text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150">
+            <button
+              className={`${
+                pathname === '/' && 'text-white'
+              } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+            >
               <IoIosNotifications />
             </button>
           </Badge>
@@ -143,7 +181,11 @@ const Header = () => {
             items={accountMenuList}
             onClick={(value) => handleAccountListSelected(value)}
           >
-            <div className="flex space-x-2 items-center text-white cursor-pointer px-2 py-1 hover:bg-black/10 rounded-lg duration-150">
+            <div
+              className={`flex space-x-2 items-center ${
+                pathname === '/' && 'text-white'
+              } cursor-pointer px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+            >
               <span className="text-[16px]">
                 <FaUser />
               </span>
@@ -157,7 +199,11 @@ const Header = () => {
           </Menu>
 
           <Badge value={9}>
-            <button className="text-white text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150">
+            <button
+              className={`${
+                pathname === '/' && 'text-white'
+              } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+            >
               <BiSolidCartAlt />
             </button>
           </Badge>
@@ -165,6 +211,6 @@ const Header = () => {
       )}
     </div>
   );
-};
+});
 
 export default Header;
