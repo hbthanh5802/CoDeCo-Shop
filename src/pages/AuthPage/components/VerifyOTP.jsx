@@ -1,11 +1,11 @@
 import OtpInput from '@/components/Auth/OtpInput';
 import Spinner from '@/components/Spinner';
+import Timer from '@/components/Timer';
 import schemas from '@/schemas';
 import { Form, Formik } from 'formik';
 import React, { Fragment, useEffect, useId, useState } from 'react';
 import { MdChevronLeft } from 'react-icons/md';
 import { toast } from 'react-toastify';
-import Timer from './Timer';
 
 const otpSize = import.meta.env.VITE_OTP_SIZE;
 

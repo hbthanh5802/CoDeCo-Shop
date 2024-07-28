@@ -2,11 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation, Autoplay } from 'swiper/modules';
+import { Pagination, Navigation, Autoplay, Grid } from 'swiper/modules';
 // Import Swiper styles
 import 'swiper/css';
+import 'swiper/css/grid';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import './CustomSwiper.scss';
 
 import { GoArrowLeft, GoArrowRight } from 'react-icons/go';
 
@@ -34,6 +36,8 @@ const CustomSwiper = ({
   onChange = () => {},
   responsive = defaultBreakpoints,
   vertical = false,
+  gridLayout = false,
+  gridRow = 2,
   className,
 }) => {
   const navigationPrevRef = React.useRef(null);
@@ -48,6 +52,7 @@ const CustomSwiper = ({
         slidesPerView={slidesPerView}
         onSlideChange={onChange}
         loop={loop}
+        grid={gridLayout && { rows: gridRow, fill: 'row' }}
         autoplay={
           !!autoPlay && {
             delay: autoPlay,
@@ -56,7 +61,7 @@ const CustomSwiper = ({
         }
         breakpoints={responsive}
         // onSwiper={(swiper) => console.log(swiper)}
-        modules={[Pagination, Navigation, Autoplay]}
+        modules={[Pagination, Navigation, Autoplay, Grid]}
         pagination={{ clickable: true, enabled: pagination }}
         navigation={{
           prevEl: navigationPrevRef.current,

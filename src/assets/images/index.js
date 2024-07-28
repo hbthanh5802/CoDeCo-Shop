@@ -12,8 +12,23 @@ import customerReviewBg2 from './user-review-2.jpg';
 import customerReviewBg3 from './user-review-3.jpg';
 import customerAvatar1 from './customer-avatar.jpg';
 import customerAvatar2 from './customer-avatar-2.jpg';
+import eventBg1 from './event-bg-1.png';
+import categoryMakeup from './category-makeup.jpg';
+import categorySofa from './category-sofa.jpg';
+import categoryTable from './category-table.jpg';
+import categoryWineCabinet from './category-wine-cabinet.jpg';
+import categoryBed from './category-bed.jpg';
+import voucherBg1 from './voucher-bg-1.jpg';
+import voucherBg2 from './voucher-bg-2.jpg';
 
 const images = {
+  voucherBg1,
+  voucherBg2,
+  categoryBed,
+  categoryMakeup,
+  categorySofa,
+  categoryTable,
+  categoryWineCabinet,
   authBg,
   sendEmailBg,
   homeBg,
@@ -28,6 +43,7 @@ const images = {
   customerReviewBg3,
   customerAvatar1,
   customerAvatar2,
+  eventBg1,
 };
 
 export default images;

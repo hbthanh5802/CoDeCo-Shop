@@ -86,7 +86,7 @@ const Footer = () => {
           })}
         </div>
       </div>
-      <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 mt-[60px] text-[14px]">
+      <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6 text-[14px] mt-[24px]">
         <p className="text-[#ccc]">Copyright © 2024</p>
         <Link className="hover:text-[var(--color-primary)] hover:underline hover:underline-offset-4">
           Chính sách và Điều khoản

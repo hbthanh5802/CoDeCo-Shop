@@ -30,7 +30,7 @@ const ProductCard = ({ data = {} }) => {
           alt="Product Image"
         />
       </div>
-      <div className="product-detail bg-white p-[16px] space-y-3">
+      <div className="product-detail p-[16px] space-y-3">
         <h2
           className="font-semibold text-[18px] line-clamp-2 cursor-pointer"
           onClick={() => handleProductCardClick('a0012934')}
@@ -38,7 +38,7 @@ const ProductCard = ({ data = {} }) => {
           Ghế Gấp Decor Phòng Ghế Đệm Tựa Lưng Bọc Da Êm Ái Khung Thép Sơn Tĩnh
           Điện
         </h2>
-        <RateStar rating={3} spacing={2} editable={false} />
+        <RateStar rating={4} spacing={2} editable={false} />
         <div className="flex justify-between items-end">
           <div className="product-price">
             <p className="font-normal text-[18px] text-[#ccc] line-through">

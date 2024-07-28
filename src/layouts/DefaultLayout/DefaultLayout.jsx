@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import Header from '../components/Header';
 import PropTypes from 'prop-types';
 import Footer from '../components/Footer';
+import ScrollToTop from '../components/ScrollToTop';
 
 const DefaultLayout = ({ children }) => {
   const headerRef = useRef(null);
@@ -23,9 +24,10 @@ const DefaultLayout = ({ children }) => {
       <div ref={bodyRef} className="wrapper">
         {children}
       </div>
-      <div className="mt-[120px]">
+      <div className="mt-[120px] lg:mt-0">
         <Footer />
       </div>
+      <ScrollToTop />
     </div>
   );
 };

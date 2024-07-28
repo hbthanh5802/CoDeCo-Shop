@@ -108,7 +108,9 @@ const Home = () => {
         </div>
 
         <div className="flex flex-col items-center md:items-start text-center md:text-left">
-          <h3 className="font-bold text-[24px]">Tiện nghi sang trọng</h3>
+          <h3 className="font-bold text-[24px] text-[var(--color-primary)] md:color-[#333]">
+            Tiện nghi sang trọng
+          </h3>
           <p className="font-normal mt-[24px]">
             Lợi thế tuyệt vời khi thuê chỗ làm việc tại đây: Dịch vụ tiện nghi
             và cơ sở vật chất toàn diện.
@@ -116,7 +118,9 @@ const Home = () => {
         </div>
 
         <div className="flex flex-col items-center md:items-start text-center md:text-left">
-          <h3 className="font-bold text-[24px]">Giá cả phải chăng</h3>
+          <h3 className="font-bold text-[24px] text-[var(--color-primary)] md:color-[#333]">
+            Giá cả phải chăng
+          </h3>
           <p className="font-normal mt-[24px]">
             Chỉ với mức giá phải chăng, bạn đã có thể sở hữu một không gian làm
             việc chất lượng cao và tận hưởng những tiện ích độc đáo chỉ có tại
@@ -125,7 +129,9 @@ const Home = () => {
         </div>
 
         <div className="flex flex-col items-center md:items-start">
-          <h3 className="font-bold text-[24px] block">Đa dạng lựa chọn</h3>
+          <h3 className="font-bold text-[24px] text-[var(--color-primary)] md:color-[#333]">
+            Đa dạng lựa chọn
+          </h3>
           <p className="font-normal mt-[24px]">
             Chúng tôi cung cấp nhiều lựa chọn không gian làm việc độc đáo, giúp
             bạn tìm được nơi làm việc phù hợp với sở thích của mình.
