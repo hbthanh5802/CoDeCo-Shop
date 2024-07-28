@@ -19,9 +19,17 @@ const DefaultLayout = ({ children }) => {
   });
 
   return (
-    <div className="DefaultLayout flex flex-col container w-full max-w-[1440px] relative">
-      <Header ref={headerRef} />
-      <div ref={bodyRef} className="wrapper">
+    <div className="DefaultLayout flex flex-col flex-wrap container w-full max-w-[1440px] relative">
+      <div
+        className={`w-full flex justify-center z-[999] ${
+          pathname === '/'
+            ? 'absolute top-0 left-0'
+            : 'bg-white shadow-sm fixed top-0 left-0'
+        } transition-all duration-150`}
+      >
+        <Header ref={headerRef} />
+      </div>
+      <div ref={bodyRef} className="Body-wrapper w-full">
         {children}
       </div>
       <div className="mt-[120px] lg:mt-0">

@@ -30,3 +30,20 @@ body {
   display: flex;
   justify-content: center;
 }
+
+*::-webkit-scrollbar {
+  width: 6px;
+  opacity: 0.5;
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 8px;
+  background-color: #f7f7f7;
+  border: 1px solid #f7f7f7;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.15);
+  opacity: 0.5;
+}

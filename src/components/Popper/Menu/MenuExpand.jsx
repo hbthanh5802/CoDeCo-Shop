@@ -6,7 +6,7 @@ import 'tippy.js/dist/tippy.css';
 import PopperWrapper from '../PopperWrapper';
 import MenuItem from './MenuItem';
 
-const Menu = ({
+const MenuExpand = ({
   trigger = 'mouseenter',
   position = 'bottom-end',
   arrow = true,
@@ -48,11 +48,11 @@ const Menu = ({
   );
 };
 
-Menu.propTypes = {
+MenuExpand.propTypes = {
   children: PropTypes.node.isRequired,
   items: PropTypes.array.isRequired,
   placement: PropTypes.string,
   trigger: PropTypes.string,
 };
 
-export default Menu;
+export default MenuExpand;

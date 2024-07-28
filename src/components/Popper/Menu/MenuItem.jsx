@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const MenuItem = ({ data, onClick }) => {
   const { label, value, to, leftIcon } = data;
@@ -16,6 +17,11 @@ const MenuItem = ({ data, onClick }) => {
       <span>{label}</span>
     </Tag>
   );
+};
+
+MenuItem.propTypes = {
+  data: PropTypes.object.isRequired,
+  onClick: PropTypes.func,
 };
 
 export default MenuItem;

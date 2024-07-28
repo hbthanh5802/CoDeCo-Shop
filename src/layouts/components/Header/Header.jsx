@@ -4,9 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearState, logoutUser } from '@/store/slices/authSlice';
 import { customHistory } from '@/utils/history';
 
-import { Link, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Menu from '@/components/Popper/Menu';
 
 import { IoIosNotifications } from 'react-icons/io';
 import { FaUser } from 'react-icons/fa6';
@@ -14,6 +13,8 @@ import { FaCaretDown } from 'react-icons/fa6';
 import { BiSolidCartAlt } from 'react-icons/bi';
 import Badge from '@/components/Badge';
 import SearchBox from '@/components/SearchBox';
+import { MenuExpand, Menu } from '@/components/Popper/Menu';
+import SubNavigation from './SubNavigation';
 
 const headerNavItems = [
   {
@@ -97,116 +98,126 @@ const Header = forwardRef((props, ref) => {
   return (
     <div
       ref={headerRef}
-      className="Header-container flex justify-between items-baseline w-full py-[36px] px-[var(--spacing-padding-container)] absolute top-0 left-0 right-0 z-10"
+      className={`Header-container flex flex-col justify-center items-center w-full max-w-[1280px] pt-[24px] pb-[12px] px-[var(--spacing-padding-container)) ${
+        pathname !== '/' && 'bg-white'
+      }`}
     >
-      <div className="logo">
-        <Link
-          to={'/'}
-          className={`text-[28px] ${
-            pathname === '/' && 'text-white'
-          } font-bold`}
-        >
-          CoDeCo
-        </Link>
+      <div className="flex justify-between items-center w-full">
+        <div className="logo">
+          <Link
+            to={'/'}
+            className={`text-[28px] ${
+              pathname === '/' && 'text-white'
+            } font-bold`}
+          >
+            CoDeCo
+          </Link>
+        </div>
+
+        {pathname === '/' ? (
+          <div
+            className={`hidden lg:flex items-center space-x-[40px] text-[18px] text-white`}
+          >
+            <Menu
+              items={headerNavItems}
+              onClick={(value) => {
+                console.log(value);
+              }}
+            >
+              <Link to={'#'}>Nội thất</Link>
+            </Menu>
+            <Link
+              to={'/shop'}
+              className="px-2 py-1 hover:bg-black/10 rounded-lg duration-150"
+            >
+              Shop
+            </Link>
+            <Link
+              to={'#'}
+              className="px-2 py-1 hover:bg-black/10 rounded-lg duration-150"
+            >
+              Liên hệ
+            </Link>
+          </div>
+        ) : (
+          <div>
+            <SearchBox />
+          </div>
+        )}
+
+        {!currentUser ? (
+          <div className="flex items-center space-x-[24px]">
+            <button
+              className={`text-[18px] ${
+                pathname === '/'
+                  ? 'text-white hover:bg-black/25 rounded-lg duration-150'
+                  : 'hover:text-[var(--color-primary)]'
+              } px-[20px] py-[10px] duration-150`}
+            >
+              <Link to={'/auth/register'}>Đăng ký</Link>
+            </button>
+            <button className="text-[18px]">
+              <Link
+                to={'/auth/login'}
+                className={`px-[20px] py-[10px] border ${
+                  pathname === '/'
+                    ? 'border-white text-white hover:bg-white/25 duration-150'
+                    : 'border-[var(--color-primary)] text-white bg-[var(--color-primary)] hover:brightness-105'
+                } rounded-lg duration-150`}
+              >
+                Đăng nhập
+              </Link>
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center space-x-1">
+            <Badge value={12}>
+              <button
+                className={`${
+                  pathname === '/' && 'text-white'
+                } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+              >
+                <IoIosNotifications />
+              </button>
+            </Badge>
+
+            <Menu
+              items={accountMenuList}
+              onClick={(value) => handleAccountListSelected(value)}
+            >
+              <div
+                className={`flex space-x-2 items-center ${
+                  pathname === '/' && 'text-white'
+                } cursor-pointer px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+              >
+                <span className="text-[16px]">
+                  <FaUser />
+                </span>
+                <span className="hidden md:block">
+                  {currentUser.firstName + ' ' + currentUser.lastName}
+                </span>
+                <span className="text-[16px]">
+                  <FaCaretDown />
+                </span>
+              </div>
+            </Menu>
+
+            <Badge value={9}>
+              <button
+                className={`${
+                  pathname === '/' && 'text-white'
+                } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+              >
+                <BiSolidCartAlt />
+              </button>
+            </Badge>
+          </div>
+        )}
       </div>
 
-      {pathname === '/' ? (
-        <div
-          className={`hidden lg:flex items-center space-x-[40px] text-[18px] text-white`}
-        >
-          <Menu
-            items={headerNavItems}
-            onClick={(value) => {
-              console.log(value);
-            }}
-          >
-            <Link to={'#'}>Nội thất</Link>
-          </Menu>
-          <Link
-            to={'/shop'}
-            className="px-2 py-1 hover:bg-black/10 rounded-lg duration-150"
-          >
-            Shop
-          </Link>
-          <Link
-            to={'#'}
-            className="px-2 py-1 hover:bg-black/10 rounded-lg duration-150"
-          >
-            Liên hệ
-          </Link>
-        </div>
-      ) : (
-        <div>
-          <SearchBox />
-        </div>
-      )}
-
-      {!currentUser ? (
-        <div className="flex items-center space-x-[24px]">
-          <button
-            className={`text-[18px] ${
-              pathname === '/'
-                ? 'text-white hover:bg-black/25 rounded-lg duration-150'
-                : 'hover:text-[var(--color-primary)]'
-            } px-[20px] py-[10px] duration-150`}
-          >
-            <Link to={'/auth/register'}>Đăng ký</Link>
-          </button>
-          <button className="text-[18px]">
-            <Link
-              to={'/auth/login'}
-              className={`px-[20px] py-[10px] border ${
-                pathname === '/'
-                  ? 'border-white text-white hover:bg-white/25 duration-150'
-                  : 'border-[var(--color-primary)] text-white bg-[var(--color-primary)] hover:brightness-105'
-              } rounded-lg duration-150`}
-            >
-              Đăng nhập
-            </Link>
-          </button>
-        </div>
-      ) : (
-        <div className="flex items-center space-x-1">
-          <Badge value={12}>
-            <button
-              className={`${
-                pathname === '/' && 'text-white'
-              } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
-            >
-              <IoIosNotifications />
-            </button>
-          </Badge>
-
-          <Menu
-            items={accountMenuList}
-            onClick={(value) => handleAccountListSelected(value)}
-          >
-            <div
-              className={`flex space-x-2 items-center ${
-                pathname === '/' && 'text-white'
-              } cursor-pointer px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
-            >
-              <span className="text-[16px]">
-                <FaUser />
-              </span>
-              <span className="hidden md:block">
-                {currentUser.firstName + ' ' + currentUser.lastName}
-              </span>
-              <span className="text-[16px]">
-                <FaCaretDown />
-              </span>
-            </div>
-          </Menu>
-
-          <Badge value={9}>
-            <button
-              className={`${
-                pathname === '/' && 'text-white'
-              } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
-            >
-              <BiSolidCartAlt />
-            </button>
-          </Badge>
+      {pathname !== '/' && (
+        <div className="mt-[24px] flex justify-center">
+          <SubNavigation />
         </div>
       )}
     </div>

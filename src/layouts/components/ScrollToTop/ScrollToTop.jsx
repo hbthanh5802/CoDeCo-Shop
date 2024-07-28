@@ -3,9 +3,11 @@ import { IoArrowUpOutline } from 'react-icons/io5';
 
 const ScrollToTop = () => {
   const [visible, setVisible] = useState(false);
+  const doc = document.documentElement;
 
   const toggleVisibility = () => {
-    if (window.pageYOffset > window.innerHeight / 2) {
+    const scrollDistance = doc.scrollHeight - doc.clientHeight;
+    if (window.scrollY > scrollDistance / 3) {
       setVisible(true);
     } else {
       setVisible(false);

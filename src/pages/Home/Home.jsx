@@ -143,7 +143,6 @@ const Home = () => {
       <div className="bg-[#F7F7F7] flex flex-col items-center p-[60px] px-[var(--spacing-padding-container)]">
         <p className="mb-[34px] text-[42px] font-bold">Nội thất bán chạy</p>
         <Segmented
-          className={''}
           items={bestSellerSegmentedList}
           onChange={handleSegmentedChange}
         />

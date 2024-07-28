@@ -30,7 +30,7 @@ const ProductCard = ({ data = {} }) => {
           alt="Product Image"
         />
       </div>
-      <div className="product-detail p-[16px] space-y-3">
+      <div className="product-detail p-[16px] space-y-3 text-left">
         <h2
           className="font-semibold text-[18px] line-clamp-2 cursor-pointer"
           onClick={() => handleProductCardClick('a0012934')}
