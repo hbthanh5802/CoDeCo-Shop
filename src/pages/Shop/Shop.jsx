@@ -179,18 +179,22 @@ const Shop = () => {
           autoPlay={2500}
         >
           <SwiperSlide>
-            <img
-              src={images.eventBg1}
-              alt="Event Background"
-              className="w-full h-auto rounded-lg"
-            />
+            <Link to={'#'}>
+              <img
+                src={images.eventBg1}
+                alt="Event Background"
+                className="w-full h-auto rounded-lg"
+              />
+            </Link>
           </SwiperSlide>
           <SwiperSlide>
-            <img
-              src={images.eventBg1}
-              alt="Event Background"
-              className="w-full h-auto rounded-lg"
-            />
+            <Link to={'#'}>
+              <img
+                src={images.eventBg1}
+                alt="Event Background"
+                className="w-full h-auto rounded-lg"
+              />
+            </Link>
           </SwiperSlide>
         </CustomSwiper>
       </div>

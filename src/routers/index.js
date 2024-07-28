@@ -2,6 +2,7 @@ import ForgotPassword from '@/pages/AuthPage/ForgotPassword';
 import Login from '@/pages/AuthPage/Login';
 import Register from '@/pages/AuthPage/Register';
 import Home from '@/pages/Home';
+import NotFound from '@/pages/NotFound';
 import Shop from '@/pages/Shop';
 
 const routes = [
@@ -27,6 +28,11 @@ const routes = [
     path: '/auth/forgot-password',
     component: ForgotPassword,
     layout: null,
+  },
+  {
+    path: '*',
+    component: NotFound,
+    // layout: null,
   },
 ];
 

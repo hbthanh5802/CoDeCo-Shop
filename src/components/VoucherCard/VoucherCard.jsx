@@ -5,7 +5,7 @@ import Timer from '../Timer';
 import { BiInfoCircle } from 'react-icons/bi';
 import { hexToRgb } from '@/utils/colorConverter';
 import { isDateTimeExpired } from '@/utils/time';
-import voucherApi from '@/api/voucher';
+import voucherApi from '@/api/voucherApi';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Spinner from '../Spinner';
@@ -84,9 +84,10 @@ const VoucherCard = ({ data = {} }) => {
           </div>
         </div>
       </div>
+      {/*  */}
       <div className="relative border border-dashed border-[#ccc]">
-        <span className="absolute top-[-7px] -translate-x-1/2 z-10 rotate-3 inline-block size-[30px] bg-white rounded-full border-[1px] border-dashed border-[#ccc] border-t-transparent"></span>
-        <span className="absolute bottom-[-7px] -translate-x-1/2 z-10 rotate-180 inline-block size-[30px] bg-white rounded-full border-[1px] border-dashed border-[#ccc] border-t-transparent"></span>
+        <span className="dot-1 absolute -rotate-90 left-[-6px] -translate-y-1/2 xl:-translate-y-0 xl:left-0 xl:top-[-7px] xl:-translate-x-1/2 z-10 xl:rotate-3 inline-block size-[30px] bg-white rounded-full border-[1px] border-dashed border-[#ccc] border-t-transparent"></span>
+        <span className="dot-2 absolute rotate-90 right-[-6px] -translate-y-1/2 xl:-translate-y-0 xl:left-0 xl:bottom-[-7px] xl:-translate-x-1/2 z-10 xl:rotate-180 inline-block size-[30px] bg-white rounded-full border-[1px] border-dashed border-[#ccc] border-t-transparent"></span>
       </div>
       {/* Right Side */}
       <div className="flex flex-col gap-6 p-[24px] xl:pl-0">
