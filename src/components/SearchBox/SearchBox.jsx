@@ -10,7 +10,7 @@ const SearchBox = ({ className = '', onSearchClick = () => {} }) => {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [searchResults, setSearchResult] = useState([]);
-  const debouncedInputValue = useDebounce(inputValue, 1000);
+  const debouncedInputValue = useDebounce(inputValue, 600);
   const { pathname } = useLocation();
 
   const handleInputChange = (e) => setInputValue(e.target.value.trim());
@@ -42,7 +42,7 @@ const SearchBox = ({ className = '', onSearchClick = () => {} }) => {
         pathname === '/'
           ? 'border-white/60 bg-white/15 has-[input:focus]:bg-white/10 has-[input:focus]:border-white/80'
           : 'border-[#ccc] has-[input:focus]:border-slate-400 text-[#333]'
-      } rounded-full duration-300`}
+      } rounded-full has-[input:focus]:min-w-[600px] duration-300`}
     >
       <input
         type="text"

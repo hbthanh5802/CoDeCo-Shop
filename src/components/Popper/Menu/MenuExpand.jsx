@@ -50,7 +50,7 @@ const MenuExpand = ({
 
 MenuExpand.propTypes = {
   children: PropTypes.node.isRequired,
-  items: PropTypes.array.isRequired,
+  items: PropTypes.array,
   placement: PropTypes.string,
   trigger: PropTypes.string,
 };

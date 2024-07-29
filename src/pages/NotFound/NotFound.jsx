@@ -1,10 +1,11 @@
 import React from 'react';
 
 import './NotFound.scss';
+import { Link } from 'react-router-dom';
 
 const NotFound = () => {
   return (
-    <div className="w-full flex flex-col items-center justify-center mt-16 mb-[120px]">
+    <div className="w-full flex flex-col items-center justify-center mt-16 mb-[120px] gap-10">
       <div className="wrapper w-[600px]">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080">
           <title>404</title>
@@ -446,9 +447,15 @@ const NotFound = () => {
           </g>
         </svg>
       </div>
-      <p className="text-center font-semibold text-[32px] text-black/75 mt-6">
+      <p className="text-center font-semibold text-[32px] text-black/75">
         Không thấy nội dung cần tìm !
       </p>
+      <Link
+        to={'/'}
+        className="px-[24px] py-[12px] bg-[var(--color-primary)] text-white rounded-lg shadow-lg hover:brightness-105 duration-150 animate__animated animate__rubberBand animate__repeat-2"
+      >
+        Quay lại trang chủ
+      </Link>
     </div>
   );
 };

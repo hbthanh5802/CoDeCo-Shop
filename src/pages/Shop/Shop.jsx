@@ -201,7 +201,7 @@ const Shop = () => {
 
       {/* Best seller */}
       <ProductSection
-        title={'Sản phẩ mới ra mắt'}
+        title={'Sản phẩm mới ra mắt'}
         segmentedList={bestSellerSegmentedList}
         moreRedirectTo="/shop/search?categoryId=trangtri"
       />
