@@ -19,6 +19,7 @@ import { auth, googleProvider } from '@/configs/firebase';
 import { goBackHistory } from '@/store/slices/historySlice';
 
 const Login = () => {
+  const { previous } = useSelector((state) => state.history);
   const dispatch = useDispatch();
   const [reCaptcha, setReCaptcha] = useState('');
 
@@ -68,7 +69,7 @@ const Login = () => {
       {/* Form */}
       <div className="form-container bg-white px-14 py-10 rounded-lg space-y-6 max-w-[800px] min-w-[600px]">
         <Link
-          to={'/'}
+          to={previous}
           className="flex items-center opacity-80 hover:opacity-100 duration-100"
         >
           <MdChevronLeft className="flex w-5 h-5" />

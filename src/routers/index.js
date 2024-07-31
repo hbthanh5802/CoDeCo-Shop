@@ -3,6 +3,7 @@ import Login from '@/pages/AuthPage/Login';
 import Register from '@/pages/AuthPage/Register';
 import Home from '@/pages/Home';
 import NotFound from '@/pages/NotFound';
+import SearchPage from '@/pages/SearchPage';
 import Shop from '@/pages/Shop';
 
 const routes = [
@@ -13,6 +14,10 @@ const routes = [
   {
     path: '/shop',
     component: Shop,
+  },
+  {
+    path: '/shop/search',
+    component: SearchPage,
   },
   {
     path: '/auth/register',

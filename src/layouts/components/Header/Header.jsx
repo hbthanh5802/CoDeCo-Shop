@@ -85,7 +85,7 @@ const Header = forwardRef((props, ref) => {
     }
   };
 
-  const handleAccountListSelected = (value) => {
+  const handleAccountListSelected = ({ value }) => {
     if (value === 'logout') {
       toast.promise(handleLogoutUser, {
         pending: 'Đang đăng xuất',

@@ -1,10 +1,10 @@
-import React, { useId } from 'react';
+import React, { useId, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import HeadlessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 
 import PopperWrapper from '../PopperWrapper';
-import MenuItem from './MenuItem';
+import MenuItem from '../components/MenuItem';
 
 const MenuExpand = ({
   trigger = 'mouseenter',
@@ -17,8 +17,15 @@ const MenuExpand = ({
 }) => {
   const menuId = useId();
 
-  const renderItems = () => {
+  const currentItemList = useMemo(() => {
     return items.map((item, index) => {
+      item.id = index;
+      return item;
+    });
+  }, [items]);
+
+  const renderItems = () => {
+    return currentItemList.map((item, index) => {
       return (
         <MenuItem key={`${menuId}-${index}`} data={item} onClick={onClick} />
       );

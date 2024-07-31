@@ -29,7 +29,7 @@ const PopperWrapper = ({
     <div
       className={`relative flex flex-col items-start p-2 bg-white backdrop-blur-sm rounded-2xl ${
         pathname === '/' ? 'shadow-custom1' : 'shadow-custom2'
-      } min-w-[120px] w-fit max-h-[450px] border border-white animate-[shift-away_300ms_ease] overflow-y-auto`}
+      } min-w-[120px] w-full max-h-[450px] border border-white animate-[shift-away_300ms_ease] overflow-y-auto`}
     >
       {arrow && (
         <div

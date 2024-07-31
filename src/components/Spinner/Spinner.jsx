@@ -8,6 +8,7 @@ const Spinner = ({ size, color }) => {
         style={{
           height: size || 16,
           width: size || 16,
+          color: color,
         }}
         className={`animate-spin h-5 w-5 ${color ? color : 'text-white'}`}
         xmlns="http://www.w3.org/2000/svg"

@@ -5,6 +5,8 @@ import { useLocation } from 'react-router-dom';
 import Spinner from '../Spinner';
 import productApi from '@/api/productApi';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { setSearchValue } from '@/store/slices/shopSlice';
 
 const SearchBox = ({ className = '', onSearchClick = () => {} }) => {
   const [loading, setLoading] = useState(false);
@@ -12,6 +14,7 @@ const SearchBox = ({ className = '', onSearchClick = () => {} }) => {
   const [searchResults, setSearchResult] = useState([]);
   const debouncedInputValue = useDebounce(inputValue, 600);
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
 
   const handleInputChange = (e) => setInputValue(e.target.value.trim());
 
@@ -21,10 +24,12 @@ const SearchBox = ({ className = '', onSearchClick = () => {} }) => {
       try {
         const params = { value: debouncedInputValue };
         const productResponse = await productApi.searchProduct(params);
+        dispatch(setSearchValue(debouncedInputValue));
       } catch (error) {
         toast.error('Có lỗi xảy ra, vui lòng thử lại sau.', {
           autoClose: 1000,
         });
+        dispatch(setSearchValue(null));
       } finally {
         setLoading(false);
       }
@@ -37,7 +42,7 @@ const SearchBox = ({ className = '', onSearchClick = () => {} }) => {
   return (
     <div
       className={`flex justify-between ${
-        pathname === '/' ? 'min-w-[340px]' : 'min-w-[600px]'
+        pathname === '/' || !inputValue ? 'min-w-[340px]' : 'min-w-[600px]'
       } pl-[20px] py-[8px] pr-[8px] border ${
         pathname === '/'
           ? 'border-white/60 bg-white/15 has-[input:focus]:bg-white/10 has-[input:focus]:border-white/80'

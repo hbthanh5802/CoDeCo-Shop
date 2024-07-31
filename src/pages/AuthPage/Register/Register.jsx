@@ -13,8 +13,10 @@ import { toast } from 'react-toastify';
 import Background from '../components/Background';
 import VerifyOTP from '../components/VerifyOTP';
 import SuccessView from '../components/SuccessView';
+import { useSelector } from 'react-redux';
 
 const Register = () => {
+  const { previous } = useSelector((state) => state.history);
   const [process, setProcess] = useState(1);
   const initialValues = {
     firstName: '',
@@ -54,7 +56,7 @@ const Register = () => {
       {process === 1 && (
         <div className="form-container bg-white px-14 py-10 rounded-lg space-y-6 max-w-[800px] min-w-[600px]">
           <Link
-            to={'/'}
+            to={previous}
             className="flex items-center opacity-80 hover:opacity-100 duration-100"
           >
             <MdChevronLeft className="flex w-5 h-5" />
@@ -163,7 +165,7 @@ const Register = () => {
         />
       )}
       {process === 3 && (
-        <SuccessView>
+        <SuccessView to={previous}>
           <p className="text-center">
             Tài khoản của quý khách đã được xác thực thành công. Hãy đi đến
             trang chủ để tiếp tục mua sắm với{' '}
