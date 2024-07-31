@@ -69,7 +69,11 @@ const SearchPage = () => {
 
     if (canFetching.current) fetchProducts();
     canFetching.current = false;
-  }, [JSON.stringify(filterData), paginationData.currentPage]);
+  }, [
+    JSON.stringify(filterData),
+    paginationData.currentPage,
+    paginationData.pageSize,
+  ]);
 
   return (
     <div className="relative mt-[60px] mb-[120px] flex gap-6">
