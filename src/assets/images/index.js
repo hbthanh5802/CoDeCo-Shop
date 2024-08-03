@@ -20,8 +20,10 @@ import categoryWineCabinet from './category-wine-cabinet.jpg';
 import categoryBed from './category-bed.jpg';
 import voucherBg1 from './voucher-bg-1.jpg';
 import voucherBg2 from './voucher-bg-2.jpg';
+import empty from './empty-archive.svg';
 
 const images = {
+  empty,
   voucherBg1,
   voucherBg2,
   categoryBed,

@@ -7,6 +7,7 @@ import PopperWrapper from '../PopperWrapper';
 
 import { IoIosArrowDown } from 'react-icons/io';
 import { IoIosCloseCircle } from 'react-icons/io';
+import Tippy from '@tippyjs/react/headless';
 
 const Selection = ({
   className,
@@ -86,6 +87,7 @@ const Selection = ({
         }}
         onMount={({ popper }) => (tippyRef.current = popper)}
         onShown={({ popper }) => setOpen(true)}
+        onClickOutside={() => setOpen(false)}
         onHide={() => setOpen(false)}
       >
         <div
@@ -94,7 +96,9 @@ const Selection = ({
             className ? className : ''
           }`}
         >
-          <span onClick={() => setOpen(!open)}>{currentLabel}</span>
+          <span className="block flex-1" onClick={() => setOpen(!open)}>
+            {currentLabel}
+          </span>
           {/* <span className="invisible">{label}</span> */}
           {open ? (
             <span
@@ -104,7 +108,7 @@ const Selection = ({
               <IoIosCloseCircle />
             </span>
           ) : (
-            <span onClick={() => setOpen(!open)}>
+            <span onClick={() => setOpen(true)}>
               <IoIosArrowDown />
             </span>
           )}

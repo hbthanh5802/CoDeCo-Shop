@@ -19,7 +19,7 @@ const DefaultLayout = ({ children }) => {
   });
 
   return (
-    <div className="DefaultLayout flex flex-col flex-wrap container w-full max-w-[1440px] relative">
+    <div className="DefaultLayout flex flex-col items-center flex-wrap container w-full max-w-[1440px] relative">
       <div
         className={`w-full flex justify-center z-[999] ${
           pathname === '/'

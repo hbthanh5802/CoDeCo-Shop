@@ -47,3 +47,21 @@ body {
   background-color: rgba(0, 0, 0, 0.15);
   opacity: 0.5;
 }
+
+/* Thay đổi màu nền và màu chữ khi văn bản được bôi đen */
+::selection {
+  background: #3aa39f; /* Màu nền khi bôi đen */
+  color: #ffffff; /* Màu chữ khi bôi đen */
+}
+
+/* Thêm lựa chọn cho trình duyệt Webkit (Chrome, Safari, v.v.) */
+::-webkit-selection {
+  background: #3aa39f; /* Màu nền khi bôi đen */
+  color: #ffffff; /* Màu chữ khi bôi đen */
+}
+
+/* Thêm lựa chọn cho trình duyệt Mozilla (Firefox) */
+::-moz-selection {
+  background: #3aa39f; /* Màu nền khi bôi đen */
+  color: #ffffff; /* Màu chữ khi bôi đen */
+}
