@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { clearState, logoutUser } from '@/store/slices/authSlice';
 import { customHistory } from '@/utils/history';
 
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { IoIosNotifications } from 'react-icons/io';

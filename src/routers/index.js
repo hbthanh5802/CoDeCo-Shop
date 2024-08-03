@@ -3,6 +3,7 @@ import Login from '@/pages/AuthPage/Login';
 import Register from '@/pages/AuthPage/Register';
 import Home from '@/pages/Home';
 import NotFound from '@/pages/NotFound';
+import ProductPage from '@/pages/ProductPage';
 import SearchPage from '@/pages/SearchPage';
 import Shop from '@/pages/Shop';
 
@@ -18,6 +19,10 @@ const routes = [
   {
     path: '/shop/search',
     component: SearchPage,
+  },
+  {
+    path: '/shop/products/:productId',
+    component: ProductPage,
   },
   {
     path: '/auth/register',

@@ -48,7 +48,7 @@ const Collapse = ({
         onChange={handleCollapseChange}
         checked={checked}
       />
-      <div className="w-full max-h-0 overflow-hidden transition-all duration-500 peer-checked:max-h-screen ease-in-out px-[16px]">
+      <div className="w-full max-h-0 overflow-hidden transition-all duration-500 peer-checked:max-h-[1000vh] ease-in-out px-[16px]">
         {children}
       </div>
     </div>
