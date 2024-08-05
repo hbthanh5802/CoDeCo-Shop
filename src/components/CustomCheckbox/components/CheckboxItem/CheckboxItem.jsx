@@ -12,57 +12,65 @@ import { MdCheckBoxOutlineBlank } from 'react-icons/md';
 import { MdCheckBox } from 'react-icons/md';
 
 const CheckboxItem = forwardRef(
-  ({ label, name, value, onChange, className }, ref) => {
+  ({ label, name, value, onChange, checkboxSize, className }, ref) => {
     const checkboxItemRef = useRef();
     const checkboxId = useId();
     const [checked, setChecked] = useState(false);
 
+    const handleChange = (isChecked) => {
+      if (onChange) {
+        const data = { checked: isChecked, name, label, value };
+        onChange(data);
+      }
+    };
+
     const handleCheckboxChange = () => {
       setChecked(!checked);
+      handleChange(!checked);
     };
 
     const handleReset = () => {
       setChecked(false);
     };
 
-    useEffect(() => {
-      const data = { checked, name, label, value };
-      if (onChange) onChange(data);
-    }, [checked]);
+    const handleCheck = () => {
+      setChecked(true);
+    };
 
-    useImperativeHandle(ref, () => ({ handleReset }));
+    useImperativeHandle(ref, () => ({ handleReset, handleCheck }));
 
     return (
       <div
         ref={checkboxItemRef}
         className={`flex items-center gap-2 group/checkbox ${className}`}
       >
-        <MdCheckBoxOutlineBlank
-          className={`text-[18px] ${checked ? 'hidden' : 'block'}`}
-        />
-        <MdCheckBox
-          className={`text-[18px] animate-fadeIn ${
-            checked ? 'block' : 'hidden'
-          }`}
-        />
         <label
           htmlFor={checkboxId}
-          className="text-[16px] select-none cursor-pointer"
+          className="text-[16px] select-none cursor-pointer flex items-center gap-2"
           onClick={handleCheckboxChange}
         >
-          {label}
+          <MdCheckBoxOutlineBlank
+            style={{ fontSize: checkboxSize }}
+            className={`${checked ? 'hidden' : 'block'}`}
+          />
+          <MdCheckBox
+            style={{ fontSize: checkboxSize }}
+            className={`animate-fadeIn ${checked ? 'block' : 'hidden'}`}
+          />
         </label>
+        <div className="flex-1">{label}</div>
       </div>
     );
   }
 );
 
 CheckboxItem.propTypes = {
-  label: PropTypes.string || PropTypes.node,
-  value: PropTypes.string.isRequired,
+  label: PropTypes.any,
+  value: PropTypes.any,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   classNames: PropTypes.string,
+  checkboxSize: PropTypes.number,
 };
 
 export default CheckboxItem;

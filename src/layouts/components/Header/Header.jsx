@@ -208,7 +208,9 @@ const Header = forwardRef((props, ref) => {
                   pathname === '/' && 'text-white'
                 } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
               >
-                <BiSolidCartAlt />
+                <Link to={'/shop/cart'}>
+                  <BiSolidCartAlt />
+                </Link>
               </button>
             </Badge>
           </div>
