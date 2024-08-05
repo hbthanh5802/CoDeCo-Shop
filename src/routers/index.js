@@ -1,6 +1,8 @@
 import ForgotPassword from '@/pages/AuthPage/ForgotPassword';
 import Login from '@/pages/AuthPage/Login';
 import Register from '@/pages/AuthPage/Register';
+import CartPage from '@/pages/CartPage';
+import CreateOrderPage from '@/pages/CreateOrderPage';
 import Home from '@/pages/Home';
 import NotFound from '@/pages/NotFound';
 import ProductPage from '@/pages/ProductPage';
@@ -23,6 +25,14 @@ const routes = [
   {
     path: '/shop/products/:productId',
     component: ProductPage,
+  },
+  {
+    path: '/shop/cart',
+    component: CartPage,
+  },
+  {
+    path: '/shop/create-order',
+    component: CreateOrderPage,
   },
   {
     path: '/auth/register',

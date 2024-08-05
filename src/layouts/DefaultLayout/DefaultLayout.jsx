@@ -32,7 +32,7 @@ const DefaultLayout = ({ children }) => {
       <div ref={bodyRef} className="Body-wrapper w-full">
         {children}
       </div>
-      <div className="mt-[120px] lg:mt-0">
+      <div className="mt-[120px] lg:mt-0 w-full">
         <Footer />
       </div>
       <ScrollToTop />

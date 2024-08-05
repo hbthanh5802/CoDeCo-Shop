@@ -25,7 +25,7 @@ const Collapse = ({
         htmlFor={collapseId}
         className={`capitalize select-none flex justify-between items-center px-[16px] py-[8px] bg-[#D9D9D9] rounded-[4px] duration-150 cursor-pointer ${
           checked ? 'font-medium text-[var(--color-primary)] bg-[#f7f7f7]' : ''
-        }`}
+        } hover:brightness-95`}
       >
         <span className="text-[16px]">{label}</span>
         <AiOutlineMinus
