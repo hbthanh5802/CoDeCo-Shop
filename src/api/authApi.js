@@ -1,4 +1,3 @@
-import { auth } from '@/configs/firebase';
 import axiosAuth from './axiosAuth';
 import { axiosClient } from './axiosClient';
 
@@ -11,7 +10,9 @@ authApi.loginUser = (data) => {
 };
 
 authApi.logoutUser = (data) => {
-  return axiosAuth.post('/auth/logout', data);
+  return axiosAuth.post('/auth/logout-once', data, {
+    withCredentials: true,
+  });
 };
 
 authApi.refreshToken = async (data) => {

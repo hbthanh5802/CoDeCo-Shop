@@ -34,11 +34,10 @@ const Login = () => {
       const data = {
         email: values.email,
         password: values.password,
-        recaptchaToken: reCaptcha,
+        recaptchaToken: 'test',
       };
-      const loginResponse = await dispatch(loginUser(data)).unwrap();
+      await dispatch(loginUser(data)).unwrap();
       toast.success('Đăng nhập thành công');
-      // customHistory.replace('/');
       dispatch(goBackHistory());
     } catch (error) {
       console.log(error);
