@@ -5,11 +5,14 @@ import { AiOutlineRight } from 'react-icons/ai';
 
 const OrderProcessStep = ({
   initialProcess = 1,
+  canNext = false,
   currentProcess = 1,
   processStepList = [],
+  handleSetProcess = () => {},
 }) => {
   const processId = useId();
   const processLength = processStepList.length;
+
   if (processLength === 0) return <>Process List is empty</>;
   return (
     <div className="flex items-center flex-wrap gap-[12px]">
@@ -18,12 +21,12 @@ const OrderProcessStep = ({
         return (
           <div
             key={`${processId}-${index}`}
-            className="duration-150 flex items-center gap-[12px] text-[18px]"
+            className={`duration-100 flex items-center gap-[12px] text-[18px] select-none`}
           >
             <span
-              className={`duration-150 flex items-center gap-[12px] ${
+              className={`duration-100 flex items-center gap-[12px] ${
                 process === currentProcess
-                  ? 'text-[var(--color-primary)] font-semibold'
+                  ? 'text-[var(--color-primary)] px-[8px] py-[2px] border border-[#e58411]/[0.3] bg-[#e58411]/[0.02] rounded-md'
                   : ''
               }`}
             >
@@ -45,6 +48,8 @@ OrderProcessStep.propTypes = {
   initialProcess: PropTypes.number,
   currentProcess: PropTypes.number,
   processStepList: PropTypes.array,
+  handleSetProcess: PropTypes.func,
+  canNext: PropTypes.bool,
 };
 
 export default OrderProcessStep;
