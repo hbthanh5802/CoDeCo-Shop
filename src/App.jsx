@@ -51,6 +51,7 @@ function App() {
         position="top-right"
         autoClose={1500}
         theme="colored"
+        pauseOnFocusLoss={false}
       />
     </HistoryRouter>
   );

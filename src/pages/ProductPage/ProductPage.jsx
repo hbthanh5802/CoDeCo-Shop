@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Link,
   useLocation,
@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 
 import { FaArrowLeftLong } from 'react-icons/fa6';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BreadCrumb from '@/components/BreadCrumb';
 import GallerySwiper from '@/components/GallerySwiper';
 import images from '@/assets/images';
@@ -19,9 +19,11 @@ import RecommendProduct from './components/RecommendProduct';
 import Collapse from '@/components/Collapse';
 import { TbCoin } from 'react-icons/tb';
 import { BsChatDots, BsCreditCard } from 'react-icons/bs';
+import { setPreviousHistory } from '@/store/slices/historySlice';
 
 const ProductPage = () => {
-  // const { pathname, search } = useLocation();
+  const { pathname, search } = useLocation();
+  const dispatch = useDispatch();
   const { productId } = useParams();
 
   const { previous } = useSelector((state) => state.history);
@@ -35,6 +37,10 @@ const ProductPage = () => {
     images.customerAvatar1,
     images.customerAvatar2,
   ]);
+
+  useEffect(() => {
+    dispatch(setPreviousHistory(pathname + search));
+  }, []);
 
   return (
     <div className="mt-[60px]">

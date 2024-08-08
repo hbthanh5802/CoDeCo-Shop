@@ -29,11 +29,12 @@ const Login = () => {
   };
 
   const handleSubmitForm = async (values, actions) => {
-    // console.log({ values, actions });
     try {
+      if (!reCaptcha) return;
       const data = {
-        username: values.username,
+        email: values.email,
         password: values.password,
+        recaptchaToken: reCaptcha,
       };
       const loginResponse = await dispatch(loginUser(data)).unwrap();
       toast.success('Đăng nhập thành công');

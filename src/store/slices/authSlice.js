@@ -19,8 +19,9 @@ const authSlice = createAppSlice({
     loginUser: create.asyncThunk(
       async (args, thunkApi) => {
         return await authApi.loginUser({
-          email: args.username,
+          email: args.email,
           password: args.password,
+          recaptchaToken: args.recaptchaToken,
         });
       },
       {
@@ -28,6 +29,7 @@ const authSlice = createAppSlice({
           state.loading = true;
         },
         fulfilled: (state, action) => {
+          console.log(action.payload);
           const { user, accessToken } = action.payload;
           if (user) state.currentUser = user;
           if (accessToken) state.accessToken = accessToken;
