@@ -1,6 +1,6 @@
 import Collapse from '@/components/Collapse';
 import CustomRadio from '@/components/CustomRadio';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import UserAddress from './UserAddress';
 import AddNewAddressForm from './AddNewAddressForm';
 import { formatCurrency } from '@/utils/currency';
@@ -18,7 +18,7 @@ const shippingMethod = [
         </div>
       </div>
     ),
-    value: { type: 'normal', price: 50000 },
+    value: { type: 'Giao hàng tiết kiệm', price: 50000 },
   },
   {
     label: (
@@ -31,7 +31,7 @@ const shippingMethod = [
         </div>
       </div>
     ),
-    value: { type: 'fast', price: 100000 },
+    value: { type: 'Giao hàng nhanh', price: 100000 },
   },
   {
     label: (
@@ -44,7 +44,7 @@ const shippingMethod = [
         </div>
       </div>
     ),
-    value: { type: 'extra', price: 200000 },
+    value: { type: 'Giao hàng hoả tốc', price: 200000 },
   },
 ];
 
@@ -63,6 +63,7 @@ const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
       isDefault: index === 0,
     }))
   );
+
   const [userVoucherList, setUserVoucherList] = useState(
     Array.from({ length: 3 }).map((_, index) => ({
       voucherId: 'VoucherId' + index,
@@ -98,6 +99,7 @@ const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
 
   const handleAddNewAddress = (newAddressData) => {
     // console.log('Add New', newAddressData);
+    setAddNewAddressShow(false);
     setUserAddressList((prev) => [
       ...prev,
       {
@@ -129,6 +131,13 @@ const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
     const discountedPrice = calculateDiscountPrice(value);
     handleSetSummaryOrderData({ [name]: value, discountedPrice });
   };
+
+  useEffect(() => {
+    handleSetSummaryOrderData({
+      shippingMethod: undefined,
+      voucher: undefined,
+    });
+  }, []);
 
   return (
     <div className="flex flex-col">

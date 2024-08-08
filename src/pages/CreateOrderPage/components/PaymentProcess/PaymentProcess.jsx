@@ -1,54 +1,60 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Collapse from '@/components/Collapse';
 import CustomRadio from '@/components/CustomRadio';
 import { formatCurrency } from '@/utils/currency';
+import images from '@/assets/images';
 
-const shippingMethod = [
+const paymentMethod = [
   {
-    label: (
-      <div className="flex items-center gap-3 text-[16px]">
-        <span className="font-medium">Giao hàng tiết kiệm</span>
-        <span>|</span>
-        <div className="flex items-center gap-1">
-          <span>{formatCurrency(50000)}</span>
-          <span>VNĐ</span>
-        </div>
-      </div>
-    ),
-    value: { type: 'normal', price: 50000 },
+    label: <span className="font-medium">Thanh toán khi nhận hàng</span>,
+    value: { title: 'Thanh toán khi nhận hàng', type: 'cod', code: 0 },
   },
   {
     label: (
-      <div className="flex items-center gap-3 text-[16px]">
-        <span className="font-medium">Giao hàng nhanh</span>
-        <span>|</span>
-        <div className="flex items-center gap-1">
-          <span>{formatCurrency(100000)}</span>
-          <span>VNĐ</span>
+      <div className="flex items-center gap-2">
+        <span className="font-medium">Thanh toán qua VTCPay</span>
+        <div className="p-[2px] h-[24px] border border-[#3AA39F] rounded">
+          <img
+            src={images.vtcPay}
+            alt="VTCPay Logo"
+            className="h-full mix-blend-multiply"
+          />
         </div>
       </div>
     ),
-    value: { type: 'fast', price: 100000 },
+    value: { title: 'Thanh toán qua VTCPay', type: 'vtc-pay', code: 1 },
+    disabled: true,
   },
   {
     label: (
-      <div className="flex items-center gap-3 text-[16px]">
-        <span className="font-medium">Giao hàng hoả tốc</span>
-        <span>|</span>
-        <div className="flex items-center gap-1">
-          <span>{formatCurrency(200000)}</span>
-          <span>VNĐ</span>
+      <div className="flex items-center gap-2">
+        <span className="font-medium">Thanh toán qua VNPay</span>
+        <div className="p-[2px] h-[18px] border border-[#3AA39F] rounded">
+          <img
+            src={images.vnpay}
+            alt="VNPay Logo"
+            className="h-full mix-blend-multiply"
+          />
         </div>
       </div>
     ),
-    value: { type: 'extra', price: 200000 },
+    value: { title: 'Thanh toán qua VNPay', type: 'vn-pay', code: 2 },
   },
 ];
 
-const PaymentProcess = () => {
-  const handleChoosePaymentMethod = () => {
-    console.log(data);
+const PaymentProcess = ({ handleSetSummaryOrderData }) => {
+  const handleChoosePaymentMethod = (data) => {
+    const { name, value } = data;
+    if (handleSetSummaryOrderData) {
+      handleSetSummaryOrderData({ paymentMethod: value });
+    }
   };
+
+  useEffect(() => {
+    handleSetSummaryOrderData({
+      paymentMethod: undefined,
+    });
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -58,9 +64,9 @@ const PaymentProcess = () => {
           <div className="flex flex-col gap-[24px] my-[24px]">
             <div className="w-full">
               <CustomRadio
-                name="shippingFee"
+                name="paymentMethod"
                 color="#3AA39F"
-                items={shippingMethod}
+                items={paymentMethod}
                 onChange={(data) => handleChoosePaymentMethod(data)}
               />
             </div>

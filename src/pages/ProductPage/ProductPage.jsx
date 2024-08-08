@@ -20,9 +20,11 @@ import Collapse from '@/components/Collapse';
 import { TbCoin } from 'react-icons/tb';
 import { BsChatDots, BsCreditCard } from 'react-icons/bs';
 import { setPreviousHistory } from '@/store/slices/historySlice';
+import { serializeSearchParams } from '@/utils/url';
 
 const ProductPage = () => {
   const { pathname, search } = useLocation();
+  console.log(serializeSearchParams(search));
   const dispatch = useDispatch();
   const { productId } = useParams();
 

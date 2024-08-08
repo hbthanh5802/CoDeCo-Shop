@@ -21,6 +21,8 @@ import categoryBed from './category-bed.jpg';
 import voucherBg1 from './voucher-bg-1.jpg';
 import voucherBg2 from './voucher-bg-2.jpg';
 import empty from './empty-archive.svg';
+import vtcPay from './vtcpay.png';
+import vnpay from './vnpay.webp';
 
 const images = {
   empty,
@@ -46,6 +48,8 @@ const images = {
   customerAvatar1,
   customerAvatar2,
   eventBg1,
+  vtcPay,
+  vnpay,
 };
 
 export default images;

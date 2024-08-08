@@ -5,6 +5,7 @@ import CartPage from '@/pages/CartPage';
 import CreateOrderPage from '@/pages/CreateOrderPage';
 import Home from '@/pages/Home';
 import NotFound from '@/pages/NotFound';
+import PaymentPage from '@/pages/PaymentPage';
 import ProductPage from '@/pages/ProductPage';
 import SearchPage from '@/pages/SearchPage';
 import Shop from '@/pages/Shop';
@@ -29,6 +30,10 @@ const routes = [
   {
     path: '/shop/cart',
     component: CartPage,
+  },
+  {
+    path: '/shop/create-order/payment/:paymentType',
+    component: PaymentPage,
   },
   {
     path: '/shop/create-order',

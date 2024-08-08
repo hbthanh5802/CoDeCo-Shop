@@ -1,11 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import './SuccessView.scss';
 
-const SuccessView = ({ children, to, title = 'Thành Công' }) => {
+const SuccessView = ({
+  className,
+  children,
+  to,
+  title = 'Thành Công',
+  buttonLabel,
+  disabled = false,
+}) => {
+  const navigate = useNavigate();
+  const handleButtonClick = () => {
+    navigate(to || '/');
+  };
+
   return (
-    <div className="form-container bg-white px-14 py-16 rounded-lg space-y-6 max-w-[600px] min-w-[600px] border">
+    <div
+      className={`form-container bg-white px-14 py-16 rounded-lg space-y-6 max-w-[600px] min-w-[600px] border ${
+        className ? className : ''
+      }`}
+    >
       <div className="success-checkmark">
         <div className="check-icon">
           <span className="icon-line line-tip"></span>
@@ -18,14 +35,23 @@ const SuccessView = ({ children, to, title = 'Thành Công' }) => {
         {title}
       </h1>
       {children}
-      <Link
-        to={to || '/'}
-        className="flex space-x-2 justify-center items-center text-sm border rounded-lg w-full h-[58px] bg-slate-900 text-white hover:bg-[var(--color-primary)] font-medium uppercase duration-150"
+      <button
+        className="flex space-x-2 justify-center items-center text-sm border rounded-lg w-full h-[58px] bg-slate-900 text-white hover:bg-[var(--color-primary)] font-medium uppercase duration-150 disabled:bg-[#f7f7f7] disabled:text-[#ccc] disabled:cursor-not-allowed"
+        disabled={disabled}
+        onClick={handleButtonClick}
       >
-        <span>Trở về</span>
-      </Link>
+        <span>{buttonLabel || 'Tiếp tục'}</span>
+      </button>
     </div>
   );
+};
+
+SuccessView.propTypes = {
+  className: PropTypes.string,
+  buttonLabel: PropTypes.string,
+  children: PropTypes.node,
+  to: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 export default SuccessView;
