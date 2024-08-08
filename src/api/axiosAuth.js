@@ -27,30 +27,43 @@ export function setupAuthAxios(store) {
     let decodedToken = jwtDecode(accessToken);
     let currentDate = new Date();
     if (decodedToken.exp < currentDate.getTime() / 1000) {
+      let refreshToken = store.getState().auth.refreshToken; // From redux store
       refreshTokenRequest = refreshTokenRequest
         ? refreshTokenRequest
-        : authApi.refreshToken({ accessToken });
+        : authApi.refreshToken({ accessToken, refreshToken });
 
       try {
         const response = await refreshTokenRequest;
-        accessToken = response?.accessToken;
-        if (accessToken) store.dispatch(addToken(accessToken));
+        if (!response.result) {
+          const error = new Error('Refresh Token Failed');
+          error.status = 401;
+          throw error;
+        }
+        const newAccessToken = response.result.accessToken;
+        const newRefreshToken = response.result.refreshToken;
+        accessToken = newAccessToken;
+        store.dispatch(
+          addToken({
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken,
+          })
+        );
         // Reset token refresh request
         refreshTokenRequest = null;
       } catch (error) {
-        console.log('Refresh Token Failed');
+        console.log('Refresh Token Failed', error);
         store.dispatch(resetHistory());
         if (error.status === 401) {
           toast.error('Có lỗi xảy ra, Vui lòng đăng nhập lại.', {
             autoClose: 2000,
           });
           store.dispatch(clearState());
-          customHistory.push('/auth/login');
         }
       }
-
-      config.headers.Authorization = `Bearer ${accessToken}`;
     }
+
+    // console.log('accessToken', accessToken);
+    config.headers.Authorization = `Bearer ${accessToken}`;
 
     return config;
   });

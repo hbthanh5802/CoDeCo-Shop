@@ -5,6 +5,7 @@ const initialState = {
   loading: false,
   errorMessage: null,
   accessToken: null,
+  refreshToken: null,
   currentUser: null,
 };
 
@@ -14,7 +15,9 @@ const authSlice = createAppSlice({
   // actions
   reducers: (create) => ({
     addToken: create.reducer((state, action) => {
-      state.accessToken = action.payload;
+      const { accessToken, refreshToken } = action.payload;
+      if (accessToken) state.accessToken = accessToken;
+      if (refreshToken) state.refreshToken = refreshToken;
     }),
     loginUser: create.asyncThunk(
       async (args, thunkApi) => {
@@ -29,10 +32,11 @@ const authSlice = createAppSlice({
           state.loading = true;
         },
         fulfilled: (state, action) => {
-          console.log(action.payload);
-          const { user, accessToken } = action.payload;
-          if (user) state.currentUser = user;
+          const { userResponse, accessToken, refreshToken } =
+            action.payload?.result;
+          if (userResponse) state.currentUser = userResponse;
           if (accessToken) state.accessToken = accessToken;
+          if (refreshToken) state.refreshToken = refreshToken;
         },
         rejected: (state, action) => {
           console.log('action.errors', action.error);
@@ -45,8 +49,8 @@ const authSlice = createAppSlice({
     ),
     logoutUser: create.asyncThunk(
       async (args, thunkApi) => {
-        const accessToken = thunkApi.getState()?.auth?.accessToken;
-        return await authApi.logoutUser({ accessToken });
+        const refreshToken = thunkApi.getState()?.auth?.refreshToken;
+        return await authApi.logoutUser({ refreshToken });
       },
       {
         pending: (state) => {
@@ -55,6 +59,7 @@ const authSlice = createAppSlice({
         fulfilled: (state) => {
           state.currentUser = null;
           state.accessToken = null;
+          state.refreshToken = null;
           state.errorMessage = null;
         },
         rejected: (state, action) => {
@@ -69,6 +74,7 @@ const authSlice = createAppSlice({
       state.loading = null;
       state.currentUser = null;
       state.accessToken = null;
+      state.refreshToken = null;
       state.errorMessage = null;
     }),
   }),

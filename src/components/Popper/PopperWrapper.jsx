@@ -5,8 +5,6 @@ import { useLocation } from 'react-router-dom';
 const PopperWrapper = ({
   arrow = true,
   arrowPosition = 'top-right',
-  expand = false,
-  shadow = 'test',
   children,
 }) => {
   const pathname = useLocation().pathname;

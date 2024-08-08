@@ -1,5 +1,10 @@
 import Spinner from '@/components/Spinner';
-import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearState, logoutUser } from '@/store/slices/authSlice';
 import { customHistory } from '@/utils/history';
@@ -15,6 +20,7 @@ import Badge from '@/components/Badge';
 import SearchBox from '@/components/SearchBox';
 import { MenuExpand, Menu } from '@/components/Popper/Menu';
 import SubNavigation from './SubNavigation';
+import { getCartItemList, getNotificationList } from '@/store/slices/shopSlice';
 
 const headerNavItems = [
   {
@@ -64,6 +70,7 @@ const Header = forwardRef((props, ref) => {
   const headerRef = useRef(null);
   const { pathname, search } = useLocation();
   const { currentUser, loading } = useSelector((state) => state.auth);
+  const { notificationList, cartItemList } = useSelector((state) => state.shop);
   const dispatch = useDispatch();
 
   useImperativeHandle(ref, () => ({
@@ -74,26 +81,35 @@ const Header = forwardRef((props, ref) => {
   const handleLogoutUser = async () => {
     try {
       const logoutResponse = await dispatch(logoutUser()).unwrap();
-      toast.info(logoutResponse + 'Bạn đã dăng xuất', {
-        autoClose: 2000,
-      });
-      dispatch(clearState());
       customHistory.push('/');
     } catch (error) {
-      dispatch(clearState());
       customHistory.push('/auth/login');
+    } finally {
+      dispatch(clearState());
     }
   };
 
   const handleAccountListSelected = ({ value }) => {
     if (value === 'logout') {
-      toast.promise(handleLogoutUser, {
-        pending: 'Đang đăng xuất',
-        success: 'Đăng xuất thành công',
-        error: 'Có lỗi xảy ra',
-      });
+      toast.promise(
+        handleLogoutUser,
+        {
+          pending: 'Đang đăng xuất',
+          success: 'Đăng xuất thành công',
+          error: 'Có lỗi xảy ra',
+        },
+        {
+          autoClose: 1500,
+        }
+      );
     }
   };
+
+  useEffect(() => {
+    const params = { page: 1, pageSize: 99999 };
+    dispatch(getNotificationList({ params }));
+    dispatch(getCartItemList());
+  }, []);
 
   return (
     <div
@@ -171,7 +187,7 @@ const Header = forwardRef((props, ref) => {
           </div>
         ) : (
           <div className="flex items-center space-x-1">
-            <Badge value={12}>
+            <Badge value={notificationList?.length || 0}>
               <button
                 className={`${
                   pathname === '/' && 'text-white'
@@ -191,10 +207,20 @@ const Header = forwardRef((props, ref) => {
                 } cursor-pointer px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
               >
                 <span className="text-[16px]">
-                  <FaUser />
+                  {currentUser.avatarUrl ? (
+                    <img
+                      src={currentUser.avatarUrl}
+                      alt="Avatar"
+                      className="size-[28px] rounded-full"
+                    />
+                  ) : (
+                    <FaUser />
+                  )}
                 </span>
                 <span className="hidden md:block">
-                  {currentUser.firstName + ' ' + currentUser.lastName}
+                  {(currentUser.firstName || '') +
+                    ' ' +
+                    (currentUser.lastName || '')}
                 </span>
                 <span className="text-[16px]">
                   <FaCaretDown />
@@ -202,7 +228,7 @@ const Header = forwardRef((props, ref) => {
               </div>
             </Menu>
 
-            <Badge value={9}>
+            <Badge value={cartItemList?.length || 0}>
               <button
                 className={`${
                   pathname === '/' && 'text-white'
