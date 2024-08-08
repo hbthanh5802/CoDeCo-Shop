@@ -61,4 +61,5 @@ export default {
   verifyEmailSchema,
   otpSchema,
   recoverPasswordSchema,
+  phoneNumberSchema,
 };

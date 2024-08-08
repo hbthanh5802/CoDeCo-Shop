@@ -1,9 +1,11 @@
+import useScrollToTop from '@/hooks/useScrollToTop';
 import React, { useEffect, useState } from 'react';
 import { IoArrowUpOutline } from 'react-icons/io5';
 
 const ScrollToTop = () => {
   const [visible, setVisible] = useState(false);
   const doc = document.documentElement;
+  useScrollToTop();
 
   const toggleVisibility = () => {
     const scrollDistance = doc.scrollHeight - doc.clientHeight;
