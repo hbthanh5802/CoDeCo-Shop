@@ -14,12 +14,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { IoIosNotifications } from 'react-icons/io';
-import { FaUser } from 'react-icons/fa6';
+import { FaUserCircle } from 'react-icons/fa';
 import { FaCaretDown } from 'react-icons/fa6';
 import { BiSolidCartAlt } from 'react-icons/bi';
 import Badge from '@/components/Badge';
 import SearchBox from '@/components/SearchBox';
-import { MenuExpand, Menu } from '@/components/Popper/Menu';
+import { Menu } from '@/components/Popper/Menu';
 import SubNavigation from './SubNavigation';
 import {
   getCategoryList,
@@ -155,20 +155,22 @@ const Header = forwardRef((props, ref) => {
 
         {pathname === '/' ? (
           <div
-            className={`hidden lg:flex items-center space-x-[40px] text-[18px] text-white`}
+            className={`flex items-center space-x-[40px] text-[18px] text-white`}
           >
             <Menu items={headerNavItems}>
-              <Link to={'#'}>Nội thất</Link>
+              <Link to={'#'} className="hidden md:block">
+                Nội thất
+              </Link>
             </Menu>
             <Link
               to={'/shop'}
-              className="px-2 py-1 hover:bg-black/10 rounded-lg duration-150"
+              className="px-2 py-1 hover:px-6 rounded-lg duration-300 ease-out hover:underline hover:underline-offset-8 hover:text-[#e58411] bg-opacity-45"
             >
               Shop
             </Link>
             <Link
               to={'#'}
-              className="px-2 py-1 hover:bg-black/10 rounded-lg duration-150"
+              className="hidden md:block px-2 py-1 hover:bg-black/10 rounded-lg duration-150"
             >
               Liên hệ
             </Link>
@@ -240,7 +242,7 @@ const Header = forwardRef((props, ref) => {
                       className="size-[28px] rounded-full border border-white"
                     />
                   ) : (
-                    <FaUser className="text-[22px]" />
+                    <FaUserCircle className="text-[22px]" />
                   )}
                 </span>
                 <span className="capitalize hidden md:block">

@@ -8,35 +8,15 @@ import { MdChevronLeft } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const RecoverPassword = ({ handleSetProcess, handleSetData }) => {
+const RecoverPassword = ({ handleSetProcess, onSubmit }) => {
   const navigate = useNavigate();
   const initialValues = {
     password: '',
     confirmPassword: '',
   };
 
-  const dummyTimeout = () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve('OK');
-      }, 1000);
-    });
-  };
-
   const handleSubmitForm = async (values, actions) => {
-    console.log({ values, actions });
-    await dummyTimeout()
-      .then((res) => {
-        toast.success(res);
-        handleSetData((prev) => ({
-          ...prev,
-          password: values.password,
-        }));
-        handleSetProcess(4);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (onSubmit) onSubmit(values);
   };
 
   return (

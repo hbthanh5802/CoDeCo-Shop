@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import './StatusView.scss';
-import Spinner from '../Spinner';
+import { statusView } from '@/constants';
 
 const StatusView = ({
   children,
@@ -13,7 +13,7 @@ const StatusView = ({
   title = 'Thành Công',
   disabled = false,
   buttonLabel,
-  type = 'success',
+  type = statusView.SUCCESS,
 }) => {
   const navigate = useNavigate();
   const handleButtonClick = () => {
@@ -23,7 +23,7 @@ const StatusView = ({
   return (
     <div className="form-container bg-white px-14 py-16 rounded-lg space-y-6 max-w-[600px] min-w-[600px] border">
       <div className="flex justify-center items-center h-[120px]">
-        {type === 'success' && (
+        {type === statusView.SUCCESS && (
           <div className="success-checkmark">
             <div className="check-icon">
               <span className="icon-line line-tip"></span>
@@ -33,12 +33,12 @@ const StatusView = ({
             </div>
           </div>
         )}
-        {type === 'failed' && (
+        {type === statusView.FAILED && (
           <div className="flex items-center justify-center animate__animated animate__flipInY">
             <IoIosCloseCircleOutline className="text-red-500 text-[100px]" />
           </div>
         )}
-        {type === 'pending' && (
+        {type === statusView.PENDING && (
           <div className="flex justify-center items-center">
             <AiOutlineLoading3Quarters className="text-[80px] animate-spin" />
           </div>
@@ -53,7 +53,7 @@ const StatusView = ({
         disabled={disabled}
         onClick={handleButtonClick}
       >
-        <span>{buttonLabel || 'Tiếp tục'}</span>
+        <span className="uppercase">{buttonLabel || 'Tiếp tục'}</span>
       </button>
     </div>
   );

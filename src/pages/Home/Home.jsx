@@ -84,7 +84,6 @@ const Home = () => {
     productApi
       .getProductsByCategoryId(selectedCategoryId)
       .then((response) => {
-        // console.log(response);
         if (response && response.result) {
           setBestSellers(response.result.data);
         }
@@ -110,15 +109,15 @@ const Home = () => {
         <div className="gradient-layer bg-gradient-to-t from-white to-transparent absolute bottom-0 left-0 right-0 h-[10%]"></div>
 
         <div className="flex flex-col items-center left-0 right-0 absolute top-[120px] space-y-6">
-          <div className="flex flex-col items-center left-0 right-0 text-[24px] sm:text-[28px] md:text-[60px] lg:text-[80px] font-semibold text-white text-center capitalize">
+          <div className="flex flex-col items-center left-0 right-0 text-[24px] sm:text-[28px] md:text-[48px] lg:text-[80px] font-semibold text-white text-center capitalize">
             <p>Biến không gian trở nên</p>
             <p>Tối giản và hiện đại hơn</p>
           </div>
-          <div className="flex flex-col items-center text-[14px] sm:text-[16px] md:text-[18px] lg:text-[24px] font-normal text-white/80 text-center">
+          <div className="hidden lg:flex flex-col items-center text-[14px] sm:text-[16px] md:text-[18px] lg:text-[24px] font-normal text-white/80 text-center">
             <p>Với CoDeco, hãy đưa căn phòng của bạn</p>
             <p>thành không gian tối giản và hiện đại chỉ trong nháy mắt.</p>
           </div>
-          <div className="hidden lg:block">
+          <div className="hidden md:block">
             <SearchBox />
           </div>
         </div>

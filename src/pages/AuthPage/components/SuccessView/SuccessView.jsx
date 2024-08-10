@@ -40,7 +40,7 @@ const SuccessView = ({
         disabled={disabled}
         onClick={handleButtonClick}
       >
-        <span>{buttonLabel || 'Tiếp tục'}</span>
+        <span className="uppercase">{buttonLabel || 'Tiếp tục'}</span>
       </button>
     </div>
   );

@@ -6,15 +6,19 @@ import schemas from '@/schemas';
 import { Form, Formik } from 'formik';
 import React, { Fragment, useEffect, useId, useState } from 'react';
 import { MdChevronLeft } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const otpSize = import.meta.env.VITE_OTP_SIZE;
 
-const VerifyOTP = ({ handleSetProcess, title, onSuccess, data }) => {
+const VerifyOTP = ({
+  handleSetProcess,
+  title,
+  onSubmit,
+  data,
+  allowPass = false,
+}) => {
   const inputId = useId();
   const [canReSend, setCanReSend] = useState(true);
-  const navigate = useNavigate();
   const initialValues = Array.from({ length: otpSize }).reduce(
     (acc, _, index) => {
       acc[`number${index + 1}`] = '';
@@ -24,28 +28,30 @@ const VerifyOTP = ({ handleSetProcess, title, onSuccess, data }) => {
   );
 
   const handleSubmitForm = async (values, actions) => {
-    // console.log({ values, actions });
     const otpValue = Object.values(values).join('');
     const { email } = data;
-    if (!email) return;
-    if (onSuccess) onSuccess();
-    await authApi
-      .verifyOtp({ email, otp: otpValue })
-      .then((res) => {
-        toast.success('Đăng ký thành công');
-        navigate('/auth/login');
-      })
-      .catch((error) => {
-        toast.error('OTP chưa chính xác. Vui lòng kiểm tra và thử lại.');
-        console.log(error);
-      })
-      .finally(() => {
-        setCanReSend(true);
-      });
+    if (allowPass) {
+      if (onSubmit) onSubmit(values);
+      return;
+    } else {
+      if (!email) return;
+      await authApi
+        .verifyOtp({ email, otp: otpValue })
+        .then((res) => {
+          if (onSubmit) onSubmit(values);
+        })
+        .catch((error) => {
+          toast.error('OTP chưa chính xác. Vui lòng kiểm tra và thử lại.');
+          console.log(error);
+        })
+        .finally(() => {
+          setCanReSend(true);
+        });
+    }
   };
 
   const handleReSendOTP = async () => {
-    const { email } = registerData;
+    const { email } = data;
     if (!email) return;
     await authApi
       .regenerateOtp({ email })
@@ -139,7 +145,7 @@ const VerifyOTP = ({ handleSetProcess, title, onSuccess, data }) => {
                 )}
                 {!canReSend && (
                   <div className="flex space-x-0">
-                    <span>Thử lại sau</span>
+                    <span className="mr-1">Thử lại sau</span>
                     <Timer
                       className="animate-fadeIn font-medium"
                       onEnd={() => setCanReSend(true)}

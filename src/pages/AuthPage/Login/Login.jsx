@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Form, Formik } from 'formik';
 import ReCAPTCHA from 'react-google-recaptcha';
 
@@ -8,12 +8,11 @@ import schemas from '@/schemas';
 import Spinner from '@/components/Spinner';
 import { MdChevronLeft } from 'react-icons/md';
 import { FcGoogle } from 'react-icons/fc';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Background from '../components/Background';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '@/store/slices/authSlice';
-import { customHistory } from '@/utils/history';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '@/configs/firebase';
 import { goBackHistory } from '@/store/slices/historySlice';
@@ -22,6 +21,7 @@ import { resetAll } from '@/store/slices/shopSlice';
 const Login = () => {
   const { previous } = useSelector((state) => state.history);
   const dispatch = useDispatch();
+  const recaptchaRef = useRef(null);
   const [reCaptcha, setReCaptcha] = useState('');
 
   const initialValues = {
@@ -37,11 +37,13 @@ const Login = () => {
         password: values.password,
         recaptchaToken: reCaptcha,
       };
+      if (recaptchaRef.current) recaptchaRef.current.reset();
       await dispatch(loginUser(data)).unwrap();
       toast.success('Đăng nhập thành công');
       dispatch(resetAll());
       dispatch(goBackHistory());
     } catch (error) {
+      setReCaptcha('');
       console.log(error);
       toast.error('Email hoặc mật khẩu không chính xác', {
         autoClose: 500,
@@ -110,6 +112,7 @@ const Login = () => {
                 </Link>
 
                 <ReCAPTCHA
+                  ref={recaptchaRef}
                   sitekey="6LeYcA4qAAAAABBhaA--SOnU9S0QnY-Pa1ly-Wml"
                   onChange={handleReCaptchaChange}
                   onError={handleReCaptchaChange}
@@ -120,7 +123,9 @@ const Login = () => {
                   type="submit"
                   className="flex space-x-2 justify-center items-center text-sm border rounded-lg w-full h-[58px] bg-slate-900 text-white hover:bg-[var(--color-primary)] font-medium uppercase duration-150 disabled:opacity-20 disabled:hover:bg-slate-900"
                   disabled={
-                    !!Object.keys(props.errors).length || !reCaptcha?.trim()
+                    !!Object.keys(props.errors).length ||
+                    !reCaptcha?.trim() ||
+                    props.isSubmitting
                   }
                 >
                   {props.isSubmitting ? (
