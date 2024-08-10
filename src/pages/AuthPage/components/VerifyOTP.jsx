@@ -1,3 +1,4 @@
+import authApi from '@/api/authApi';
 import OtpInput from '@/components/Auth/OtpInput';
 import Spinner from '@/components/Spinner';
 import Timer from '@/components/Timer';
@@ -5,13 +6,15 @@ import schemas from '@/schemas';
 import { Form, Formik } from 'formik';
 import React, { Fragment, useEffect, useId, useState } from 'react';
 import { MdChevronLeft } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const otpSize = import.meta.env.VITE_OTP_SIZE;
 
-const VerifyOTP = ({ handleSetProcess, title, onSuccess }) => {
+const VerifyOTP = ({ handleSetProcess, title, onSuccess, data }) => {
   const inputId = useId();
   const [canReSend, setCanReSend] = useState(true);
+  const navigate = useNavigate();
   const initialValues = Array.from({ length: otpSize }).reduce(
     (acc, _, index) => {
       acc[`number${index + 1}`] = '';
@@ -20,30 +23,34 @@ const VerifyOTP = ({ handleSetProcess, title, onSuccess }) => {
     {}
   );
 
-  const dummyTimeout = (time) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve('OK');
-      }, time || 1000);
-    });
-  };
-
   const handleSubmitForm = async (values, actions) => {
-    console.log({ values, actions });
-    await dummyTimeout()
+    // console.log({ values, actions });
+    const otpValue = Object.values(values).join('');
+    const { email } = data;
+    if (!email) return;
+    if (onSuccess) onSuccess();
+    await authApi
+      .verifyOtp({ email, otp: otpValue })
       .then((res) => {
-        toast.success('OK');
-        if (onSuccess) onSuccess(values);
+        toast.success('Đăng ký thành công');
+        navigate('/auth/login');
       })
       .catch((error) => {
+        toast.error('OTP chưa chính xác. Vui lòng kiểm tra và thử lại.');
         console.log(error);
+      })
+      .finally(() => {
+        setCanReSend(true);
       });
   };
 
   const handleReSendOTP = async () => {
-    await dummyTimeout(500)
+    const { email } = registerData;
+    if (!email) return;
+    await authApi
+      .regenerateOtp({ email })
       .then((res) => {
-        toast.success('OK');
+        toast.success('Gửi mã thành công');
         setCanReSend(false);
       })
       .catch((error) => {

@@ -8,8 +8,10 @@ import Spinner from '@/components/Spinner';
 import { MdChevronLeft } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import authApi from '@/api/authApi';
 
 const VerifyEmail = ({ handleSetProcess, handleSetData }) => {
+  // const [forgotPasswordData, setForgotPasswordData] = useState({ email: '' });
   const [reCaptcha, setReCaptcha] = useState('');
   const initialValues = {
     email: '',
@@ -24,13 +26,16 @@ const VerifyEmail = ({ handleSetProcess, handleSetData }) => {
   };
 
   const handleSubmitForm = async (values, actions) => {
-    console.log({ values, actions });
-    await dummyTimeout()
+    // console.log({ values, actions });
+    const { email } = values;
+    if (!email) return;
+    await authApi
+      .forgotPassword({ email })
       .then((res) => {
         toast.success('OK');
         handleSetData((prev) => ({
           ...prev,
-          email: values.email,
+          email: email,
         }));
         handleSetProcess(2);
       })
