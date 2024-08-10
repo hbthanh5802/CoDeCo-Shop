@@ -1,8 +1,8 @@
 import images from '@/assets/images';
 import CustomSwiper from '@/components/CustomSwiper';
 import { setPreviousHistory } from '@/store/slices/historySlice';
-import React, { useId } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useId } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { SwiperSlide } from 'swiper/react';
 import CategoryCard from './components/CategoryCard';
@@ -13,6 +13,7 @@ import { GoArrowRight } from 'react-icons/go';
 import { TbCoin } from 'react-icons/tb';
 import { BsChatDots } from 'react-icons/bs';
 import { BsCreditCard } from 'react-icons/bs';
+import productApi from '@/api/productApi';
 
 const bestSellerSegmentedList = [
   {
@@ -161,8 +162,8 @@ const Shop = () => {
   const categoryId = useId();
   const { pathname, search } = useLocation();
   const dispatch = useDispatch();
-
   dispatch(setPreviousHistory(pathname + search));
+  // const { categoryList } = useSelector((state) => state.shop);
 
   const handleSegmentedChange = (value) => {
     console.log(value);

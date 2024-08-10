@@ -3,6 +3,7 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,34 +21,15 @@ import Badge from '@/components/Badge';
 import SearchBox from '@/components/SearchBox';
 import { MenuExpand, Menu } from '@/components/Popper/Menu';
 import SubNavigation from './SubNavigation';
-import { getCartItemList, getNotificationList } from '@/store/slices/shopSlice';
-
-const headerNavItems = [
-  {
-    label: 'Phòng khách',
-    value: 'Phòng khách',
-  },
-  {
-    label: 'Phòng ngủ',
-    value: 'Phòng ngủ',
-    to: '#',
-  },
-  {
-    label: 'Phòng tắm',
-    value: 'Phòng tắm',
-    to: '#',
-  },
-  {
-    label: 'Bếp & phòng ăn',
-    value: 'Bếp & phòng ăn',
-    to: '#',
-  },
-  {
-    label: 'Văn phòng làm việc',
-    value: 'Văn phòng làm việc',
-    to: '#',
-  },
-];
+import {
+  getCategoryList,
+  getCartItemList,
+  getNotificationList,
+  getVoucherList,
+  resetAll,
+} from '@/store/slices/shopSlice';
+import UserNotificationPopper from '@/components/UserNotificationPopper';
+import notificationApi from '@/api/notificationApi';
 
 const accountMenuList = [
   {
@@ -70,7 +52,9 @@ const Header = forwardRef((props, ref) => {
   const headerRef = useRef(null);
   const { pathname, search } = useLocation();
   const { currentUser, loading } = useSelector((state) => state.auth);
-  const { notificationList, cartItemList } = useSelector((state) => state.shop);
+  const { notificationList, cartItemList, categoryList } = useSelector(
+    (state) => state.shop
+  );
   const dispatch = useDispatch();
 
   useImperativeHandle(ref, () => ({
@@ -89,14 +73,35 @@ const Header = forwardRef((props, ref) => {
     }
   };
 
+  const headerNavItems = useMemo(() => {
+    return categoryList
+      .filter(
+        (categoryItem, index) => categoryItem?.subCategoriesInfo?.length > 0
+      )
+      .map((categoryItem, index) => {
+        const { subCategoriesInfo, name, categoryId } = categoryItem;
+        return {
+          label: name,
+          value: categoryId,
+          to: '/shop/search?categoryId=' + categoryId,
+        };
+      });
+  }, [categoryList]);
+
   const handleAccountListSelected = ({ value }) => {
     if (value === 'logout') {
       toast.promise(
         handleLogoutUser,
         {
-          pending: 'Đang đăng xuất',
-          success: 'Đăng xuất thành công',
-          error: 'Có lỗi xảy ra',
+          pending: 'Đang đăng xuất 😴',
+          success: {
+            render: () => {
+              dispatch(resetAll());
+              dispatch(clearState());
+              return 'Đăng xuất thành công 🫡';
+            },
+          },
+          error: 'Có lỗi xảy ra 🤔',
         },
         {
           autoClose: 1500,
@@ -105,10 +110,28 @@ const Header = forwardRef((props, ref) => {
     }
   };
 
+  const handleNotificationItemClick = async (data) => {
+    if (Object.keys(data).length) {
+      const { seen, notificationId } = data;
+      try {
+        if (!seen) {
+          await notificationApi.updateUserNotifications(notificationId);
+          await dispatch(
+            getNotificationList({ page: 1, pageSize: 999999 })
+          ).unwrap();
+        }
+      } catch (error) {
+        console.log('Update notification failed.');
+      }
+    }
+  };
+
   useEffect(() => {
     const params = { page: 1, pageSize: 99999 };
     dispatch(getNotificationList({ params }));
     dispatch(getCartItemList());
+    dispatch(getVoucherList({}));
+    dispatch(getCategoryList({}));
   }, []);
 
   return (
@@ -134,12 +157,7 @@ const Header = forwardRef((props, ref) => {
           <div
             className={`hidden lg:flex items-center space-x-[40px] text-[18px] text-white`}
           >
-            <Menu
-              items={headerNavItems}
-              onClick={(value) => {
-                console.log(value);
-              }}
-            >
+            <Menu items={headerNavItems}>
               <Link to={'#'}>Nội thất</Link>
             </Menu>
             <Link
@@ -187,17 +205,25 @@ const Header = forwardRef((props, ref) => {
           </div>
         ) : (
           <div className="flex items-center space-x-1">
-            <Badge value={notificationList?.length || 0}>
-              <button
-                className={`${
-                  pathname === '/' && 'text-white'
-                } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
-              >
-                <IoIosNotifications />
-              </button>
-            </Badge>
+            <UserNotificationPopper
+              items={notificationList}
+              onClick={(data) => handleNotificationItemClick(data)}
+            >
+              <div>
+                <Badge value={notificationList?.length || 0}>
+                  <button
+                    className={`${
+                      pathname === '/' && 'text-white'
+                    } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+                  >
+                    <IoIosNotifications className="text-[22px]" />
+                  </button>
+                </Badge>
+              </div>
+            </UserNotificationPopper>
 
             <Menu
+              trigger="click"
               items={accountMenuList}
               onClick={(value) => handleAccountListSelected(value)}
             >
@@ -211,19 +237,19 @@ const Header = forwardRef((props, ref) => {
                     <img
                       src={currentUser.avatarUrl}
                       alt="Avatar"
-                      className="size-[28px] rounded-full"
+                      className="size-[28px] rounded-full border border-white"
                     />
                   ) : (
-                    <FaUser />
+                    <FaUser className="text-[22px]" />
                   )}
                 </span>
-                <span className="hidden md:block">
+                <span className="capitalize hidden md:block">
                   {(currentUser.firstName || '') +
                     ' ' +
                     (currentUser.lastName || '')}
                 </span>
                 <span className="text-[16px]">
-                  <FaCaretDown />
+                  <FaCaretDown className="text-[18px]" />
                 </span>
               </div>
             </Menu>
@@ -235,7 +261,7 @@ const Header = forwardRef((props, ref) => {
                 } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
               >
                 <Link to={'/shop/cart'}>
-                  <BiSolidCartAlt />
+                  <BiSolidCartAlt className="text-[22px]" />
                 </Link>
               </button>
             </Badge>

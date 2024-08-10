@@ -1,5 +1,5 @@
 import Collapse from '@/components/Collapse';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { BsChatDots, BsCreditCard, BsXLg } from 'react-icons/bs';
 import { TbCoin } from 'react-icons/tb';
 
@@ -11,23 +11,28 @@ import Spinner from '@/components/Spinner';
 import { formatCurrency } from '@/utils/currency';
 import { fakeApi } from '@/utils/url';
 import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCartItemList } from '@/store/slices/shopSlice';
 
 const CartPage = () => {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [cartItemList, setCartItemList] = useState(
-    Array.from({ length: 3 }).map((_, index) => ({
-      cart_item_id: `${Math.random() + index}`,
-      productDetailId: 2,
-      name: 'Ghế thư giãn Introverse Chair',
-      size: '30 x 60 x 72 cm',
-      color: 'Xanh Lam',
-      material: 'Gỗ sồi',
-      productImageUrl: images.productImg,
-      price: 1300000,
-      count: Math.round(Math.random() * 3 + 1),
-    }))
-  );
+  const { cartItemList: _cartItemList } = useSelector((state) => state.shop);
+  // const [cartItemList, setCartItemList] = useState(
+  //   Array.from({ length: 3 }).map((_, index) => ({
+  //     cart_item_id: `${Math.random() + index}`,
+  //     productDetailId: 2,
+  //     name: 'Ghế thư giãn Introverse Chair',
+  //     size: '30 x 60 x 72 cm',
+  //     color: 'Xanh Lam',
+  //     material: 'Gỗ sồi',
+  //     productImageUrl: images.productImg,
+  //     price: 1300000,
+  //     count: Math.round(Math.random() * 3 + 1),
+  //   }))
+  // );
+  const [cartItemList, setCartItemList] = useState(_cartItemList);
   const [checkedCartItemList, setCheckedCartItemList] = useState([]);
 
   const summaryResult = useMemo(() => {
@@ -101,6 +106,10 @@ const CartPage = () => {
       state: data,
     });
   };
+
+  useEffect(() => {
+    dispatch(getCartItemList());
+  }, []);
 
   return (
     <div className="w-full mt-[60px]">

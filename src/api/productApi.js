@@ -2,23 +2,34 @@ import { axiosClient } from './axiosClient';
 
 const productApi = {};
 
-productApi.searchProduct = (params) => {
-  return axiosClient.get('/products', { params });
+productApi.searchProducts = (params = {}) => {
+  const searchParams = {
+    categoryIds: [],
+    sizeIds: [],
+    colorIds: [],
+    fromPrice: undefined,
+    toPrice: undefined,
+    newest: false,
+    bestSeller: false,
+    priceSort: false,
+    searchValue: '',
+    page: 1,
+    pageSize: 10,
+    ...params,
+  };
+  return axiosClient.get('/products/search', { params: searchParams });
 };
 
-productApi.searchProduct = (params) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        data: Array.from({
-          length: Math.floor(Math.random() * 20 + 10),
-        }),
-        pagination: {
-          totalCount: 100,
-          totalPage: 3,
-        },
-      });
-    }, 1000);
+productApi.getProductsByCategoryId = (categoryId, params = {}) => {
+  const searchParams = {
+    sortBy: 'productId',
+    direction: 'asc',
+    page: 1,
+    pageSize: 99999,
+    ...params,
+  };
+  return axiosClient.get('/products/category/' + categoryId, {
+    params: searchParams,
   });
 };
 

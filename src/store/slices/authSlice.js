@@ -50,7 +50,8 @@ const authSlice = createAppSlice({
     logoutUser: create.asyncThunk(
       async (args, thunkApi) => {
         const refreshToken = thunkApi.getState()?.auth?.refreshToken;
-        return await authApi.logoutUser({ refreshToken });
+        const accessToken = thunkApi.getState()?.auth?.accessToken;
+        return await authApi.logoutUser({ refreshToken, accessToken });
       },
       {
         pending: (state) => {

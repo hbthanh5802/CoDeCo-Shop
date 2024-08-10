@@ -8,16 +8,27 @@ import Spinner from '@/components/Spinner';
 import CustomCheckboxInput from '@/components/Auth/CustomCheckboxInput';
 import { MdChevronLeft } from 'react-icons/md';
 import { FcGoogle } from 'react-icons/fc';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Background from '../components/Background';
 import VerifyOTP from '../components/VerifyOTP';
 import SuccessView from '../components/SuccessView';
 import { useSelector } from 'react-redux';
+import authApi from '@/api/authApi';
 
 const Register = () => {
+  const navigate = useNavigate();
   const { previous } = useSelector((state) => state.history);
   const [process, setProcess] = useState(1);
+  const [registerData, setRegisterData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phoneNumber: '',
+    password: '',
+    agreeToTerms: false,
+  });
+
   const initialValues = {
     firstName: '',
     lastName: '',
@@ -27,24 +38,19 @@ const Register = () => {
     agreeToTerms: false,
   };
 
-  const dummyTimeout = () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve('OK');
-      }, 1000);
-    });
-  };
-
   const handleSubmitForm = async (values, actions) => {
     console.log({ values, actions });
-    await dummyTimeout()
-      .then((res) => {
-        toast.success(res);
-        setProcess(2);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const { firstName, lastName, email, password, phoneNumber } = values;
+    const data = { firstName, lastName, email, password, phoneNumber };
+    setRegisterData(data);
+    try {
+      const registerResponse = await authApi.registerUser(data);
+      console.log(registerResponse);
+      // navigate('/auth/login');
+      setProcess(2);
+    } catch (error) {
+      toast.error('Có lỗi xảy ra. Vui lòng kiểm tra lại thông tin và thử lại');
+    }
   };
 
   return (
@@ -160,6 +166,7 @@ const Register = () => {
       {process === 2 && (
         <VerifyOTP
           title={'Xác minh Email'}
+          data={registerData}
           handleSetProcess={(value) => setProcess(value)}
           onSuccess={() => setProcess(3)}
         />

@@ -17,6 +17,7 @@ import { customHistory } from '@/utils/history';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '@/configs/firebase';
 import { goBackHistory } from '@/store/slices/historySlice';
+import { resetAll } from '@/store/slices/shopSlice';
 
 const Login = () => {
   const { previous } = useSelector((state) => state.history);
@@ -34,10 +35,11 @@ const Login = () => {
       const data = {
         email: values.email,
         password: values.password,
-        recaptchaToken: 'test',
+        recaptchaToken: reCaptcha,
       };
       await dispatch(loginUser(data)).unwrap();
       toast.success('Đăng nhập thành công');
+      dispatch(resetAll());
       dispatch(goBackHistory());
     } catch (error) {
       console.log(error);
@@ -102,7 +104,7 @@ const Login = () => {
 
                 <Link
                   to={'/auth/forgot-password'}
-                  className="opacity-80 block text-right hover:opacity-100 duration-100"
+                  className="ml-auto w-fit opacity-80 block text-right hover:opacity-100 duration-100"
                 >
                   Quên mật khẩu?
                 </Link>

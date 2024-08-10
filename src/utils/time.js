@@ -1,3 +1,5 @@
+import * as timeago from 'timeago.js';
+
 export const isValidDateTime = (dateTimeString) => {
   const date = new Date(dateTimeString);
   return !isNaN(date.getTime());
@@ -37,4 +39,31 @@ export const isDateTimeExpired = (dateTimeString) => {
     remainingMinutes,
     remainingSeconds,
   };
+};
+
+const localeFunc = (number, index, totalSec) => {
+  return [
+    ['mới đây', 'mới đây'],
+    ['%s giây trước', 'trong %s giây'],
+    ['1 phút trước', 'trong 1 phút trước'],
+    ['%s phút trước', 'trong %s phút trước'],
+    ['1 giờ ago', 'trong 1 giờ trước'],
+    ['%s giờ trước', 'trong %s giờ trước'],
+    ['1 ngày trước', 'trong 1 ngày trước'],
+    ['%s ngày trước', 'trong %s ngày'],
+    ['1 tuần trước', 'trong 1 tuần trước'],
+    ['%s tuần trước', 'trong %s tuần trước'],
+    ['1 tháng trước', 'trong 1 tháng trước'],
+    ['%s tháng trước', 'trong %s tháng trước'],
+    ['1 năm trước', 'trong 1 năm trước'],
+    ['%s năm trước', 'trong %s năm trước'],
+  ][index];
+};
+
+// register your locale with timeago
+timeago.register('my-locale', localeFunc);
+
+export const getTimeAgo = (dateTimeString) => {
+  if (!isValidDateTime) return false;
+  return timeago.format(dateTimeString, 'my-locale');
 };

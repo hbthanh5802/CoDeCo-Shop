@@ -16,13 +16,13 @@ const ForgotPassword = () => {
     password: '',
   });
 
-  console.log(data);
+  // console.log(data);
 
   const handleVerifyOTPSuccess = (otpData) => {
-    setProcess(3);
     if (typeof otpData === 'object') {
       setData((prev) => ({ ...prev, otp: Object.values(otpData).join('') }));
     }
+    setProcess(3);
   };
 
   return (
@@ -39,6 +39,7 @@ const ForgotPassword = () => {
           title={'Quên mật khẩu'}
           handleSetProcess={setProcess}
           onSuccess={handleVerifyOTPSuccess}
+          data={data}
         />
       )}
       {process === 3 && (

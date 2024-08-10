@@ -1,4 +1,4 @@
-import React, { useId, useState } from 'react';
+import React, { useEffect, useId, useMemo, useState } from 'react';
 
 import { SwiperSlide } from 'swiper/react';
 
@@ -10,28 +10,10 @@ import CustomSwiper from '@/components/CustomSwiper';
 import { Link, useLocation } from 'react-router-dom';
 import { GoArrowRight } from 'react-icons/go';
 import CustomerReview from '@/components/CustomerReview';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { resetHistory } from '@/store/slices/historySlice';
-
-const bestSellerSegmentedList = [
-  {
-    label: 'Hello',
-    value: 'hello',
-    disable: true,
-  },
-  {
-    label: 'Lock',
-    value: 'lock',
-  },
-  {
-    label: 'Medium',
-    value: 'medium',
-  },
-  {
-    label: 'AntD',
-    value: 'antd',
-  },
-];
+import productApi from '@/api/productApi';
+import Spinner from '@/components/Spinner';
 
 const customerReviewList = [
   {
@@ -66,13 +48,54 @@ const customerReviewList = [
 
 const Home = () => {
   const dispatch = useDispatch();
+  const bestSellerId = useId();
   const customerReviewId = useId();
-
-  dispatch(resetHistory());
+  const { categoryList } = useSelector((state) => state.shop);
+  const [loading, setLoading] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState(() => {
+    if (!categoryList || !categoryList.length) return 1;
+    const item = categoryList?.find(
+      (categoryItem) => categoryItem.subCategoriesInfo.length > 0
+    );
+    return item.categoryId;
+  });
+  const [bestSellers, setBestSellers] = useState([]);
 
   const handleSegmentedChange = (value) => {
-    console.log(value);
+    setSelectedCategoryId(value);
   };
+
+  const bestSellerSegmentedList = useMemo(() => {
+    const result = categoryList
+      ?.filter((categoryItem) => categoryItem.subCategoriesInfo?.length > 0)
+      ?.map((categoryItem, index) => {
+        const { categoryId, name } = categoryItem;
+        return { label: name, value: categoryId, disable: false };
+      });
+    return result;
+  }, [categoryList]);
+
+  useEffect(() => {
+    dispatch(resetHistory());
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    productApi
+      .getProductsByCategoryId(selectedCategoryId)
+      .then((response) => {
+        // console.log(response);
+        if (response && response.result) {
+          setBestSellers(response.result.data);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [selectedCategoryId]);
 
   return (
     <div className="Home-container">
@@ -154,28 +177,21 @@ const Home = () => {
             pagination={false}
             spaceBetween={48}
             slidesPerView={1}
+            loop={bestSellers.length > 4 ? true : false}
           >
-            <SwiperSlide>
-              <ProductCard data={{}} />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ProductCard data={{}} />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ProductCard data={{}} />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ProductCard data={{}} />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ProductCard data={{}} />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ProductCard data={{}} />
-            </SwiperSlide>
-            <SwiperSlide>
-              <ProductCard data={{}} />
-            </SwiperSlide>
+            {loading
+              ? Array.from({ length: 6 }).map((_, index) => (
+                  <SwiperSlide key={bestSellerId + '-' + index}>
+                    <div className="flex items-center justify-center h-[450px] w-full rounded-[20px] border">
+                      <Spinner color="black" size={24} />
+                    </div>
+                  </SwiperSlide>
+                ))
+              : bestSellers.map((bestSellerItem, index) => (
+                  <SwiperSlide key={bestSellerId + '-' + index}>
+                    <ProductCard data={bestSellerItem} />
+                  </SwiperSlide>
+                ))}
           </CustomSwiper>
 
           <div className="flex items-center justify-center">

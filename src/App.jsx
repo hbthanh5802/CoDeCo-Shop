@@ -46,7 +46,7 @@ function App() {
         </Routes>
       </div>
       <ToastContainer
-        stacked
+        stacked={false}
         closeOnClick
         position="top-right"
         autoClose={1500}

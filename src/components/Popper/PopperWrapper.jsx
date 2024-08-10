@@ -24,17 +24,19 @@ const PopperWrapper = ({
   }
 
   return (
-    <div
-      className={`relative flex flex-col items-start p-2 bg-white backdrop-blur-sm rounded-2xl ${
-        pathname === '/' ? 'shadow-custom1' : 'shadow-custom2'
-      } min-w-[120px] w-full max-h-[450px] border border-white animate-[shift-away_300ms_ease] overflow-y-auto`}
-    >
+    <div className="relative border-white animate-[shift-away_300ms_ease]">
       {arrow && (
         <div
-          className={`absolute w-0 h-0 border-[10px] border-l-transparent border-r-transparent border-t-transparent border-b-white rounded-sm ${arrowStyles}`}
+          className={`z-50 absolute w-0 h-0 border-[10px] border-l-transparent border-r-transparent border-t-transparent border-b-white rounded-sm ${arrowStyles}`}
         ></div>
       )}
-      {children}
+      <div
+        className={` flex flex-col items-start p-2 bg-white backdrop-blur-sm rounded-2xl ${
+          pathname === '/' ? 'shadow-custom1' : 'shadow-custom2'
+        } min-w-[120px] w-full max-h-[450px] border overflow-y-auto`}
+      >
+        {children}
+      </div>
     </div>
   );
 };

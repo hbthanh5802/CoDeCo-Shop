@@ -6,6 +6,7 @@ import authApi from './authApi';
 import { addToken, clearState } from '@/store/slices/authSlice';
 import { customHistory } from '@/utils/history';
 import { resetHistory } from '@/store/slices/historySlice';
+import { resetAll } from '@/store/slices/shopSlice';
 
 const axiosAuth = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -57,6 +58,7 @@ export function setupAuthAxios(store) {
           toast.error('Có lỗi xảy ra, Vui lòng đăng nhập lại.', {
             autoClose: 2000,
           });
+          store.dispatch(resetAll());
           store.dispatch(clearState());
         }
       }
