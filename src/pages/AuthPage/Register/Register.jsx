@@ -39,14 +39,11 @@ const Register = () => {
   };
 
   const handleSubmitForm = async (values, actions) => {
-    // console.log({ values, actions });
     const { firstName, lastName, email, password, phoneNumber } = values;
     const data = { firstName, lastName, email, password, phoneNumber };
     setRegisterData(data);
     try {
       const registerResponse = await authApi.registerUser(data);
-      // console.log(registerResponse);
-      // navigate('/auth/login');
       setProcess(2);
     } catch (error) {
       toast.error('Có lỗi xảy ra. Vui lòng kiểm tra lại thông tin và thử lại');

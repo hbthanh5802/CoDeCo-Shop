@@ -8,14 +8,30 @@ import { FaArrowRight } from 'react-icons/fa6';
 import Tippy from '@tippyjs/react';
 import { useNavigate } from 'react-router-dom';
 
+const forbackProductIamges = [
+  images.productImg,
+  images.productImage1,
+  images.productImage2,
+  images.productImage3,
+  images.productImage4,
+  images.productImage5,
+  images.productImage6,
+  images.productImage7,
+  images.productImage8,
+  images.productImage9,
+  images.productImage10,
+];
+
 const dummyData = {
   productId: 'test productId',
-  name: 'Test name',
+  name:
+    'Test name ' +
+    `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Amet tempore sunt fugit a vitae, odit hic ea autem delectus atque vel rem itaque, provident possimus doloribus! Assumenda ipsa impedit eius.`,
   description: 'Test description',
   soldCount: 99,
   enable: 1,
   categoryId: 'test categoryId',
-  productImages: [images.productImg],
+  productImages: forbackProductIamges,
   minPrice: 1000000,
   maxPrice: 50000000,
   averageRating: 4.5,
@@ -59,7 +75,13 @@ const ProductCard = ({ data }) => {
       >
         <img
           className="w-full h-full object-cover object-center group-hover:scale-105 duration-300"
-          src={productImages?.length ? productImages[0] : images.productImg}
+          src={
+            productImages?.length
+              ? productImages[0]
+              : forbackProductIamges[
+                  Math.floor(Math.random() * forbackProductIamges.length)
+                ]
+          }
           alt="Product Image"
         />
       </div>

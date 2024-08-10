@@ -10,22 +10,51 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import Spinner from '../Spinner';
 import Tippy from '@tippyjs/react';
+import { formatCurrency } from '@/utils/currency';
+
+const randomImages = [
+  images.productImg,
+  images.productImage1,
+  images.productImage2,
+  images.productImage3,
+  images.productImage4,
+  images.productImage5,
+  images.productImage6,
+  images.productImage7,
+  images.productImage8,
+  images.productImage9,
+  images.productImage10,
+];
 
 const VoucherCard = ({ data = {} }) => {
-  const { voucherId, value, minTotal, startDate, endDate, name, description } =
-    data;
+  const {
+    voucherId,
+    code,
+    title,
+    discountPercent,
+    minValueOrder,
+    maxValueDiscount,
+    quantity,
+    description,
+    startDate,
+    endDate,
+  } = data;
   const [taken, setTaken] = useState(false);
   const [loading, setLoading] = useState(false);
   const { currentUser } = useSelector((state) => state.auth);
-
-  const timeRemain = useMemo(
-    () => isDateTimeExpired('2024-07-28T15:45:00'),
-    ['2024-07-28T15:45:00']
+  const [isTimeExpired, setIsTimeExpired] = useState(() =>
+    isDateTimeExpired(endDate)
   );
 
   const handleGetVoucherClick = () => {
-    if (currentUser && !taken) {
-      const data = { userId: currentUser.id, voucherId };
+    if (!currentUser) {
+      toast.info('Vui lòng ĐĂNG NHẬP để tiếp tục thao tác', {
+        autoClose: 1500,
+      });
+      return;
+    }
+    if (!taken && !isTimeExpired) {
+      const data = { userId: currentUser.id, voucherId, code };
       setLoading(true);
       voucherApi
         .addUser(data)
@@ -42,9 +71,7 @@ const VoucherCard = ({ data = {} }) => {
           setLoading(false);
         });
     } else {
-      toast.info('Vui lòng ĐĂNG NHẬP để tiếp tục thao tác', {
-        autoClose: 1500,
-      });
+      toast.info('Voucher không khả dụng', { autoClose: 1000 });
     }
   };
 
@@ -52,35 +79,42 @@ const VoucherCard = ({ data = {} }) => {
     <div className="h-fit bg-white border border-[#ccc] flex flex-col items-stretch xl:flex-row gap-[24px] xl:items-stretch justify-between">
       <div className="flex flex-col items-start gap-6 xl:flex-row xl:items-center p-[24px]">
         <img
-          src={images.voucherBg1}
+          src={randomImages[Math.floor(Math.random() * randomImages.length)]}
           alt="Voucher Background"
-          className="w-full h-auto xl:size-[140px]"
+          className="w-full h-auto xl:size-[140px] aspect-square animate-fadeIn"
         />
         <div className="flex flex-col space-y-[8px]">
           <h2 className="capitalize text-[18px] font-medium">
-            {name || 'Mã giảm'}
+            {title || 'Mã giảm'}
           </h2>
           <h1 className="font font-semibold text-[24px]">
             Giảm
             <span className="ml-1 text-[--red-tag]">
-              {12 <= 100 ? 12 + '%' : 12 + ' VNĐ'}
+              {discountPercent + '%'}
             </span>
           </h1>
           <div>
-            <Timer
-              className="text-[12px] xl:text-[14px]"
-              vertical={true}
-              separate={true}
-              day={timeRemain.days}
-              hour={timeRemain.remainingHours}
-              minute={timeRemain.remainingMinutes}
-              second={timeRemain.remainingSeconds}
-              spaceBetween={2}
-              dayLabel="NGÀY"
-              hourLabel="GIỜ"
-              minuteLabel="PHÚT"
-              secondLabel="GIÂY"
-            />
+            {isTimeExpired === true ? (
+              <p className="text-[12px] xl:text-[14px] p-[4px] border text-center rounded border-[var(--color-primary)] text-[var(--color-primary)] font-medium">
+                ĐÃ HẾT HẠN
+              </p>
+            ) : (
+              <Timer
+                className="text-[12px] xl:text-[14px]"
+                vertical={true}
+                separate={true}
+                day={isTimeExpired.days}
+                hour={isTimeExpired.remainingHours}
+                minute={isTimeExpired.remainingMinutes}
+                second={isTimeExpired.remainingSeconds}
+                spaceBetween={2}
+                dayLabel="NGÀY"
+                hourLabel="GIỜ"
+                minuteLabel="PHÚT"
+                secondLabel="GIÂY"
+                onEnd={() => setIsTimeExpired(true)}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -95,10 +129,17 @@ const VoucherCard = ({ data = {} }) => {
           <h2 className="text-[18px] font-medium">Thông tin</h2>
           <Tippy
             theme="light"
-            content={
-              description ||
-              '*Mã phiếu giảm giá này sẽ áp dụng cho các sản phẩm khi bạn mua sắm trên 6.000.000 VNĐ.'
-            }
+            content={`Mã giảm áp dụng cho toàn bộ đơn hàng ${
+              minValueOrder
+                ? 'có giá trị tối thiểu ' +
+                  formatCurrency(minValueOrder) +
+                  ' VNĐ'
+                : ''
+            } ${
+              maxValueDiscount
+                ? '. Giảm tối đa ' + formatCurrency(maxValueDiscount) + ' VNĐ'
+                : ''
+            }`}
           >
             <span>
               <BiInfoCircle className="group-hover:text-[#008080]" />
@@ -106,9 +147,9 @@ const VoucherCard = ({ data = {} }) => {
           </Tippy>
         </div>
         <button
-          className={`uppercase flex items-center justify-center md:min-w-[150px] md:min-h-[55px] gap-2 px-[24px] py-[12px] text-[18px] text-[#008080] font-medium border-[2px] border-dashed border-[#008080] bg-[#008080]/[.05] hover:bg-[#008080]/[0.2] duration-150 disabled:cursor-not-allowed disabled:hover:bg-[#008080]/[.05]`}
+          className={`uppercase flex items-center justify-center md:min-w-fit lg:min-w-[150px] md:min-h-[55px] gap-2 px-[24px] py-[12px] text-[18px] text-[#008080] font-medium border-[2px] border-dashed border-[#008080] bg-[#008080]/[.05] hover:bg-[#008080]/[0.2] duration-150 disabled:cursor-not-allowed disabled:border-[#ccc] disabled:text-[#ccc] disabled:bg-[#f7f7f7] active:bg-[#008080]/[.05]`}
           onClick={handleGetVoucherClick}
-          disabled={taken}
+          disabled={taken || isTimeExpired}
         >
           {loading ? (
             <Spinner color="#008080" size={18} />

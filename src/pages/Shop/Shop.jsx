@@ -1,7 +1,7 @@
 import images from '@/assets/images';
 import CustomSwiper from '@/components/CustomSwiper';
 import { setPreviousHistory } from '@/store/slices/historySlice';
-import React, { useEffect, useId } from 'react';
+import React, { useEffect, useId, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { SwiperSlide } from 'swiper/react';
@@ -13,161 +13,58 @@ import { GoArrowRight } from 'react-icons/go';
 import { TbCoin } from 'react-icons/tb';
 import { BsChatDots } from 'react-icons/bs';
 import { BsCreditCard } from 'react-icons/bs';
-import productApi from '@/api/productApi';
-
-const bestSellerSegmentedList = [
-  {
-    label: 'Ghế',
-    value: 'gheId',
-  },
-  {
-    label: 'Đèn',
-    value: 'denId',
-  },
-  {
-    label: 'Sofa',
-    value: 'sofaId',
-  },
-  {
-    label: 'Disabled',
-    value: 'Disabled',
-    disable: true,
-  },
-];
-
-const decorSegmentedList = [
-  {
-    label: 'All',
-    value: 'all',
-  },
-  {
-    label: 'Thảm',
-    value: 'thamId',
-  },
-  {
-    label: 'Lọ hoa',
-    value: 'lohoaId',
-  },
-  {
-    label: 'Đồng hồ',
-    value: 'donghoId',
-    disable: true,
-  },
-  {
-    label: 'Tranh treo tường',
-    value: 'tranhId',
-  },
-];
-
-const officeSegmentedList = [
-  {
-    label: 'Tất cả',
-    value: 'all',
-  },
-  {
-    label: 'Bàn văn phòng',
-    value: 'banvanphongId',
-  },
-  {
-    label: 'Bàn giám đốc',
-    value: 'bangiamdocId',
-  },
-  {
-    label: 'Bàn họp',
-    value: 'banhopId',
-  },
-  {
-    label: 'Ghế nhân viên',
-    value: 'ghenhienvienId',
-  },
-  {
-    label: 'Ghế giám đốc',
-    value: 'ghegiamdocId',
-  },
-  {
-    label: 'Tủ tài liệu',
-    value: 'tutailieuId',
-  },
-];
-
-const categoryList = [
-  {
-    title: 'Bàn học sinh',
-    to: '/shop/search?categoryId=1',
-    bgUrl: images.categoryTable,
-  },
-  {
-    title: 'Tủ rượu',
-    to: '/shop/search?categoryId=32',
-    bgUrl: images.categoryWineCabinet,
-  },
-  {
-    title: 'Bàn trang điểm',
-    to: '/shop/search?categoryId=3',
-    bgUrl: images.categoryMakeup,
-  },
-  {
-    title: 'Giường tủ gỗ',
-    to: '/shop/search?categoryId=12',
-    bgUrl: images.categoryBed,
-  },
-  {
-    title: 'Tủ rượu',
-    to: '/shop/search?categoryId=32',
-    bgUrl: images.categoryWineCabinet,
-  },
-  {
-    title: 'Bàn trang điểm',
-    to: '/shop/search?categoryId=3',
-    bgUrl: images.categoryMakeup,
-  },
-  {
-    title: 'Bàn học sinh',
-    to: '/shop/search?categoryId=1',
-    bgUrl: images.categoryTable,
-  },
-  {
-    title: 'Tủ rượu',
-    to: '/shop/search?categoryId=32',
-    bgUrl: images.categoryWineCabinet,
-  },
-  {
-    title: 'Tủ rượu',
-    to: '/shop/search?categoryId=32',
-    bgUrl: images.categoryWineCabinet,
-  },
-  {
-    title: 'Bàn trang điểm',
-    to: '/shop/search?categoryId=3',
-    bgUrl: images.categoryMakeup,
-  },
-  {
-    title: 'Giường tủ gỗ',
-    to: '/shop/search?categoryId=12',
-    bgUrl: images.categoryBed,
-  },
-  {
-    title: 'Tủ rượu',
-    to: '/shop/search?categoryId=32',
-    bgUrl: images.categoryWineCabinet,
-  },
-  {
-    title: 'Bàn trang điểm',
-    to: '/shop/search?categoryId=3',
-    bgUrl: images.categoryMakeup,
-  },
-];
 
 const Shop = () => {
   const categoryId = useId();
+  const voucherId = useId();
   const { pathname, search } = useLocation();
   const dispatch = useDispatch();
-  dispatch(setPreviousHistory(pathname + search));
-  // const { categoryList } = useSelector((state) => state.shop);
+  const { categoryList, voucherList } = useSelector((state) => state.shop);
 
-  const handleSegmentedChange = (value) => {
-    console.log(value);
-  };
+  const bestSellerSegmentedList = useMemo(() => {
+    const result = categoryList
+      ?.filter((categoryItem) => categoryItem.subCategoriesInfo?.length > 0)
+      ?.map((categoryItem, index) => {
+        const { categoryId, name } = categoryItem;
+        return { label: name, value: categoryId, disable: false };
+      });
+    return result;
+  }, [categoryList]);
+
+  const categorySegmentedList = useMemo(() => {
+    const result = categoryList?.map((categoryItem, index) => {
+      const { categoryId, name } = categoryItem;
+      return {
+        title: name,
+        to: '/shop/search?categoryId=' + categoryId,
+      };
+    });
+    return result;
+  }, [categoryList]);
+
+  const decorSegmentedList = useMemo(() => {
+    const result = categoryList
+      ?.filter((categoryItem) => categoryItem.subCategoriesInfo?.length > 0)
+      ?.map((categoryItem, index) => {
+        const { categoryId, name } = categoryItem;
+        return { label: name, value: categoryId, disable: false };
+      });
+    return result;
+  }, [categoryList]);
+
+  const officeSegmentedList = useMemo(() => {
+    const result = categoryList
+      ?.filter((categoryItem) => categoryItem.subCategoriesInfo?.length > 0)
+      ?.map((categoryItem, index) => {
+        const { categoryId, name } = categoryItem;
+        return { label: name, value: categoryId, disable: false };
+      });
+    return result;
+  }, [categoryList]);
+
+  useEffect(() => {
+    dispatch(setPreviousHistory(pathname + search));
+  }, []);
 
   return (
     <div className="Shop-wrapper">
@@ -204,7 +101,6 @@ const Shop = () => {
       <ProductSection
         title={'Sản phẩm mới ra mắt'}
         segmentedList={bestSellerSegmentedList}
-        moreRedirectTo="/shop/search?categoryId=trangtri"
       />
 
       {/* Category Slide */}
@@ -219,7 +115,7 @@ const Shop = () => {
             spaceBetween={24}
             loop={false}
           >
-            {categoryList.map((item, index) => (
+            {categorySegmentedList.map((item, index) => (
               <SwiperSlide key={`${categoryId}-${index}`}>
                 <CategoryCard data={item} />
               </SwiperSlide>
@@ -231,7 +127,7 @@ const Shop = () => {
       {/*  Decor Products */}
       <ProductSection
         className="bg-white"
-        title={'Phụ kiện trnag trí'}
+        title={'Phụ kiện trang trí'}
         segmentedList={decorSegmentedList}
         moreRedirectTo="/shop/search?categoryId=trangtri"
       />
@@ -253,10 +149,14 @@ const Shop = () => {
 
           <div className="w-full">
             <div className="w-full bg-white grid grid-cols-1 grid-rows-4 md:grid-cols-4 md:grid-rows-1 xl:grid-cols-2 xl:grid-rows-2 gap-[24px]">
-              <VoucherCard />
-              <VoucherCard />
-              <VoucherCard />
-              <VoucherCard />
+              {voucherList.slice(0, 4).map((voucherItem, index) => {
+                return (
+                  <VoucherCard
+                    key={voucherId + '' + index}
+                    data={voucherItem}
+                  />
+                );
+              })}
             </div>
             {/* More Button */}
             <div className="flex items-center justify-center mt-[60px]">
@@ -325,7 +225,7 @@ const Shop = () => {
             <input
               type="text"
               placeholder="Nhập Email của bạn..."
-              className="outline-none text-[16px] bg-transparent p-[8px]"
+              className="outline-none flex-1 text-[16px] bg-transparent p-[8px]"
             />
 
             <button className="px-[42px] py-[10px] bg-black text-white rounded-sm md:ml-2 hover:bg-[var(--color-primary)] duration-100">
