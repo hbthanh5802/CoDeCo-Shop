@@ -4,7 +4,7 @@ import { axiosClient } from './axiosClient';
 const voucherApi = {};
 
 voucherApi.addUser = (data) => {
-  return axiosAuth.post('/voucherApi', data, { withCredentials: true });
+  return axiosAuth.post('/vouchers/collect', data, { withCredentials: true });
 };
 
 voucherApi.getAllVouchers = (params) => {

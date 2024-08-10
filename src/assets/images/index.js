@@ -23,6 +23,16 @@ import voucherBg2 from './voucher-bg-2.jpg';
 import empty from './empty-archive.svg';
 import vtcPay from './vtcpay.png';
 import vnpay from './vnpay.webp';
+import productImage1 from './product_img-1.jpg';
+import productImage2 from './product_img-2.jpg';
+import productImage3 from './product_img-3.jpg';
+import productImage4 from './product_img-4.jpg';
+import productImage5 from './product_img-5.jpg';
+import productImage6 from './product_img-6.jpg';
+import productImage7 from './product_img-7.jpg';
+import productImage8 from './product_img-8.jpg';
+import productImage9 from './product_img-8.jpg';
+import productImage10 from './product_img-10.jpg';
 
 const images = {
   empty,
@@ -50,6 +60,16 @@ const images = {
   eventBg1,
   vtcPay,
   vnpay,
+  productImage1,
+  productImage2,
+  productImage3,
+  productImage4,
+  productImage5,
+  productImage6,
+  productImage7,
+  productImage8,
+  productImage9,
+  productImage10,
 };
 
 export default images;

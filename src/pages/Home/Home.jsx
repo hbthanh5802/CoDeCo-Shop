@@ -7,7 +7,7 @@ import SearchBox from '@/components/SearchBox';
 import Segmented from '@/components/Segmented';
 import ProductCard from '@/components/ProductCard';
 import CustomSwiper from '@/components/CustomSwiper';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { GoArrowRight } from 'react-icons/go';
 import CustomerReview from '@/components/CustomerReview';
 import { useDispatch, useSelector } from 'react-redux';
@@ -178,10 +178,15 @@ const Home = () => {
             slidesPerView={1}
             loop={bestSellers.length > 4 ? true : false}
           >
-            {loading
+            {loading || bestSellers.length === 0
               ? Array.from({ length: 6 }).map((_, index) => (
                   <SwiperSlide key={bestSellerId + '-' + index}>
-                    <div className="flex items-center justify-center h-[450px] w-full rounded-[20px] border">
+                    <div className="flex flex-col gap-6 items-center justify-center h-[450px] w-full rounded-[20px] border">
+                      <img
+                        src={images.empty}
+                        alt="Empty Image"
+                        className="w-[56px] animate-bounce"
+                      />
                       <Spinner color="black" size={24} />
                     </div>
                   </SwiperSlide>

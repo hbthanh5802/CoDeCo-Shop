@@ -1,6 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import images from '@/assets/images';
+
+const categoryImages = [
+  images.categoryWineCabinet,
+  images.categoryTable,
+  images.categorySofa,
+  images.categoryMakeup,
+  images.categoryBed,
+];
 
 const CategoryCard = ({ data }) => {
   const { title, to, bgUrl } = data;
@@ -11,7 +20,10 @@ const CategoryCard = ({ data }) => {
     >
       <div className="overlay absolute z-10 w-full h-full top-0 bottom-0 left-0 right-0 bg-black/50 group-hover:bg-black/60 duration-300"></div>
       <img
-        src={bgUrl}
+        src={
+          bgUrl ||
+          categoryImages[Math.floor(Math.random() * categoryImages.length)]
+        }
         alt="Category Background"
         className="w-full h-full object-cover group-hover:scale-105 duration-300"
       />
