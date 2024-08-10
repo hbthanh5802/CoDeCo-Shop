@@ -38,4 +38,8 @@ authApi.forgotPassword = (params) => {
   return axiosClient.post('/auth/forgot-password', {}, { params });
 };
 
+authApi.recoverPassword = (data) => {
+  return axiosClient.post('/auth/recover-password', data);
+};
+
 export default authApi;

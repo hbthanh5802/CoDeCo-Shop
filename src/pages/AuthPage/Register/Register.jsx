@@ -39,13 +39,13 @@ const Register = () => {
   };
 
   const handleSubmitForm = async (values, actions) => {
-    console.log({ values, actions });
+    // console.log({ values, actions });
     const { firstName, lastName, email, password, phoneNumber } = values;
     const data = { firstName, lastName, email, password, phoneNumber };
     setRegisterData(data);
     try {
       const registerResponse = await authApi.registerUser(data);
-      console.log(registerResponse);
+      // console.log(registerResponse);
       // navigate('/auth/login');
       setProcess(2);
     } catch (error) {
@@ -168,11 +168,11 @@ const Register = () => {
           title={'Xác minh Email'}
           data={registerData}
           handleSetProcess={(value) => setProcess(value)}
-          onSuccess={() => setProcess(3)}
+          onSubmit={() => setProcess(3)}
         />
       )}
       {process === 3 && (
-        <SuccessView to={previous}>
+        <SuccessView to={'/auth/login'}>
           <p className="text-center">
             Tài khoản của quý khách đã được xác thực thành công. Hãy đi đến
             trang chủ để tiếp tục mua sắm với{' '}
