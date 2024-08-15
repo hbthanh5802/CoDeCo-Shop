@@ -16,7 +16,7 @@ const Badge = ({ value = 0, children, bgColor = 'var(--color-primary)' }) => {
 
 Badge.propTypes = {
   children: PropTypes.node.isRequired,
-  value: PropTypes.number,
+  value: PropTypes.node,
 };
 
 export default Badge;

@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import { jwtDecode } from 'jwt-decode';
 import authApi from './authApi';
 import { addToken, clearState } from '@/store/slices/authSlice';
-import { customHistory } from '@/utils/history';
 import { resetHistory } from '@/store/slices/historySlice';
 import { resetAll } from '@/store/slices/shopSlice';
 
@@ -54,10 +53,7 @@ export function setupAuthAxios(store) {
       } catch (error) {
         console.log('Refresh Token Failed', error);
         store.dispatch(resetHistory());
-        if (error.status === 401) {
-          toast.error('Có lỗi xảy ra, Vui lòng đăng nhập lại.', {
-            autoClose: 2000,
-          });
+        if (error.response && error.response.status === 401) {
           store.dispatch(resetAll());
           store.dispatch(clearState());
         }

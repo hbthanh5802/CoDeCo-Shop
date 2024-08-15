@@ -1,7 +1,6 @@
 import queryString from 'query-string';
 
-export const serializeSearchParams = (params) =>
-  !!params ? queryString.parse(params) : {};
+export const serializeSearchParams = (params) => queryString.parse(params);
 
 // result = 'success' | 'fail'
 export const fakeApi = (result = 'success', time = 500) =>

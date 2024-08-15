@@ -1,7 +1,7 @@
 import useDebounce from '@/hooks/useDebounce';
 import React, { useEffect, useState } from 'react';
 import { FiSearch } from 'react-icons/fi';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Spinner from '../Spinner';
 import productApi from '@/api/productApi';
 import { toast } from 'react-toastify';
@@ -11,38 +11,44 @@ import { setSearchValue } from '@/store/slices/shopSlice';
 const SearchBox = ({ className = '', onSearchClick = () => {} }) => {
   const [loading, setLoading] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [searchResults, setSearchResult] = useState([]);
   const debouncedInputValue = useDebounce(inputValue, 600);
   const { pathname } = useLocation();
-  const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const handleInputChange = (e) => setInputValue(e.target.value.trim());
 
-  useEffect(() => {
-    const fetchProductSearching = async () => {
+  const handleSearchingProducts = async () => {
+    if (!debouncedInputValue || loading) return;
+    try {
       setLoading(true);
-      try {
-        const params = { value: debouncedInputValue };
-        const productResponse = await productApi.searchProduct(params);
-        dispatch(setSearchValue(debouncedInputValue));
-      } catch (error) {
-        toast.error('Có lỗi xảy ra, vui lòng thử lại sau.', {
-          autoClose: 1000,
+      const response = await productApi.searchProducts({
+        searchValue: debouncedInputValue,
+      });
+      const { data, pagination } = response?.result;
+      if (data && pagination) {
+        navigate('/shop/search?searchValue=' + debouncedInputValue, {
+          state: { productList: data, pagination },
         });
-        dispatch(setSearchValue(null));
-      } finally {
-        setLoading(false);
       }
-    };
-    if (debouncedInputValue) {
-      fetchProductSearching();
+    } catch (error) {
+      toast.error('Có lỗi xảy ra, vui lòng thử lại sau.', { autoClose: 500 });
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
-  }, [debouncedInputValue]);
+  };
+
+  const handleKeyUpInputChange = (e) => {
+    if (e.key === 'Enter' || e.code === 'Enter') {
+      handleSearchingProducts();
+    }
+  };
 
   return (
     <div
       className={`flex justify-between ${
-        pathname === '/' || !inputValue ? 'min-w-[340px]' : 'min-w-[600px]'
+        pathname === '/' ? 'min-w-[340px]' : 'min-w-[600px]'
+      } ${
+        inputValue ? 'min-w-[600px]' : ''
       } pl-[20px] py-[8px] pr-[8px] border ${
         pathname === '/'
           ? 'border-white/60 bg-white/15 has-[input:focus]:bg-white/10 has-[input:focus]:border-white/80'
@@ -60,9 +66,13 @@ const SearchBox = ({ className = '', onSearchClick = () => {} }) => {
         } duration-150`}
         placeholder="Tìm kiếm nội thất..."
         onChange={handleInputChange}
+        onKeyUp={handleKeyUpInputChange}
       />
 
-      <div className="flex items-center justify-center text-white text-[20px] size-[40px] bg-[var(--color-primary)] text-center rounded-full shadow-md cursor-pointer hover:brightness-110 duration-150">
+      <div
+        className="flex items-center justify-center text-white text-[20px] size-[40px] bg-[var(--color-primary)] text-center rounded-full shadow-md cursor-pointer hover:brightness-110 duration-150"
+        onClick={handleSearchingProducts}
+      >
         {loading ? <Spinner size={18} /> : <FiSearch />}
       </div>
     </div>

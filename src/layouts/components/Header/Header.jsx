@@ -164,7 +164,7 @@ const Header = forwardRef((props, ref) => {
             </Menu>
             <Link
               to={'/shop'}
-              className="px-2 py-1 hover:px-6 rounded-lg duration-300 ease-out hover:underline hover:underline-offset-8 hover:text-[#e58411] bg-opacity-45"
+              className="px-2 py-1 hover:px-5 border border-transparent rounded-lg duration-150 ease-out hover:bg-[#e58411]/[0.2] bg-opacity-45"
             >
               Shop
             </Link>

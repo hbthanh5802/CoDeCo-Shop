@@ -7,8 +7,6 @@ import voucherApi from '@/api/voucherApi';
 
 const initialState = {
   loading: false,
-  searchValue: null,
-  productList: [],
   notificationList: [],
   cartItemList: [],
   categoryList: [],
@@ -23,29 +21,6 @@ const shopSlice = createAppSlice({
     setSearchValue: create.reducer((state, action) => {
       state.searchValue = action.payload;
     }),
-    searchingProducts: create.asyncThunk(
-      async (args, thunkApi) => {
-        const { params } = args;
-        const searchValue = thunkApi.getState().shop.searchValue;
-        return await productApi.searchProducts({ searchValue, ...params });
-      },
-      {
-        pending: (state) => {
-          state.loading = true;
-        },
-        fulfilled: (state, action) => {
-          const { data } = action.payload;
-          state.productList = data;
-        },
-        rejected: (state, action) => {
-          // console.log('action.errors', action.error);
-          state.errorMessage = action?.error?.message;
-        },
-        settled: (state) => {
-          state.loading = false;
-        },
-      }
-    ),
     getNotificationList: create.asyncThunk(
       async (args, thunkApi) => {
         const { params } = args;
@@ -61,6 +36,7 @@ const shopSlice = createAppSlice({
         },
         rejected: (state, action) => {
           // console.log('action.errors', action.error);
+          state.notificationList = [];
           state.errorMessage = action?.error?.message;
         },
         settled: (state) => {
@@ -83,6 +59,7 @@ const shopSlice = createAppSlice({
         },
         rejected: (state, action) => {
           // console.log('action.errors', action.error);
+          state.cartItemList = [];
           state.errorMessage = action?.error?.message;
         },
         settled: (state) => {
@@ -105,6 +82,7 @@ const shopSlice = createAppSlice({
         },
         rejected: (state, action) => {
           // console.log('action.errors', action.error);
+          state.categoryList = [];
           state.errorMessage = action?.error?.message;
         },
         settled: (state) => {
@@ -127,6 +105,7 @@ const shopSlice = createAppSlice({
         },
         rejected: (state, action) => {
           // console.log('action.errors', action.error);
+          state.voucherList = [];
           state.errorMessage = action?.error?.message;
         },
         settled: (state) => {
