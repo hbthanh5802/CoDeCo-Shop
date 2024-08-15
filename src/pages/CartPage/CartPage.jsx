@@ -18,21 +18,21 @@ const CartPage = () => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { cartItemList: _cartItemList } = useSelector((state) => state.shop);
-  // const [cartItemList, setCartItemList] = useState(
-  //   Array.from({ length: 3 }).map((_, index) => ({
-  //     cart_item_id: `${Math.random() + index}`,
-  //     productDetailId: 2,
-  //     name: 'Ghế thư giãn Introverse Chair',
-  //     size: '30 x 60 x 72 cm',
-  //     color: 'Xanh Lam',
-  //     material: 'Gỗ sồi',
-  //     productImageUrl: images.productImg,
-  //     price: 1300000,
-  //     count: Math.round(Math.random() * 3 + 1),
-  //   }))
-  // );
-  const [cartItemList, setCartItemList] = useState(_cartItemList);
+  // const { cartItemList: _cartItemList } = useSelector((state) => state.shop);
+  // const [cartItemList, setCartItemList] = useState(_cartItemList);
+  const [cartItemList, setCartItemList] = useState(
+    Array.from({ length: 3 }).map((_, index) => ({
+      cart_item_id: `${Math.random() + index}`,
+      productDetailId: 2,
+      name: 'Ghế thư giãn Introverse Chair',
+      size: '30 x 60 x 72 cm',
+      color: 'Xanh Lam',
+      material: 'Gỗ sồi',
+      productImageUrl: images.productImg,
+      price: 1300000,
+      count: Math.round(Math.random() * 3 + 1),
+    }))
+  );
   const [checkedCartItemList, setCheckedCartItemList] = useState([]);
 
   const summaryResult = useMemo(() => {

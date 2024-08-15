@@ -8,7 +8,7 @@ import { FaArrowRight } from 'react-icons/fa6';
 import Tippy from '@tippyjs/react';
 import { useNavigate } from 'react-router-dom';
 
-const forbackProductIamges = [
+const randomImages = [
   images.productImg,
   images.productImage1,
   images.productImage2,
@@ -31,7 +31,7 @@ const dummyData = {
   soldCount: 99,
   enable: 1,
   categoryId: 'test categoryId',
-  productImages: forbackProductIamges,
+  productImages: randomImages,
   minPrice: 1000000,
   maxPrice: 50000000,
   averageRating: 4.5,
@@ -59,6 +59,11 @@ const ProductCard = ({ data }) => {
     if (productId) navigation(`/shop/products/${productId}`);
   };
 
+  const handleError = (e) => {
+    e.target.src =
+      randomImages[Math.round(Math.random() * randomImages.length)];
+  };
+
   return (
     <div className="relative group flex flex-col bg-white h-[450px] w-[300px] border border-[#e7e7e7] rounded-[20px] hover:shadow-xl shadow-black/15 duration-300">
       {/* SALE Tag */}
@@ -78,11 +83,10 @@ const ProductCard = ({ data }) => {
           src={
             productImages?.length
               ? productImages[0]
-              : forbackProductIamges[
-                  Math.floor(Math.random() * forbackProductIamges.length)
-                ]
+              : randomImages[Math.round(Math.random() * randomImages.length)]
           }
           alt="Product Image"
+          onError={handleError}
         />
       </div>
       <div className="flex-1 flex flex-col justify-between product-detail p-[16px] space-y-3 text-left">

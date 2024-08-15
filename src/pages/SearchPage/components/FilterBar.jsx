@@ -1,10 +1,11 @@
-import React, { useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 
 import Collapse from '@/components/Collapse';
 import { BiFilterAlt } from 'react-icons/bi';
 import CheckboxGroup from '@/components/CustomCheckbox/CheckboxGroup';
 import Spinner from '@/components/Spinner';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 const FilterBar = ({ filterData, handleSetFilterData }) => {
   const [loading, setLoading] = useState(true);
@@ -19,11 +20,16 @@ const FilterBar = ({ filterData, handleSetFilterData }) => {
     toPrice: '',
   });
 
-  const [categoryFilterList, setCategoryFilterList] = useState([
-    { label: 'Phòng Ngủ', value: 'phonguId' },
-    { label: 'Phòng Khách', value: 'phongkhachId' },
-    { label: 'Ban Công', value: 'bancongId' },
-  ]);
+  const { categoryList } = useSelector((state) => state.shop);
+  const categoryFilterList = useMemo(() => {
+    return categoryList.map((categoryItem, index) => {
+      const { subCategoriesInfo, name, categoryId } = categoryItem;
+      return {
+        label: name,
+        value: categoryId,
+      };
+    });
+  }, [categoryList]);
 
   const handleSetFilterByFilterChange = (name, value) => {
     let _filterData = { ...filterData };
@@ -101,9 +107,10 @@ const FilterBar = ({ filterData, handleSetFilterData }) => {
         <div className="my-2 mb-[24px] max-h-[500px] overflow-auto w-full">
           <CheckboxGroup
             ref={(el) => (filterRefs.current[filterRefs.current.length++] = el)}
-            name="categoryId"
+            name="categoryIds"
             items={categoryFilterList}
             onChange={(data) => handleGroupCheckboxChange(data)}
+            className={'max-h-[300px] overflow-y-auto'}
           />
         </div>
       </Collapse>
@@ -112,9 +119,10 @@ const FilterBar = ({ filterData, handleSetFilterData }) => {
         <div className="my-2 mb-[24px] max-h-[500px] overflow-auto w-full">
           <CheckboxGroup
             ref={(el) => (filterRefs.current[filterRefs.current.length++] = el)}
-            name="material"
-            items={categoryFilterList}
+            name="sizeIds"
+            items={[]}
             onChange={(data) => handleGroupCheckboxChange(data)}
+            className={'max-h-[300px] overflow-y-auto'}
           />
         </div>
       </Collapse>
@@ -123,9 +131,10 @@ const FilterBar = ({ filterData, handleSetFilterData }) => {
         <div className="my-2 mb-[24px] max-h-[500px] overflow-auto w-full">
           <CheckboxGroup
             ref={(el) => (filterRefs.current[filterRefs.current.length++] = el)}
-            name="color"
-            items={categoryFilterList}
+            name="colorIds"
+            items={[]}
             onChange={(data) => handleGroupCheckboxChange(data)}
+            className={'max-h-[300px] overflow-y-auto'}
           />
         </div>
       </Collapse>

@@ -6,23 +6,30 @@ import { BsInfoCircle } from 'react-icons/bs';
 import OrderBar from './components/OrderBar';
 import ProductCard from '@/components/ProductCard';
 import Pagination from '@/components/Pagination';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setPreviousHistory } from '@/store/slices/historySlice';
 import productApi from '@/api/productApi';
 import { toast } from 'react-toastify';
 import Spinner from '@/components/Spinner';
-import { searchingProducts } from '@/store/slices/shopSlice';
+import { serializeSearchParams } from '@/utils/url';
+import images from '@/assets/images';
 
 // sticky top-[218px] w-[300px]
 
 const SearchPage = () => {
-  const canFetching = useRef(true);
-  const { pathname, search } = useLocation();
-  const dispatch = useDispatch();
+  window.scrollTo({
+    behavior: 'smooth',
+    left: 0,
+    top: 0,
+  });
 
-  useEffect(() => {
-    dispatch(setPreviousHistory(pathname + search));
-  }, [dispatch, pathname, search]);
+  const canFetching = useRef(false);
+  const { pathname, search, state } = useLocation();
+  const { productList: searchedProducts, pagination: searchPagination } =
+    state ?? {};
+  let { searchValue, categoryId: categoryIdUrl } =
+    serializeSearchParams(search);
+  const dispatch = useDispatch();
 
   const productId = useId();
   const [filterData, setFilterData] = useState({});
@@ -31,7 +38,30 @@ const SearchPage = () => {
     pageSize: 9,
   });
 
-  const { loading, productList } = useSelector((state) => state.shop);
+  const [loading, setLoading] = useState(false);
+  const [productList, setProductList] = useState(searchedProducts || []);
+
+  const handleFetchingProducts = async (searchParams = {}) => {
+    const params = {
+      page: paginationData.currentPage,
+      pageSize: paginationData.pageSize,
+      ...searchParams,
+    };
+    try {
+      setLoading(true);
+      const response = await productApi.searchProducts({ ...params });
+      const { data, pagination } = response?.result;
+      if (data && pagination) {
+        setProductList(data);
+        setPaginationData((prev) => ({ ...prev, ...pagination }));
+      }
+    } catch (error) {
+      toast.error('Có lỗi xảy ra, vui lòng thử lại.', { autoClose: 1000 });
+      console.log('Failed to filter products in Searching Page', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSetFilterData = (filterValue) => {
     let filterResult = { ...filterValue };
@@ -41,39 +71,51 @@ const SearchPage = () => {
       return acc;
     }, {});
     setFilterData({ ...filterResult });
+    handleFetchingProducts({
+      ...filterResult,
+      ...paginationData,
+      page: paginationData.currentPage,
+      pageSize: paginationData.pageSize,
+    });
   };
 
   const handleSetPaginationData = (pagination) => {
+    let _pagination = { ...paginationData, ...pagination };
     setPaginationData((prev) => ({ ...prev, ...pagination }));
+    handleFetchingProducts({
+      ..._pagination,
+      page: _pagination.currentPage,
+      pageSize: _pagination.pageSize,
+      ...filterData,
+    });
   };
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const params = {
-        ...filterData,
-        page: paginationData.currentPage,
-        pageSize: paginationData.pageSize,
-      };
-      try {
-        const searchResponse = await dispatch(
-          searchingProducts({ params })
-        ).unwrap();
-        const { totalCount } = searchResponse.pagination;
-        handleSetPaginationData({ totalCount });
-      } catch (error) {
-        // handle Error here...
-      } finally {
-        canFetching.current = true;
-      }
-    };
+    setProductList(searchedProducts || []);
+  }, [searchedProducts]);
 
-    if (canFetching.current) fetchProducts();
-    canFetching.current = false;
-  }, [
-    JSON.stringify(filterData),
-    paginationData.currentPage,
-    paginationData.pageSize,
-  ]);
+  useEffect(() => {
+    dispatch(setPreviousHistory(pathname + search));
+  }, [dispatch, pathname, search]);
+
+  // useEffect(() => {
+  //   if (canFetching.current && !loading) {
+  //     handleFetchingProducts({ ...filterData });
+  //   }
+  //   canFetching.current = false;
+
+  //   return () => {
+  //     canFetching.current = true;
+  //   };
+  // }, [
+  //   JSON.stringify(filterData),
+  //   paginationData.currentPage,
+  //   paginationData.pageSize,
+  // ]);
+
+  useEffect(() => {
+    handleFetchingProducts({ productIds: [categoryIdUrl] });
+  }, [categoryIdUrl]);
 
   return (
     <div className="relative mt-[60px] mb-[120px] flex gap-6">
@@ -88,7 +130,9 @@ const SearchPage = () => {
           <BsInfoCircle />
           <p className="flex gap-[4px] items-center text-[16px]">
             <span>Có tất cả</span>
-            <span className="font-semibold">{productList.length}</span>
+            <span className="font-semibold">
+              {paginationData.totalCount || 0}
+            </span>
             <span>sản phẩm liên quan</span>
           </p>
         </div>
@@ -100,13 +144,22 @@ const SearchPage = () => {
           <div className="w-full flex justify-center my-[48px]">
             <Spinner color="#e58411" size={24} />
           </div>
-        ) : (
+        ) : productList?.length ? (
           <div>
             <div className="py-[24px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-              {productList.map?.((_, index) => (
-                <ProductCard key={`${productId}-${index}`} data={{}} />
+              {productList?.map?.((productItem, index) => (
+                <ProductCard key={`${productId}-${index}`} data={productItem} />
               ))}
             </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-6 items-center justify-center h-[450px] w-full rounded-[20px]">
+            <img
+              src={images.empty}
+              alt="Empty Image"
+              className="w-[56px] animate-bounce"
+            />
+            <p>Không có tìm thấy kết quả phù hợp</p>
           </div>
         )}
 
