@@ -24,31 +24,42 @@ const Pagination = ({
   const goToPreviousPage = () => {
     if (hasPrevious) {
       setCurrentPage(currentPage - 1);
+      onChange({
+        total,
+        currentPage: currentPage - 1,
+        pageSize,
+        totalPages,
+        hasPrevious,
+        hasNext,
+      });
     }
   };
 
   const goToNextPage = () => {
     if (hasNext) {
       setCurrentPage(currentPage + 1);
+      onChange({
+        total,
+        currentPage: currentPage + 1,
+        pageSize,
+        totalPages,
+        hasPrevious,
+        hasNext,
+      });
     }
   };
 
   const goToPage = (page) => {
     setCurrentPage(page);
-  };
-
-  const handlePaginationChange = () => {
     onChange({
       total,
-      currentPage,
+      currentPage: page,
       pageSize,
       totalPages,
       hasPrevious,
       hasNext,
     });
   };
-
-  useEffect(() => handlePaginationChange(), [currentPage, pageSize]);
 
   const renderPageNumbers = () => {
     const pageNumbers = [];

@@ -98,23 +98,12 @@ const SearchPage = () => {
     dispatch(setPreviousHistory(pathname + search));
   }, [dispatch, pathname, search]);
 
-  // useEffect(() => {
-  //   if (canFetching.current && !loading) {
-  //     handleFetchingProducts({ ...filterData });
-  //   }
-  //   canFetching.current = false;
-
-  //   return () => {
-  //     canFetching.current = true;
-  //   };
-  // }, [
-  //   JSON.stringify(filterData),
-  //   paginationData.currentPage,
-  //   paginationData.pageSize,
-  // ]);
-
   useEffect(() => {
-    handleFetchingProducts({ productIds: [categoryIdUrl] });
+    handleFetchingProducts({
+      ...(searchValue && { searchValue }),
+      productIds: [categoryIdUrl],
+      pageSize: 9,
+    });
   }, [categoryIdUrl]);
 
   return (
