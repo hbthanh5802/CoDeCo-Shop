@@ -2,18 +2,7 @@ import React, { useId } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-const items = [
-  {
-    label: 'Phòng Khách',
-    to: '/shop/search?productId=1',
-  },
-  {
-    label: 'Ghế Lougues',
-    to: '/shop/products/abc123',
-  },
-];
-
-const BreadCrumb = ({}) => {
+const BreadCrumb = ({ items }) => {
   const breadcrumbId = useId();
 
   const renderBreadcrumbs = () => {
@@ -43,6 +32,7 @@ const BreadCrumb = ({}) => {
     return breadcrumbs;
   };
 
+  if (!items?.length) return <></>;
   return (
     <div className="flex items-center text-[14px]">{renderBreadcrumbs()}</div>
   );

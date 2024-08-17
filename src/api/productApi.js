@@ -33,4 +33,23 @@ productApi.getProductsByCategoryId = (categoryId, params = {}) => {
   });
 };
 
+productApi.getProductDetail = (productId) =>
+  axiosClient.get('/products/' + productId);
+
+productApi.getProductFilter = (data) => {
+  return axiosClient.post('/products/productDetails/filter', data);
+};
+
+productApi.getReviewSummary = (productId) => {
+  return axiosClient.get('/reviews/get-review-summary/' + productId);
+};
+
+productApi.getProductReviews = (params) => {
+  const { productId } = params;
+  const searchParams = { page: 1, pageSize: 3, rate: 0, ...params };
+  return axiosClient.get('/reviews/get-review/' + productId, {
+    params: searchParams,
+  });
+};
+
 export default productApi;
