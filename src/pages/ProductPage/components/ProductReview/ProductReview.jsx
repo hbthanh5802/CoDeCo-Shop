@@ -10,6 +10,7 @@ import { IoIosArrowDown } from 'react-icons/io';
 import { fakeApi } from '@/utils/url';
 import Spinner from '@/components/Spinner';
 import images from '@/assets/images';
+import productApi from '@/api/productApi';
 
 const reviewFilterList = [
   {
@@ -41,56 +42,121 @@ const reviewFilterList = [
   },
 ];
 
-const ProductReview = ({ productData }) => {
-  const { productId } = productData;
+const ProductReview = ({ productDetailData }) => {
   const [loading, setLoading] = useState(false);
   const canFetching = useRef(true);
   const reviewId = useId();
+  const [summaryReviews, setSummaryReviews] = useState({
+    averageRating: 0,
+    commentReviews: 0,
+    fiveStarReviews: 0,
+    fourStarReviews: 0,
+    oneStarReviews: 0,
+    threeStarReviews: 0,
+    totalReviews: 0,
+    twoStarReviews: 0,
+  });
   const [reviewList, setReviewList] = useState([]);
+  const [paginationData, setPaginationData] = useState({
+    hasNext: false,
+    hasPrevious: false,
+    totalCount: 0,
+    totalPages: 0,
+  });
+
+  const { productId } = productDetailData;
   const [reviewParams, setReviewParams] = useState({
-    rating: undefined,
-    productId: productId,
+    rate: undefined,
     page: 1,
     pageSize: 3,
   });
 
+  const handleFetchProductReviews = async (
+    reset = false,
+    searchParams = {}
+  ) => {
+    if (!productId) return;
+    setLoading(true);
+    try {
+      const response = await productApi.getProductReviews({
+        productId,
+        ...searchParams,
+      });
+      if (response && response.result) {
+        if (response.result.data) {
+          setReviewList((prev) => {
+            return reset
+              ? response.result.data
+              : [...prev, ...response.result.data];
+          });
+        }
+        if (response.pagination) setReviewParams(response.pagination);
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
+      canFetching.current = true;
+    }
+  };
+
   const handleReviewFilterChange = (data) => {
     const { value } = data;
-    setReviewParams((prev) => ({ ...prev, rating: value, page: 1 }));
+    setReviewParams((prev) => ({ ...prev, rate: value, page: 1 }));
+    handleFetchProductReviews(true, { ...reviewParams, rate: value });
   };
 
   const handleShowMoreReviewClick = () => {
     setReviewParams((prev) => ({ ...prev, page: prev.page + 1 }));
+    handleFetchProductReviews(false, { ...reviewParams });
   };
 
   useEffect(() => {
-    const fetchGetProductDetailReviews = async () => {
-      setLoading(true);
-      try {
-        await fakeApi('success', 1000);
-        setReviewList((prev) => [
-          ...prev,
-          [...Array.from({ length: Math.round(Math.random() * 3 + 1) })],
-        ]);
-      } catch (error) {
-      } finally {
-        setLoading(false);
-        canFetching.current = true;
-      }
-    };
+    if (!productId) return;
+    productApi
+      .getReviewSummary(productId)
+      .then((response) => {
+        if (response && response.result) {
+          const {
+            averageRating,
+            commentReviews,
+            fiveStarReviews,
+            fourStarReviews,
+            oneStarReviews,
+            threeStarReviews,
+            totalReviews,
+            twoStarReviews,
+          } = response;
+          setSummaryReviews({
+            averageRating,
+            commentReviews,
+            fiveStarReviews,
+            fourStarReviews,
+            oneStarReviews,
+            threeStarReviews,
+            totalReviews,
+            twoStarReviews,
+          });
+        }
+      })
+      .catch((error) => {
+        console.log('Failed to get Summary Product Reviews', error);
+      });
+  }, [productId]);
 
-    if (canFetching.current) fetchGetProductDetailReviews();
-    canFetching.current = false;
-  }, [reviewParams]);
+  useEffect(() => {
+    handleFetchProductReviews(false, { ...reviewParams });
+  }, []);
 
   return (
     <div>
       <div className="flex flex-col md:flex-row gap-6 mt-[24px] mb-[60px]">
         <div className="w-full md:w-1/3">
           <div className="flex items-baseline flex-row md:flex-col gap-3 md:gap-1">
-            <h1 className="font-medium text-[32px] text-[var(--color-primary)]">{`${4.5} / 5`}</h1>
+            <h1 className="font-medium text-[32px] text-[var(--color-primary)]">{`${
+              summaryReviews.averageRating || 5
+            } / 5`}</h1>
             <RateStar
-              rating={Math.round(4.5)}
+              rating={Math.round(summaryReviews.averageRating || 5)}
               maxStar={5}
               spacing={4}
               color="#E58411"
@@ -99,7 +165,7 @@ const ProductReview = ({ productData }) => {
 
           <div className="review-filter mt-[24px]">
             <CategoryRadio
-              name="rating"
+              name="rate"
               items={reviewFilterList}
               className="flex gap-3 font-normal flex-wrap"
               onChange={(data) => handleReviewFilterChange(data)}
@@ -109,7 +175,7 @@ const ProductReview = ({ productData }) => {
 
         <div className="w-full md:w-2/3 flex flex-col gap-6">
           <div className="flex flex-col items-center gap-[24px]">
-            {reviewList.length ? (
+            {reviewList?.length ? (
               reviewList.map((_, index) => (
                 <ProductReviewCard key={`${reviewId}-${index}`} />
               ))
@@ -147,7 +213,7 @@ const ProductReview = ({ productData }) => {
 };
 
 ProductReview.propTypes = {
-  productData: PropTypes.object.isRequired,
+  productDetailData: PropTypes.object.isRequired,
 };
 
 export default ProductReview;

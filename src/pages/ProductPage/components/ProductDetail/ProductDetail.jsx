@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import RateStar from '@/components/RateStar';
 import { formatCurrency } from '@/utils/currency';
@@ -14,43 +14,110 @@ import {
   IoLogoInstagram,
 } from 'react-icons/io5';
 import CategoryRadio from '@/pages/ProductPage/components/CategoryRadio';
+import { hexToRgb } from '@/utils/colorConverter';
+import productApi from '@/api/productApi';
+import cartApi from '@/api/cartApi';
+import { toast } from 'react-toastify';
 
-const ProductDetail = () => {
+const ProductDetail = ({
+  productDetailData,
+  productSizes,
+  productMaterials,
+  productColors,
+}) => {
   const [loading, setLoading] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(0);
+  const [chosenProductDetailData, setChosenProductDetailData] = useState({
+    totalQuantity: 0,
+    price: null,
+    productDetailId: null,
+  });
+  const [colorList, setColorList] = useState(productColors);
+  const [sizeList, setSizeList] = useState(productSizes);
+  const [materialList, setMaterialList] = useState(productMaterials);
   const [categoryProductChosen, setCategoryProductChosen] = useState({
     color: '',
     material: '',
     size: '',
   });
 
+  const {
+    productId,
+    name: productName,
+    description: productDesc,
+    enable,
+    categoryId,
+    percent,
+    minPrice,
+    maxPrice,
+    averageRating,
+    createdAt,
+    updateAt,
+  } = productDetailData;
+
   const isCategoryProductChosenValid = Object.values(
     categoryProductChosen
-  ).every((categoryValue) => !!categoryValue);
+  ).every((value) => !!value || value === 0);
 
-  const [colorList, setColorList] = useState([
-    {
-      label: 'Xanh',
-      value: 'colorId-1',
-      disabled: true,
-    },
-    {
-      label: 'Đỏ',
-      value: 'colorId-2',
-    },
-    {
-      label: 'Xanh',
-      value: 'colorId-1',
-      disabled: true,
-    },
-    {
-      label: 'Đỏ',
-      value: 'colorId-2',
-    },
-  ]);
+  const isCanAddToCart = Object.values(chosenProductDetailData).every(
+    (value) => !!value || value === 0
+  );
+
+  const renderedColorList = useMemo(() => {
+    return colorList.map((colorItem, index) => {
+      const { name, colorId, colorCode, disabled } = colorItem;
+      return {
+        label: (
+          <div className="flex items-center gap-2">
+            {' '}
+            <span
+              style={{
+                backgroundColor: `rgba(${hexToRgb(
+                  colorCode,
+                  'string',
+                  ','
+                )}, 0.25)`,
+              }}
+              className="inline-flex items-center justify-center size-[18px] rounded-full"
+            >
+              <span
+                style={{ backgroundColor: colorCode }}
+                className="inline-block size-[14px] rounded-full"
+              ></span>
+            </span>
+            {name}
+          </div>
+        ),
+        value: colorId,
+        disabled,
+      };
+    });
+  }, [colorList]);
+
+  const renderedSizeList = useMemo(() => {
+    return sizeList.map((sizeItem, index) => {
+      const { name, sizeId, disabled } = sizeItem;
+      return {
+        label: name,
+        value: sizeId,
+        disabled,
+      };
+    });
+  }, [sizeList]);
+
+  const renderedMaterialList = useMemo(() => {
+    return materialList.map((materialItem, index) => {
+      const { name, materialId, disabled } = materialItem;
+      return {
+        label: name,
+        value: materialId,
+        disabled,
+      };
+    });
+  }, [colorList]);
 
   const handleQuantityButtonClick = (action) => {
-    if (action === 'add') {
+    if (action === 'add' && quantity < chosenProductDetailData.totalQuantity) {
       setQuantity((prev) => prev + 1);
     } else if (action === 'minus' && quantity > 1) {
       setQuantity((prev) => prev - 1);
@@ -63,41 +130,117 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = () => {
+    if (!isCanAddToCart) {
+      toast.warning('Có lỗi xảy ra, vui lòng thử lại.', { autoClose: 1500 });
+      return;
+    }
     setLoading(true);
-    fakeApi()
-      .then((res) => {})
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    cartApi
+      .addToCart({
+        productDetailId: chosenProductDetailData.productDetailId,
+        count: quantity,
+      })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log('Failed to add to Cart', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
+
+  useEffect(() => {
+    setColorList(productColors);
+    setMaterialList(productMaterials);
+    setSizeList(productSizes);
+  }, [productColors, productMaterials, productSizes]);
+
+  useEffect(() => {
+    if (!isCategoryProductChosenValid || !productId) return;
+    setLoading(true);
+    setQuantity(0);
+    const dataBody = { productId, ...categoryProductChosen };
+    productApi
+      .getProductFilter(dataBody)
+      .then((response) => {
+        if (response && response.result) {
+          console.log(response.result);
+          const { price, productDetailId, totalQuantity } = response.result;
+          setChosenProductDetailData({ price, productDetailId, totalQuantity });
+        }
+      })
+      .catch((error) => {
+        console.log('Failed to get Total Stock in Product Detail', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [categoryProductChosen]);
+
   return (
     <>
       <div className="Product-detail flex flex-col gap-[12px]">
         <h1 className="Product-detail__name text-[44px] font-semibold">
-          Ghế thư giãn Lounge Chair
+          {productName}
         </h1>
 
         <div className="Product-detail__rating flex gap-2">
-          <RateStar rating={4} maxStar={5} spacing={2} />
-          <span>{`${4.6} / 5.0`}</span>
+          <RateStar rating={averageRating || 5} maxStar={5} spacing={2} />
+          <span>{`${averageRating || 5} / 5.0`}</span>
           <span className="text-[#ccc]">{`(${12})`}</span>
         </div>
 
         <div className="Product-detail__price mb-[48px]">
-          <div className="text-[#ccc] flex gap-2 items-baseline line-through">
-            <h3 className="text-[24px]">{formatCurrency(3200000)}</h3>
-            <span className="text-[18px]">VNĐ</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="flex gap-2 items-baseline">
-              <h3 className="text-[32px] font-medium">
-                {formatCurrency(2800000)}
-              </h3>
-              <span className="font-medium text-[24px]">VNĐ</span>
+          {chosenProductDetailData.price ? (
+            <div className="flex gap-2 items-baseline text-[32px] font-semibold">
+              <div className="flex items-baseline gap-1">
+                <h3>{formatCurrency(chosenProductDetailData.price)}</h3>
+                <span className="text-[24px]">VNĐ</span>
+              </div>
             </div>
-            <span className="px-[24px] py-[6px] bg-[var(--red-tag)] rounded-[4px] text-white text-[16px] font-semibold">
-              {`${12}% off`}
-            </span>
-          </div>
+          ) : (
+            <>
+              {percent && (
+                <div className="text-black/30 flex gap-2 items-baseline line-through text-[24px] font-light">
+                  <div className="flex items-baseline gap-1">
+                    <h3>{formatCurrency(minPrice)}</h3>
+                  </div>
+                  <span>-</span>
+                  <div className="flex items-baseline gap-1">
+                    <h3>{formatCurrency(maxPrice)}</h3>
+                    <span className="text-[18px]">VNĐ</span>
+                  </div>
+                </div>
+              )}
+              <div className="flex items-center gap-6">
+                <div className="flex gap-2 items-baseline text-[32px] font-semibold">
+                  <div className="flex items-baseline gap-1">
+                    <h3>
+                      {formatCurrency(
+                        percent ? minPrice * ((100 - percent) / 100) : minPrice
+                      )}
+                    </h3>
+                  </div>
+                  <span>-</span>
+                  <div className="flex items-baseline gap-1 text-[32px] font-semibold">
+                    <h3>
+                      {formatCurrency(
+                        percent ? maxPrice * ((100 - percent) / 100) : maxPrice
+                      )}
+                    </h3>
+                    <span className="font-medium text-[24px]">VNĐ</span>
+                  </div>
+                </div>
+                {percent && (
+                  <span className="px-[18px] py-[4px] bg-[var(--red-tag)] rounded-[4px] text-white text-[16px] font-semibold">
+                    {`${percent}% off`}
+                  </span>
+                )}
+              </div>
+            </>
+          )}
         </div>
         {/* Category */}
         <div className="Product-detail__category flex flex-col gap-6 mb-[48px]">
@@ -105,7 +248,7 @@ const ProductDetail = () => {
             <h4 className="min-w-[100px]">Màu sắc:</h4>
             <div>
               <CategoryRadio
-                items={colorList}
+                items={renderedColorList}
                 name="color"
                 onChange={(data) => handleCategoryRadioChange(data)}
                 className="flex flex-wrap gap-3"
@@ -116,7 +259,7 @@ const ProductDetail = () => {
             <h4 className="min-w-[100px]">Chất liệu:</h4>
             <div>
               <CategoryRadio
-                items={colorList}
+                items={renderedMaterialList}
                 name="material"
                 onChange={(data) => handleCategoryRadioChange(data)}
                 className="flex flex-wrap gap-3"
@@ -127,7 +270,7 @@ const ProductDetail = () => {
             <h4 className="min-w-[100px]">Kích thước:</h4>
             <div>
               <CategoryRadio
-                items={colorList}
+                items={renderedSizeList}
                 name="size"
                 onChange={(data) => handleCategoryRadioChange(data)}
                 className="flex flex-wrap gap-3"
@@ -138,7 +281,12 @@ const ProductDetail = () => {
 
         {/* Button */}
         <div className="flex flex-col gap-3">
-          <span>Số lượng:</span>
+          <span>
+            Số lượng sản phẩm:{' '}
+            <span className="font-semibold">
+              {chosenProductDetailData.totalQuantity}
+            </span>
+          </span>
           <div className="flex items-center gap-6">
             {/* Quantity Button */}
             <div className="inline-flex h-[52px] p-1 gap-4 items-center border border-[#ccc] hover:border-[#f7f7f7] rounded duration-300">
@@ -154,7 +302,9 @@ const ProductDetail = () => {
               </span>
               <button
                 className="text-[20px] p-[12px] hover:text-[var(--color-primary)] active:bg-[var(--color-primary)] active:text-white hover:bg-[#f7f7f7] duration-300 rounded-sm disabled:bg-[#f7f7f7] disabled:text-[#ccc] disabled:cursor-not-allowed"
-                disabled={loading}
+                disabled={
+                  loading || quantity >= chosenProductDetailData.totalQuantity
+                }
                 onClick={() => handleQuantityButtonClick('add')}
               >
                 <GoPlus />
@@ -163,10 +313,14 @@ const ProductDetail = () => {
             {/* Add to Cart */}
             <button
               className="capitalize min-w-[190px] min-h-[52px] py-[14px] px-[40px] bg-[var(--color-primary)] text-white rounded hover:brightness-105 active:brightness-100 disabled:bg-[#f7f7f7] disabled:text-[#ccc] disabled:cursor-not-allowed flex items-center justify-center transition-all duration-150"
-              disabled={!isCategoryProductChosenValid}
+              disabled={!isCategoryProductChosenValid || quantity <= 0}
               onClick={handleAddToCart}
             >
-              {loading ? <Spinner size={18} /> : <span>Thêm vào giỏ</span>}
+              {loading ? (
+                <Spinner size={18} />
+              ) : (
+                <span className="capitalize">Thêm vào giỏ</span>
+              )}
             </button>
           </div>
 

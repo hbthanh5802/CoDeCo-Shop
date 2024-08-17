@@ -16,6 +16,7 @@ import './GallerySwiper.scss';
 // import required modules
 import { FreeMode, Pagination, Navigation, Thumbs, Zoom } from 'swiper/modules';
 import { GoArrowLeft, GoArrowRight } from 'react-icons/go';
+import images from '@/assets/images';
 
 const GallerySwiper = ({
   spaceBetween = 48,
@@ -29,7 +30,13 @@ const GallerySwiper = ({
   const navigationNextRef = useRef(null);
   const imageId = useId();
 
-  if (imageList.length === 0) return <>Nothing Images</>;
+  if (imageList.length === 0 || !imageList)
+    return (
+      <div className="duration-200 flex flex-col gap-6 items-center justify-center border border-[#ccc] rounded h-[500px] bg-slate-50 hover:bg-slate-100">
+        <img src={images.empty} alt="" className="size-[60px]" />
+        <p>Sản phẩm tạm thời chưa có hình ảnh</p>
+      </div>
+    );
 
   return (
     <div className="Custom-Gallery-Swiper max-h-fit flex flex-col justify-center items-center">
@@ -37,7 +44,7 @@ const GallerySwiper = ({
         style={{
           height: '520px',
         }}
-        loop={true}
+        loop={imageList.length > 5 ? true : false}
         zoom={true}
         spaceBetween={10}
         pagination={{ type: 'fraction' }}
@@ -70,7 +77,7 @@ const GallerySwiper = ({
             overflowY: 'visible',
           }}
           onSwiper={setThumbsSwiper}
-          loop={true}
+          loop={imageList.length > 5 ? true : false}
           spaceBetween={10}
           slidesPerView={4}
           freeMode={true}
