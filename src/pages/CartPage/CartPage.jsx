@@ -1,5 +1,5 @@
 import Collapse from '@/components/Collapse';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { BsChatDots, BsCreditCard, BsXLg } from 'react-icons/bs';
 import { TbCoin } from 'react-icons/tb';
 
@@ -9,30 +9,15 @@ import images from '@/assets/images';
 import { Link, useNavigate } from 'react-router-dom';
 import Spinner from '@/components/Spinner';
 import { formatCurrency } from '@/utils/currency';
-import { fakeApi } from '@/utils/url';
 import { toast } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
-import { getCartItemList } from '@/store/slices/shopSlice';
+import cartApi from '@/api/cartApi';
 
 const CartPage = () => {
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch();
+  const [createOrderLoading, setCreateOrderLoading] = useState(false);
   const navigate = useNavigate();
-  // const { cartItemList: _cartItemList } = useSelector((state) => state.shop);
-  // const [cartItemList, setCartItemList] = useState(_cartItemList);
-  const [cartItemList, setCartItemList] = useState(
-    Array.from({ length: 3 }).map((_, index) => ({
-      cart_item_id: `${Math.random() + index}`,
-      productDetailId: 2,
-      name: 'Ghế thư giãn Introverse Chair',
-      size: '30 x 60 x 72 cm',
-      color: 'Xanh Lam',
-      material: 'Gỗ sồi',
-      productImageUrl: images.productImg,
-      price: 1300000,
-      count: Math.round(Math.random() * 3 + 1),
-    }))
-  );
+  const cartCheckboxListRef = useRef(null);
+  const [cartItemList, setCartItemList] = useState([]);
   const [checkedCartItemList, setCheckedCartItemList] = useState([]);
 
   const summaryResult = useMemo(() => {
@@ -46,7 +31,7 @@ const CartPage = () => {
 
     if (checkedCartItemList?.length) {
       const summaryCartItemList = cartItemList?.filter((cartItem) =>
-        checkedCartItemList?.includes(cartItem.cart_item_id)
+        checkedCartItemList?.includes(cartItem.cartItemId)
       );
       result.items = summaryCartItemList;
       result.totalPrice = summaryCartItemList?.reduce(
@@ -58,18 +43,15 @@ const CartPage = () => {
   }, [checkedCartItemList, cartItemList]);
 
   const handleChooseCartItem = (data) => {
-    // console.log('===>', { ...data });
     const { name, groupValues } = data;
     setCheckedCartItemList(groupValues);
   };
 
   const handleDeleteCartItem = async (cart_item_id) => {
-    console.log('DELETE', cart_item_id);
-    console.log({ checkedCartItemList });
     try {
-      await fakeApi('success', 1000).then(() => {
+      await cartApi.removeOne(cart_item_id).then(() => {
         let _cartItemList = [...cartItemList].filter(
-          (cartItem) => cartItem.cart_item_id !== cart_item_id
+          (cartItem) => cartItem.cartItemId !== cart_item_id
         );
         let _checkedCartItemList = [...checkedCartItemList].filter(
           (checkedCartItem) => checkedCartItem !== cart_item_id
@@ -78,7 +60,9 @@ const CartPage = () => {
         setCartItemList([..._cartItemList]);
         setCheckedCartItemList([..._checkedCartItemList]);
       });
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
   };
 
   const renderedCartItemList = useMemo(() => {
@@ -88,13 +72,14 @@ const CartPage = () => {
         label: (
           <CartItem
             data={cartItem}
+            cartItemList={cartItemList}
             setCartItemList={setCartItemList}
             handleDeleteCartItem={(cartItemId) =>
               handleDeleteCartItem(cartItemId)
             }
           />
         ),
-        value: cartItem.cart_item_id,
+        value: cartItem.cartItemId,
       }));
     }
     return undefined;
@@ -102,13 +87,38 @@ const CartPage = () => {
 
   const handleCreateOrder = () => {
     const data = { orderInformation: summaryResult };
-    navigate('/shop/create-order', {
-      state: data,
-    });
+    const selectCartItemPromises = checkedCartItemList.map((carItemId) =>
+      cartApi.selectOne(carItemId)
+    );
+    Promise.all(selectCartItemPromises)
+      .then((results) => {
+        console.log(results);
+        navigate('/shop/create-order', {
+          state: data,
+        });
+      })
+      .catch((error) => {
+        toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
+      })
+      .finally(() => {
+        setCreateOrderLoading(false);
+      });
   };
 
   useEffect(() => {
-    dispatch(getCartItemList());
+    setLoading(true);
+    cartApi
+      .getUserCart()
+      .then((response) => {
+        if (response?.result?.cartItemResponses)
+          setCartItemList(response?.result?.cartItemResponses);
+      })
+      .catch((error) => {
+        console.log('Failed to get Cart List in Cart Page', error);
+      })
+      .finally(() => {
+        setLoading(true);
+      });
   }, []);
 
   return (
@@ -122,6 +132,7 @@ const CartPage = () => {
               <Collapse label="Sản phẩm" className="font-semibold">
                 <div className="my-[24px] font-normal">
                   <CheckboxGroup
+                    ref={cartCheckboxListRef}
                     items={renderedCartItemList}
                     name="cartItemList"
                     checkboxSize={22}
@@ -165,9 +176,13 @@ const CartPage = () => {
                 <button
                   className="duration-200 flex justify-center items-center px-[40px] py-[18px] bg-[var(--color-primary)] text-white rounded hover:brightness-105 disabled:bg-[#f7f7f7] disabled:text-[#ccc] disabled:cursor-not-allowed"
                   onClick={handleCreateOrder}
-                  disabled={!summaryResult.items.length}
+                  disabled={!summaryResult.items.length || createOrderLoading}
                 >
-                  Tiến hành tạo đơn
+                  {createOrderLoading ? (
+                    <Spinner size={18} color="black" />
+                  ) : (
+                    'Tiến hành tạo đơn'
+                  )}
                 </button>
                 <Link
                   to={'/shop'}
