@@ -61,14 +61,6 @@ const CheckboxGroup = forwardRef(
       }
     };
 
-    // useEffect(() => {
-    //   if (!checkedAll) handleReset();
-    // }, [checkedAll]);
-
-    // useEffect(() => {
-    //   if (onChange) onChange({ name, groupValues });
-    // }, [groupValues]);
-
     useImperativeHandle(ref, () => ({ handleReset }));
 
     return (
