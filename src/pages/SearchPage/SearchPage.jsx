@@ -64,6 +64,7 @@ const SearchPage = () => {
   };
 
   const handleSetFilterData = (filterValue) => {
+    console.log(filterValue);
     let filterResult = { ...filterValue };
     filterResult = Object.entries(filterResult).reduce((acc, [key, value]) => {
       if (!value) return acc;
@@ -72,7 +73,7 @@ const SearchPage = () => {
     }, {});
     setFilterData({ ...filterResult });
     handleFetchingProducts({
-      ...filterResult,
+      ...(searchValue ? { ...filterResult, searchValue } : filterResult),
       ...paginationData,
       page: paginationData.currentPage,
       pageSize: paginationData.pageSize,
@@ -86,7 +87,7 @@ const SearchPage = () => {
       ..._pagination,
       page: _pagination.currentPage,
       pageSize: _pagination.pageSize,
-      ...filterData,
+      ...(searchValue ? { ...filterData, searchValue } : filterData),
     });
   };
 
@@ -108,14 +109,20 @@ const SearchPage = () => {
 
   return (
     <div className="relative mt-[60px] mb-[120px] flex gap-6">
-      <div className="w-[25%] h-fit bg-white">
-        <FilterBar
-          filterData={filterData}
-          handleSetFilterData={handleSetFilterData}
-        />
-      </div>
-      <div className="ml-auto w-[75%] bg-white flex flex-col items-start">
-        <div className="flex gap-2 items-center mb-[12px]">
+      {!searchValue && (
+        <div className="w-[25%] h-fit bg-white">
+          <FilterBar
+            filterData={filterData}
+            handleSetFilterData={handleSetFilterData}
+          />
+        </div>
+      )}
+      <div
+        className={`ml-auto bg-white flex flex-col  ${
+          searchValue ? 'w-[100%] items-center' : 'w-[75%] items-start'
+        }`}
+      >
+        <div className="flex gap-2 justify-start items-center mb-[12px]">
           <BsInfoCircle />
           <p className="flex gap-[4px] items-center text-[16px]">
             <span>Có tất cả</span>
