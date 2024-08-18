@@ -31,7 +31,7 @@ const OrderBar = ({ filterData, handleSetFilterData }) => {
 
   const handlePriceOrderChange = (value) => {
     let _filterData = { ...filterData };
-    _filterData.priceOrder = value ? value : undefined;
+    _filterData.priceSort = value ? value : undefined;
     handleSetFilterData(_filterData);
   };
 
