@@ -11,8 +11,11 @@ import Spinner from '@/components/Spinner';
 import { formatCurrency } from '@/utils/currency';
 import { toast } from 'react-toastify';
 import cartApi from '@/api/cartApi';
+import { useDispatch } from 'react-redux';
+import { getCartItemList } from '@/store/slices/shopSlice';
 
 const CartPage = () => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [createOrderLoading, setCreateOrderLoading] = useState(false);
   const navigate = useNavigate();
@@ -86,6 +89,7 @@ const CartPage = () => {
   }, [cartItemList]);
 
   const handleCreateOrder = () => {
+    setCreateOrderLoading(true);
     const data = { orderInformation: summaryResult };
     const selectCartItemPromises = checkedCartItemList.map((carItemId) =>
       cartApi.selectOne(carItemId)
@@ -117,7 +121,8 @@ const CartPage = () => {
         console.log('Failed to get Cart List in Cart Page', error);
       })
       .finally(() => {
-        setLoading(true);
+        dispatch(getCartItemList());
+        setLoading(false);
       });
   }, []);
 
@@ -174,7 +179,7 @@ const CartPage = () => {
               </div>
               <div className="w-full flex flex-col gap-[24px]">
                 <button
-                  className="duration-200 flex justify-center items-center px-[40px] py-[18px] bg-[var(--color-primary)] text-white rounded hover:brightness-105 disabled:bg-[#f7f7f7] disabled:text-[#ccc] disabled:cursor-not-allowed"
+                  className="duration-200 flex justify-center items-center px-[40px] py-[18px] bg-[var(--color-primary)] min-h-[60px] text-white rounded hover:brightness-105 disabled:bg-[#f7f7f7] disabled:text-[#ccc] disabled:cursor-not-allowed"
                   onClick={handleCreateOrder}
                   disabled={!summaryResult.items.length || createOrderLoading}
                 >

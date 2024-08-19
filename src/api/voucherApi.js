@@ -1,3 +1,4 @@
+import { voucherStatus } from '@/constants';
 import axiosAuth from './axiosAuth';
 import { axiosClient } from './axiosClient';
 
@@ -10,6 +11,22 @@ voucherApi.addUser = (data) => {
 voucherApi.getAllVouchers = (params) => {
   return axiosClient.get('/vouchers/get-all-voucher', {
     params: { page: 1, pageSize: 99999, ...params },
+  });
+};
+
+voucherApi.getUserVouchers = (params = {}) => {
+  const searchParams = {
+    page: 1,
+    pageSize: 99999,
+    sortBy: 'userVoucherId',
+    direction: 'asc',
+    status: voucherStatus.ALL,
+    ...params,
+  };
+
+  return axiosAuth.get('/vouchers/get-all', {
+    params: searchParams,
+    withCredentials: true,
   });
 };
 

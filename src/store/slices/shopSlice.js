@@ -32,10 +32,9 @@ const shopSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           const { result } = action.payload;
-          if (result) state.notificationList = result;
+          if (result) state.notificationList = result?.reverse();
         },
         rejected: (state, action) => {
-          // console.log('action.errors', action.error);
           state.notificationList = [];
           state.errorMessage = action?.error?.message;
         },
@@ -58,7 +57,6 @@ const shopSlice = createAppSlice({
             state.cartItemList = result.cartItemResponses;
         },
         rejected: (state, action) => {
-          // console.log('action.errors', action.error);
           state.cartItemList = [];
           state.errorMessage = action?.error?.message;
         },
@@ -81,7 +79,6 @@ const shopSlice = createAppSlice({
           if (result && result.data) state.categoryList = result.data;
         },
         rejected: (state, action) => {
-          // console.log('action.errors', action.error);
           state.categoryList = [];
           state.errorMessage = action?.error?.message;
         },
@@ -115,8 +112,7 @@ const shopSlice = createAppSlice({
     ),
     resetAll: create.reducer((state) => {
       state.loading = false;
-      state.searchValue = null;
-      state.productList = [];
+      state.searchValue = '';
       state.notificationList = [];
       state.cartItemList = [];
       state.categoryList = [];

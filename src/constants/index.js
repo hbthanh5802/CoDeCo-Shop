@@ -19,3 +19,10 @@ export const randomImages = [
   images.productImage9,
   images.productImage10,
 ];
+
+export const voucherStatus = {
+  ALL: 'all',
+  UNUSED: 'unused',
+  USED: 'used',
+  EXPIRED: 'expired',
+};

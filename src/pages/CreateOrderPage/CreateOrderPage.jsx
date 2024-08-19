@@ -14,12 +14,11 @@ import Modal, { ConfirmBox } from '@/components/Modal';
 const orderProcessStep = [
   { process: 1, title: '1. Thiết lập địa chỉ' },
   { process: 2, title: '2. Phương thức thanh toán' },
-  { process: 3, title: '3. Kiểm tra xác nhận thông tin' },
+  { process: 3, title: '3. Kiểm tra lại thông tin' },
   { process: 4, title: '4. Thanh toán' },
 ];
 
 const checkValid = (data) => {
-  console.log('checking', data);
   if (typeof data === 'object') return Object.keys(data).length ? true : false;
   if (typeof data === 'string') return !!data.trim();
   if (typeof data === 'number') return data >= 0 ? true : false;
@@ -27,8 +26,9 @@ const checkValid = (data) => {
 };
 
 const CreateOrderPage = () => {
-  const { orderInformation } = useLocation().state;
   const navigate = useNavigate();
+  if (!useLocation().state) return <></>;
+  const { orderInformation } = useLocation().state;
   const [process, setProcess] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [summaryOrderData, setSummaryOrderData] = useState(orderInformation);
@@ -61,17 +61,6 @@ const CreateOrderPage = () => {
     if (process === 3) return true;
   }, [summaryOrderData, process]);
 
-  const handleNextBtnClick = () => {
-    if (canNext) {
-      if (process === 3) {
-        setIsModalOpen(true);
-      } else {
-        setProcess(process + 1);
-      }
-    } else
-      toast.info('Vui lòng hoàn thiện thông tin đơn hàng', { autoClose: 1000 });
-  };
-
   const handleConfirmPurchase = () => {
     setIsModalOpen(false);
     setProcess(4);
@@ -82,6 +71,17 @@ const CreateOrderPage = () => {
       autoClose: 2000,
     });
     setIsModalOpen(false);
+  };
+
+  const handleNextBtnClick = () => {
+    if (canNext) {
+      if (process === 3) {
+        setIsModalOpen(true);
+      } else {
+        setProcess(process + 1);
+      }
+    } else
+      toast.info('Vui lòng hoàn thiện thông tin đơn hàng', { autoClose: 1000 });
   };
 
   return (
@@ -109,7 +109,12 @@ const CreateOrderPage = () => {
               handleSetSummaryOrderData={handleSetSummaryOrderData}
             />
           )}
-          {process === 3 && <ReviewOrder summaryOrderData={summaryOrderData} />}
+          {process === 3 && (
+            <ReviewOrder
+              summaryOrderData={summaryOrderData}
+              handleSetSummaryOrderData={handleSetSummaryOrderData}
+            />
+          )}
           {process === 4 && (
             <CompleteOrder summaryOrderData={summaryOrderData} />
           )}
@@ -168,11 +173,11 @@ const CreateOrderPage = () => {
             </div>
             <div className="w-full flex flex-col gap-[24px]">
               <button
-                className="uppercase duration-200 flex justify-center items-center px-[40px] py-[18px] bg-[var(--color-primary)] text-white rounded hover:brightness-105 disabled:bg-[#f7f7f7] disabled:text-[#ccc] disabled:cursor-not-allowed"
+                className="capitalize duration-200 flex justify-center items-center px-[40px] py-[18px] bg-[var(--color-primary)] text-white rounded hover:brightness-105 disabled:bg-[#f7f7f7] disabled:text-[#ccc] disabled:cursor-not-allowed"
                 onClick={handleNextBtnClick}
                 disabled={!canNext}
               >
-                Tiếp tục
+                {process === 3 ? 'Tiến hành thanh toán' : 'Tiếp tục'}
               </button>
               <button
                 className="duration-200 flex justify-center p-[12px] items-center bg-white rounded hover:bg-[#f7f7f7]"

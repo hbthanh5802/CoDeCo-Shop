@@ -1,17 +1,27 @@
+import axiosAuth from './axiosAuth';
+
 const userApi = {};
 
 userApi.getUserData = () => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      resolve({
-        id: 'dummyUserId-001202023215',
-        firstName: 'Hoàng Bá',
-        lastName: 'Thanh',
-        email: 'hbthanh5802@gmail.com',
-        phoneNumber: '0382321204',
-      });
-    }, 2000);
+  return axiosAuth.get('/user/me', { withCredentials: true });
+};
+
+userApi.getAllAddresses = (params = {}) => {
+  const searchParams = {
+    page: 1,
+    pageSize: 99999,
+    sortBy: 'addressId',
+    direction: 'asc',
+    ...params,
+  };
+  return axiosAuth.get('/address', {
+    params: searchParams,
+    withCredentials: true,
   });
+};
+
+userApi.createOneAddress = (data) => {
+  return axiosAuth.post('/address', data, { withCredentials: true });
 };
 
 export default userApi;

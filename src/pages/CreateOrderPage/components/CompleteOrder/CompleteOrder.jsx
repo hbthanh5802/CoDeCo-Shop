@@ -4,21 +4,33 @@ import StatusView from '@/components/StatusView';
 import { toast } from 'react-toastify';
 import { fakeApi } from '@/utils/url';
 import { statusView } from '@/constants';
+import orderApi from '@/api/orderApi';
+import { useDispatch } from 'react-redux';
+import { getCartItemList, getNotificationList } from '@/store/slices/shopSlice';
 
 const CompleteOrder = ({ summaryOrderData }) => {
-  const { paymentMethod } = summaryOrderData;
+  if (!summaryOrderData) return <></>;
+  const { paymentMethod, note, address, voucher } = summaryOrderData;
   const { type, title, code } = paymentMethod;
-
+  const { addressId } = address;
+  const dispatch = useDispatch();
   const [fetching, setFetching] = useState(statusView.PENDING);
 
   const fetchCreateOrder = async () => {
     try {
-      const response = await fakeApi('success', 1500);
+      const bodyData = {
+        note: note,
+        paymentMethod: code,
+        addressId: addressId,
+        voucherId: voucher?.voucherId,
+      };
+      const response = await orderApi.createOrder(bodyData);
+      dispatch(getCartItemList());
+      dispatch(getNotificationList());
       setFetching(statusView.SUCCESS);
-      toast.success('Đặt hàng thành công');
     } catch (error) {
       setFetching(statusView.FAILED);
-      toast.error('Có lỗi xảy ra. Vui lòng thử lại', { autoClose: 1500 });
+      console.log('Failed to create order at process #4', error);
     }
   };
 
@@ -34,6 +46,7 @@ const CompleteOrder = ({ summaryOrderData }) => {
         type={fetching}
         className={'border-none'}
         disabled={fetching === statusView.PENDING ? true : false}
+        to={'/shop'}
         title={
           fetching === statusView.PENDING
             ? 'Đang xử lý'

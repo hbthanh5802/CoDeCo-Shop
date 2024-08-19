@@ -64,7 +64,6 @@ const SearchPage = () => {
   };
 
   const handleSetFilterData = (filterValue) => {
-    console.log(filterValue);
     let filterResult = { ...filterValue };
     filterResult = Object.entries(filterResult).reduce((acc, [key, value]) => {
       if (!value) return acc;
@@ -102,7 +101,7 @@ const SearchPage = () => {
   useEffect(() => {
     handleFetchingProducts({
       ...(searchValue && { searchValue }),
-      productIds: [categoryIdUrl],
+      categoryIds: [categoryIdUrl],
       pageSize: 9,
     });
   }, [categoryIdUrl]);

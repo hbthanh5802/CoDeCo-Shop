@@ -1,4 +1,5 @@
 import addressApi from '@/api/addressApi';
+import userApi from '@/api/userApi';
 import Spinner from '@/components/Spinner';
 import schemas from '@/schemas';
 import { fakeApi } from '@/utils/url';
@@ -107,12 +108,17 @@ const AddNewAddressForm = ({ onSubmit = () => {}, onClose = () => {} }) => {
     const isFormValid = await isValidateData(addressData);
     if (isFormValid) {
       setLoading(true);
-      await fakeApi('success', 2000)
-        .then(() => {
-          toast.success('Thêm địa chỉ mới thành công', { autoClose: 500 });
-          onSubmit(addressData);
+      await userApi
+        .createOneAddress(addressData)
+        .then((response) => {
+          toast.success('Thêm địa chỉ mới thành công', { autoClose: 1000 });
+          console.log(response);
+          if (response && response.result) {
+            onSubmit(response.result);
+          }
         })
         .catch((error) => {
+          console.log('Failed to add new address at Create Order Page', error);
           toast.error('Có lỗi xảy ra, vui lòng thử lại.', { autoClose: 1000 });
         })
         .finally(() => setLoading(false));
