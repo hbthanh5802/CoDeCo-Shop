@@ -19,6 +19,7 @@ const CustomRadio = forwardRef(
       items = [],
       allowReset = false,
       onChange = () => {},
+      emptyContent = 'Empty',
     },
     ref
   ) => {
@@ -43,7 +44,7 @@ const CustomRadio = forwardRef(
       }
     };
 
-    if (items.length === 0) return <>Nothing in Radio Group</>;
+    if (items.length === 0) return <>{emptyContent}</>;
 
     useImperativeHandle(ref, () => {
       handleReset;
@@ -104,6 +105,7 @@ CustomRadio.propTypes = {
   onChange: PropTypes.func,
   classNames: PropTypes.string,
   allowReset: PropTypes.bool,
+  emptyContent: PropTypes.node,
 };
 
 export default CustomRadio;

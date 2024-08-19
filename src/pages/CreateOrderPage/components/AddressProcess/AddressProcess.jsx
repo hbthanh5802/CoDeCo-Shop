@@ -1,10 +1,14 @@
 import Collapse from '@/components/Collapse';
 import CustomRadio from '@/components/CustomRadio';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useId, useMemo, useState } from 'react';
 import UserAddress from './UserAddress';
 import AddNewAddressForm from './AddNewAddressForm';
 import { formatCurrency } from '@/utils/currency';
 import UserVoucher from './UserVoucher';
+import userApi from '@/api/userApi';
+import { toast } from 'react-toastify';
+import voucherApi from '@/api/voucherApi';
+import { voucherStatus } from '@/constants';
 
 const shippingMethod = [
   {
@@ -49,20 +53,10 @@ const shippingMethod = [
 ];
 
 const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
+  const id = useId();
+  const [loading, setLoading] = useState({ address: false, voucher: false });
   const [addNewAddressShow, setAddNewAddressShow] = useState(false);
-  const [userAddressList, setUserAddressList] = useState(
-    Array.from({ length: 3 }).map((_, index) => ({
-      userAddressId: 'userAddressId' + index,
-      user_id: 'user_id',
-      nation: 'nation' + index,
-      province: 'province' + index,
-      district: 'district' + index,
-      detail: 'detail' + index,
-      phoneReceiver: 'phoneReceiver' + index,
-      nameReceiver: 'nameReceiver' + index,
-      isDefault: index === 0,
-    }))
-  );
+  const [userAddressList, setUserAddressList] = useState([]);
 
   const [userVoucherList, setUserVoucherList] = useState(
     Array.from({ length: 3 }).map((_, index) => ({
@@ -80,7 +74,7 @@ const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
     return userAddressList?.map((userAddressItem, index) => ({
       label: <UserAddress data={userAddressItem} />,
       value: userAddressItem,
-      defaultChecked: userAddressItem.isDefault,
+      defaultChecked: !!userAddressItem.isDefault,
     }));
   }, [userAddressList]);
 
@@ -98,13 +92,12 @@ const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
   };
 
   const handleAddNewAddress = (newAddressData) => {
-    // console.log('Add New', newAddressData);
     setAddNewAddressShow(false);
     setUserAddressList((prev) => [
       ...prev,
       {
         ...newAddressData,
-        detail: newAddressData.detail + ' ' + newAddressData.ward,
+        detail: newAddressData.detail + ' ' + (newAddressData.ward || ''),
       },
     ]);
   };
@@ -137,6 +130,37 @@ const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
       shippingMethod: undefined,
       voucher: undefined,
     });
+    setLoading((prev) => ({ ...prev, address: true, voucher: true }));
+    userApi
+      .getAllAddresses()
+      .then((response) => {
+        if (response && response.result && response.result.data) {
+          setUserAddressList(response.result.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Failed to get User Address in Create Order Page', error);
+        toast.error(
+          'Lấy thông tin địa chỉ không thành công. Vui lòng thử lại.',
+          { autoClose: 1500 }
+        );
+      })
+      .finally(() => {
+        setLoading((prev) => ({ ...prev, address: false }));
+      });
+    voucherApi
+      .getUserVouchers({ status: voucherStatus.UNUSED })
+      .then((response) => {
+        if (response && response.result && response.result.data) {
+          setUserVoucherList(response.result.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Failed to get User Voucher in Create Order Page', error);
+      })
+      .finally(() => {
+        setLoading((prev) => ({ ...prev, voucher: false }));
+      });
   }, []);
 
   return (
@@ -144,12 +168,22 @@ const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
       <div className="duration-200 border border-[#f7f7f7] rounded hover:border-[#e7e7e7] mb-[24px]">
         <Collapse label="Địa chỉ nhận hàng">
           <div className="flex flex-col gap-[24px] my-[24px]">
-            <div className="w-full">
-              <CustomRadio
-                name="address"
-                items={renderedAddressRadioItem}
-                onChange={(data) => handleAddressChange(data)}
-              />
+            <div className="w-full flex flex-col gap-6">
+              {loading.address ? (
+                Array.from({ length: 3 }).map((_, index) => (
+                  <div
+                    key={'address-' + id + index}
+                    className="skeleton h-[100px] animate-fadeIn"
+                  ></div>
+                ))
+              ) : (
+                <CustomRadio
+                  name="address"
+                  items={renderedAddressRadioItem}
+                  onChange={(data) => handleAddressChange(data)}
+                  emptyContent={<p>Chưa có thông tin địa chỉ đã lưu!</p>}
+                />
+              )}
             </div>
             <div className="flex flex-col gap-[24px]">
               <div className="flex gap-4 items-center">
@@ -204,15 +238,26 @@ const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
           }
         >
           <div className="flex flex-col gap-[24px] my-[24px]">
-            <div className="w-full">
-              <CustomRadio
-                name="voucher"
-                color="#3AA39F"
-                items={renderedVoucherRadioItem}
-                allowReset={true}
-                onChange={(data) => handleChooseVoucher(data)}
-              />
+            <div className="w-full flex flex-col gap-6">
+              {loading.voucher ? (
+                Array.from({ length: 3 }).map((_, index) => (
+                  <div
+                    key={'voucher-' + id + index}
+                    className="skeleton h-[40px] animate-fadeIn"
+                  ></div>
+                ))
+              ) : (
+                <CustomRadio
+                  name="voucher"
+                  color="#3AA39F"
+                  items={renderedVoucherRadioItem}
+                  allowReset={true}
+                  onChange={(data) => handleChooseVoucher(data)}
+                  emptyContent={<p>Bạn chưa thu thập mã giảm giá nào!</p>}
+                />
+              )}
             </div>
+            <div className="w-full"></div>
           </div>
         </Collapse>
       </div>

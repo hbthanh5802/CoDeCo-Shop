@@ -18,6 +18,8 @@ import { hexToRgb } from '@/utils/colorConverter';
 import productApi from '@/api/productApi';
 import cartApi from '@/api/cartApi';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { getCartItemList } from '@/store/slices/shopSlice';
 
 const ProductDetail = ({
   productDetailData,
@@ -25,6 +27,7 @@ const ProductDetail = ({
   productMaterials,
   productColors,
 }) => {
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const [chosenProductDetailData, setChosenProductDetailData] = useState({
@@ -36,9 +39,9 @@ const ProductDetail = ({
   const [sizeList, setSizeList] = useState(productSizes);
   const [materialList, setMaterialList] = useState(productMaterials);
   const [categoryProductChosen, setCategoryProductChosen] = useState({
-    color: '',
-    material: '',
-    size: '',
+    colorId: '',
+    materialId: '',
+    sizeId: '',
   });
 
   const {
@@ -141,7 +144,8 @@ const ProductDetail = ({
         count: quantity,
       })
       .then((response) => {
-        console.log(response);
+        toast.success('Thêm vào giỏ hàng thành công', { autoClose: 1000 });
+        dispatch(getCartItemList());
       })
       .catch((error) => {
         console.log('Failed to add to Cart', error);
@@ -249,7 +253,7 @@ const ProductDetail = ({
             <div>
               <CategoryRadio
                 items={renderedColorList}
-                name="color"
+                name="colorId"
                 onChange={(data) => handleCategoryRadioChange(data)}
                 className="flex flex-wrap gap-3"
               />
@@ -260,7 +264,7 @@ const ProductDetail = ({
             <div>
               <CategoryRadio
                 items={renderedMaterialList}
-                name="material"
+                name="materialId"
                 onChange={(data) => handleCategoryRadioChange(data)}
                 className="flex flex-wrap gap-3"
               />
@@ -271,7 +275,7 @@ const ProductDetail = ({
             <div>
               <CategoryRadio
                 items={renderedSizeList}
-                name="size"
+                name="sizeId"
                 onChange={(data) => handleCategoryRadioChange(data)}
                 className="flex flex-wrap gap-3"
               />

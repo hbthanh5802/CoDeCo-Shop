@@ -45,7 +45,7 @@ const CartItem = ({
         .editCartItem(cartItemId, bodyData)
         .then((response) => {
           _cartItemList[cartItemIndex].count = newQuantity;
-          toast.success('Tăng số lượng thành công', { autoClose: 1000 });
+          toast.success('Thay đổi số lượng thành công', { autoClose: 1000 });
         })
         .catch((error) => {
           toast.error('Có lỗi xảy ra, vui lòng thử lại sau');
@@ -74,7 +74,7 @@ const CartItem = ({
 
   return (
     <div className="w-full duration-300 flex items-center gap-6 border-b border-b-[#e7e7e7] py-3 pb-6 pr-3 rounded-lg hover:bg-[#f7f7f7]/[.4]">
-      <div className="">
+      <div className={`${image ? '' : 'skeleton'}`}>
         <img
           src={image}
           alt="Product Image"
