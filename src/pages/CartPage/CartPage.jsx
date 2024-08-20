@@ -59,7 +59,7 @@ const CartPage = () => {
         let _checkedCartItemList = [...checkedCartItemList].filter(
           (checkedCartItem) => checkedCartItem !== cart_item_id
         );
-
+        dispatch(getCartItemList());
         setCartItemList([..._cartItemList]);
         setCheckedCartItemList([..._checkedCartItemList]);
       });
@@ -96,7 +96,6 @@ const CartPage = () => {
     );
     Promise.all(selectCartItemPromises)
       .then((results) => {
-        console.log(results);
         navigate('/shop/create-order', {
           state: data,
         });

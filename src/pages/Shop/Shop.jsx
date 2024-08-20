@@ -1,7 +1,7 @@
 import images from '@/assets/images';
 import CustomSwiper from '@/components/CustomSwiper';
 import { setPreviousHistory } from '@/store/slices/historySlice';
-import React, { useEffect, useId, useMemo } from 'react';
+import React, { useEffect, useId, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { SwiperSlide } from 'swiper/react';
@@ -13,6 +13,7 @@ import { GoArrowRight } from 'react-icons/go';
 import { TbCoin } from 'react-icons/tb';
 import { BsChatDots } from 'react-icons/bs';
 import { BsCreditCard } from 'react-icons/bs';
+import voucherApi from '@/api/voucherApi';
 
 const Shop = () => {
   const categoryId = useId();
@@ -20,6 +21,7 @@ const Shop = () => {
   const { pathname, search } = useLocation();
   const dispatch = useDispatch();
   const { categoryList, voucherList } = useSelector((state) => state.shop);
+  const [userVoucherIdList, setUserVoucherIdList] = useState([]);
 
   const bestSellerSegmentedList = useMemo(() => {
     const result = categoryList
@@ -64,6 +66,18 @@ const Shop = () => {
 
   useEffect(() => {
     dispatch(setPreviousHistory(pathname + search));
+    voucherApi
+      .getUserVouchers()
+      .then((response) => {
+        if (response?.result?.data) {
+          setUserVoucherIdList(
+            response.result.data?.map((voucherItem) => voucherItem.voucherId)
+          );
+        }
+      })
+      .catch((error) => {
+        console.log('Failed to get user voucher in Shop Page', error);
+      });
   }, []);
 
   return (
@@ -152,6 +166,7 @@ const Shop = () => {
               {voucherList.slice(0, 4).map((voucherItem, index) => {
                 return (
                   <VoucherCard
+                    isTaken={userVoucherIdList.includes(voucherItem.voucherId)}
                     key={voucherId + '' + index}
                     data={voucherItem}
                   />
