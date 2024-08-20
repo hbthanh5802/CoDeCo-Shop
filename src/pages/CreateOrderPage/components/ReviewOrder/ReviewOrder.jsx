@@ -93,6 +93,7 @@ const ReviewOrder = ({ summaryOrderData, handleSetSummaryOrderData }) => {
                         materialName,
                         sizeName,
                         cartItemId,
+                        percent,
                         image,
                         selected,
                       } = orderItem;
@@ -110,13 +111,19 @@ const ReviewOrder = ({ summaryOrderData, handleSetSummaryOrderData }) => {
                             </div>
                           </td>
                           <td className="text-center">
-                            {formatCurrency(price)}
+                            {formatCurrency(
+                              percent ? price * ((100 - percent) / 100) : price
+                            )}
                           </td>
                           <td className="text-center">
                             {formatCurrency(count)}
                           </td>
                           <td className="text-center">
-                            {formatCurrency(price * count)}
+                            {formatCurrency(
+                              (percent
+                                ? price * ((100 - percent) / 100)
+                                : price) * count
+                            )}
                           </td>
                         </tr>
                       );
@@ -154,12 +161,12 @@ const ReviewOrder = ({ summaryOrderData, handleSetSummaryOrderData }) => {
                   <span>{`${formatCurrency(totalPrice)} VNĐ`}</span>
                 </div>
                 <div className="flex items-center justify-between gap-3 text-[14px]">
-                  <span className="font-medium">Tiền giảm:</span>
-                  <span>{`${formatCurrency(discountedPrice)} VNĐ`}</span>
-                </div>
-                <div className="flex items-center justify-between gap-3 text-[14px]">
                   <span className="font-medium">Phí vận chuyển:</span>
                   <span>{`${formatCurrency(shippingFee)} VNĐ`}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3 text-[14px]">
+                  <span className="font-medium">Tiền giảm:</span>
+                  <span>{`- ${formatCurrency(discountedPrice)} VNĐ`}</span>
                 </div>
                 <div className="flex items-center justify-between gap-3 text-[14px]">
                   <span className="font-medium">Tổng thanh toán:</span>

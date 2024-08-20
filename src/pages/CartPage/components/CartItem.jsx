@@ -22,6 +22,7 @@ const CartItem = ({
     cartItemId,
     productDetailId,
     selected,
+    percent,
   } = data;
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -130,7 +131,9 @@ const CartItem = ({
           </div>
           <div className="ml-auto flex flex-col items-end">
             <h2 className="font-semibold text-[20px]">
-              {formatCurrency(price * count)}
+              {formatCurrency(
+                (percent ? (price * (100 - percent)) / 100 : price) * count
+              )}
             </h2>
             <span className="text-[18px]">VNĐ</span>
           </div>

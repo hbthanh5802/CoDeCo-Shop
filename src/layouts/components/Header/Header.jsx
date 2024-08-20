@@ -142,15 +142,25 @@ const Header = forwardRef((props, ref) => {
       }`}
     >
       <div className="flex justify-between items-center w-full">
-        <div className="logo">
-          <Link
-            to={'/'}
-            className={`text-[28px] ${
-              pathname === '/' && 'text-white'
-            } font-bold`}
-          >
-            CoDeCo
-          </Link>
+        <div className="flex items-center gap-6">
+          <div className="logo">
+            <Link
+              to={'/'}
+              className={`text-[28px] ${
+                pathname === '/' && 'text-white'
+              } font-bold`}
+            >
+              CoDeCo
+            </Link>
+          </div>
+          {pathname !== '/' && (
+            <Link
+              to={'/shop'}
+              className="text-[18px] hover:text-[var(--color-primary)] duration-300 px-1 py-1 hover:px-4 hover:bg-[#e58411]/[.02] border border-transparent hover:border-[var(--color-primary)] rounded-md"
+            >
+              Shop
+            </Link>
+          )}
         </div>
 
         {pathname === '/' ? (

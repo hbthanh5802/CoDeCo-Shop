@@ -20,6 +20,7 @@ import cartApi from '@/api/cartApi';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { getCartItemList } from '@/store/slices/shopSlice';
+import { addToHistoryCart } from '@/store/slices/historySlice';
 
 const ProductDetail = ({
   productDetailData,
@@ -147,6 +148,16 @@ const ProductDetail = ({
       .then((response) => {
         toast.success('Thêm vào giỏ hàng thành công', { autoClose: 1000 });
         dispatch(getCartItemList());
+        dispatch(
+          addToHistoryCart({
+            productId,
+            productDetailId: chosenProductDetailData.productDetailId,
+            categoryId,
+            percent,
+            minPrice,
+            maxPrice,
+          })
+        );
       })
       .catch((error) => {
         console.log('Failed to add to Cart', error);

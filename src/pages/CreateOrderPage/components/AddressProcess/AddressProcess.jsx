@@ -1,6 +1,6 @@
 import Collapse from '@/components/Collapse';
 import CustomRadio from '@/components/CustomRadio';
-import React, { useEffect, useId, useMemo, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import UserAddress from './UserAddress';
 import AddNewAddressForm from './AddNewAddressForm';
 import { formatCurrency } from '@/utils/currency';
@@ -54,6 +54,7 @@ const shippingMethod = [
 
 const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
   const id = useId();
+  const voucherRadioGroupRef = useRef(null);
   const [loading, setLoading] = useState({ address: false, voucher: false });
   const [addNewAddressShow, setAddNewAddressShow] = useState(false);
   const [userAddressList, setUserAddressList] = useState([]);
@@ -111,18 +112,49 @@ const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
   const calculateDiscountPrice = (voucher) => {
     if (!voucher) return 0;
     if (voucher.minValueOrder > summaryOrderData.totalPrice) return 0;
-    if (voucher.maxValueDiscount && voucher.discountPercent)
+    if (voucher.maxValueDiscount && voucher.discountPercent) {
       return summaryOrderData.totalPrice * (voucher.discountPercent / 100) <
         voucher.maxValueDiscount
         ? summaryOrderData.totalPrice * (voucher.discountPercent / 100)
         : voucher.maxValueDiscount;
+    }
     return summaryOrderData.totalPrice * voucher.discountPercent;
   };
 
   const handleChooseVoucher = (data) => {
-    const { name, value } = data;
-    const discountedPrice = calculateDiscountPrice(value);
-    handleSetSummaryOrderData({ [name]: value, discountedPrice });
+    const { name, value: voucherData } = data;
+    let discountedPrice = calculateDiscountPrice(voucherData);
+    if (voucherData) {
+      voucherApi
+        .checkVoucher({
+          voucherId: voucherData.voucherId,
+          totalMoney: summaryOrderData.totalPrice,
+        })
+        .then((response) => {
+          if (response.result) discountedPrice = response.result;
+          handleSetSummaryOrderData({ [name]: voucherData, discountedPrice });
+          toast.success(
+            `Áp dụng voucher thành công, đơn hàng của bạn được giảm ${formatCurrency(
+              discountedPrice
+            )} VNĐ 💐`,
+            { autoClose: 1000 }
+          );
+        })
+        .catch((error) => {
+          console.log('Failed to check voucher in Create Order Page', error);
+          toast.error('Voucher này không khả dụng với đơn hàng này 😥.', {
+            autoClose: 1500,
+          });
+          if (voucherRadioGroupRef.current) {
+            voucherRadioGroupRef.current?.handleReset();
+          }
+          discountedPrice = 0;
+          handleSetSummaryOrderData({ discountedPrice });
+        })
+        .finally(() => {});
+    } else {
+      handleSetSummaryOrderData({ [name]: voucherData, discountedPrice });
+    }
   };
 
   useEffect(() => {
@@ -248,6 +280,7 @@ const AddressProcess = ({ handleSetSummaryOrderData, summaryOrderData }) => {
                 ))
               ) : (
                 <CustomRadio
+                  ref={voucherRadioGroupRef}
                   name="voucher"
                   color="#3AA39F"
                   items={renderedVoucherRadioItem}

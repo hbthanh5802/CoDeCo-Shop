@@ -46,10 +46,7 @@ const CustomRadio = forwardRef(
 
     if (items.length === 0) return <>{emptyContent}</>;
 
-    useImperativeHandle(ref, () => {
-      handleReset;
-      handleChange;
-    });
+    useImperativeHandle(ref, () => ({ handleReset, handleChange }));
 
     return (
       <div ref={radioGroupRef} className={`flex flex-col gap-2 ${className}`}>
