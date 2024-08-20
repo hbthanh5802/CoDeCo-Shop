@@ -1,5 +1,5 @@
 import images from '@/assets/images';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Timer from '../Timer';
 
 import { BiInfoCircle } from 'react-icons/bi';
@@ -13,7 +13,7 @@ import Tippy from '@tippyjs/react';
 import { formatCurrency } from '@/utils/currency';
 import { randomImages } from '@/constants';
 
-const VoucherCard = ({ data = {} }) => {
+const VoucherCard = ({ data = {}, isTaken = false }) => {
   const {
     voucherId,
     code,
@@ -26,12 +26,10 @@ const VoucherCard = ({ data = {} }) => {
     startDate,
     endDate,
   } = data;
-  const [taken, setTaken] = useState(false);
+  const [taken, setTaken] = useState(isTaken);
   const [loading, setLoading] = useState(false);
   const { currentUser } = useSelector((state) => state.auth);
-  const [isTimeExpired, setIsTimeExpired] = useState(() =>
-    isDateTimeExpired(endDate)
-  );
+  const [isTimeExpired, setIsTimeExpired] = useState(true);
 
   const handleGetVoucherClick = () => {
     if (!currentUser) {
@@ -40,7 +38,7 @@ const VoucherCard = ({ data = {} }) => {
       });
       return;
     }
-    if (!taken && !isTimeExpired) {
+    if (!taken && isTimeExpired !== true) {
       const data = { userId: currentUser.id, voucherId, code };
       setLoading(true);
       voucherApi
@@ -62,6 +60,11 @@ const VoucherCard = ({ data = {} }) => {
     }
   };
 
+  useEffect(() => {
+    setIsTimeExpired(isDateTimeExpired(endDate));
+    setTaken(isTaken);
+  }, [endDate, isTaken]);
+
   return (
     <div className="h-fit bg-white border border-[#ccc] flex flex-col items-stretch xl:flex-row gap-[24px] xl:items-stretch justify-between">
       <div className="flex flex-col items-start gap-6 xl:flex-row xl:items-center p-[24px]">
@@ -71,7 +74,7 @@ const VoucherCard = ({ data = {} }) => {
           className="w-full h-auto xl:size-[140px] aspect-square animate-fadeIn"
         />
         <div className="flex flex-col space-y-[8px]">
-          <h2 className="capitalize text-[18px] font-medium">
+          <h2 className="capitalize text-[18px] font-medium line-clamp-1">
             {title || 'Mã giảm'}
           </h2>
           <h1 className="font font-semibold text-[24px]">
@@ -136,7 +139,7 @@ const VoucherCard = ({ data = {} }) => {
         <button
           className={`uppercase flex items-center justify-center md:min-w-fit lg:min-w-[150px] md:min-h-[55px] gap-2 px-[24px] py-[12px] text-[18px] text-[#008080] font-medium border-[2px] border-dashed border-[#008080] bg-[#008080]/[.05] hover:bg-[#008080]/[0.2] duration-150 disabled:cursor-not-allowed disabled:border-[#ccc] disabled:text-[#ccc] disabled:bg-[#f7f7f7] active:bg-[#008080]/[.05]`}
           onClick={handleGetVoucherClick}
-          disabled={taken || isTimeExpired}
+          disabled={taken || isTimeExpired === true}
         >
           {loading ? (
             <Spinner color="#008080" size={18} />

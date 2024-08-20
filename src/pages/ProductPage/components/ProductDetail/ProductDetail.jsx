@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import RateStar from '@/components/RateStar';
 import { formatCurrency } from '@/utils/currency';
@@ -35,6 +35,7 @@ const ProductDetail = ({
     price: null,
     productDetailId: null,
   });
+  const productCategoriesRadioGroupRefs = useRef([]);
   const [colorList, setColorList] = useState(productColors);
   const [sizeList, setSizeList] = useState(productSizes);
   const [materialList, setMaterialList] = useState(productMaterials);
@@ -156,6 +157,21 @@ const ProductDetail = ({
   };
 
   useEffect(() => {
+    if (productCategoriesRadioGroupRefs.current) {
+      productCategoriesRadioGroupRefs.current.forEach((categoryRadioGroup) =>
+        categoryRadioGroup?.handleReset()
+      );
+    }
+    setChosenProductDetailData({
+      totalQuantity: 0,
+      price: null,
+      productDetailId: null,
+    });
+    setCategoryProductChosen({
+      colorId: '',
+      materialId: '',
+      sizeId: '',
+    });
     setColorList(productColors);
     setMaterialList(productMaterials);
     setSizeList(productSizes);
@@ -170,9 +186,17 @@ const ProductDetail = ({
       .getProductFilter(dataBody)
       .then((response) => {
         if (response && response.result) {
-          console.log(response.result);
           const { price, productDetailId, totalQuantity } = response.result;
-          setChosenProductDetailData({ price, productDetailId, totalQuantity });
+          if (!totalQuantity)
+            toast.info(
+              'Loại hàng này hiện tại đang hết. Rất mong quý khách thông cảm',
+              { autoClose: 1000 }
+            );
+          setChosenProductDetailData({
+            price: percent ? price * ((100 - percent) / 100) : price,
+            productDetailId,
+            totalQuantity,
+          });
         }
       })
       .catch((error) => {
@@ -252,6 +276,11 @@ const ProductDetail = ({
             <h4 className="min-w-[100px]">Màu sắc:</h4>
             <div>
               <CategoryRadio
+                ref={(el) =>
+                  (productCategoriesRadioGroupRefs.current[
+                    productCategoriesRadioGroupRefs.current.length++
+                  ] = el)
+                }
                 items={renderedColorList}
                 name="colorId"
                 onChange={(data) => handleCategoryRadioChange(data)}
@@ -263,6 +292,11 @@ const ProductDetail = ({
             <h4 className="min-w-[100px]">Chất liệu:</h4>
             <div>
               <CategoryRadio
+                ref={(el) =>
+                  (productCategoriesRadioGroupRefs.current[
+                    productCategoriesRadioGroupRefs.current.length++
+                  ] = el)
+                }
                 items={renderedMaterialList}
                 name="materialId"
                 onChange={(data) => handleCategoryRadioChange(data)}
@@ -274,6 +308,11 @@ const ProductDetail = ({
             <h4 className="min-w-[100px]">Kích thước:</h4>
             <div>
               <CategoryRadio
+                ref={(el) =>
+                  (productCategoriesRadioGroupRefs.current[
+                    productCategoriesRadioGroupRefs.current.length++
+                  ] = el)
+                }
                 items={renderedSizeList}
                 name="sizeId"
                 onChange={(data) => handleCategoryRadioChange(data)}
@@ -287,7 +326,11 @@ const ProductDetail = ({
         <div className="flex flex-col gap-3">
           <span>
             Số lượng sản phẩm:{' '}
-            <span className="font-semibold">
+            <span
+              className={`relative font-semibold text-[18px] ${
+                chosenProductDetailData.totalQuantity ? 'text-[#3aa39f]' : ''
+              }`}
+            >
               {chosenProductDetailData.totalQuantity}
             </span>
           </span>

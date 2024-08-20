@@ -19,19 +19,34 @@ export const getDateTimeDetail = (dateTimeString) => {
 };
 
 export const isDateTimeExpired = (dateTimeString) => {
+  // Tách ngày và giờ
+  const [datePart, timePart] = dateTimeString.split(' ');
+  // Tách ngày, tháng, năm
+  const [day, month, year] = datePart.split('-').map(Number);
+  // Tách giờ, phút, giây
+  const [hours, minutes, seconds] = timePart.split(':').map(Number);
+  // Tạo đối tượng Date
+  const dataTimeObject = new Date(
+    year,
+    month - 1,
+    day,
+    hours,
+    minutes,
+    seconds
+  );
+
   const now = new Date();
-  const dataTimeObject = new Date(dateTimeString);
   const timeDifference = dataTimeObject - now;
 
   if (timeDifference <= 0) return true; // YES. It expired
 
-  const seconds = Math.floor(timeDifference / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  const hours = Math.floor(minutes / 60);
-  const remainingMinutes = minutes % 60;
-  const days = Math.floor(hours / 24);
-  const remainingHours = hours % 24;
+  const totalSeconds = Math.floor(timeDifference / 1000);
+  const remainingSeconds = totalSeconds % 60;
+  const totalMinutes = Math.floor(totalSeconds / 60);
+  const remainingMinutes = totalMinutes % 60;
+  const totalHours = Math.floor(totalMinutes / 60);
+  const remainingHours = totalHours % 24;
+  const days = Math.floor(totalHours / 24);
 
   return {
     days,
