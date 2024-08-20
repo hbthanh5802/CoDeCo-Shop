@@ -30,4 +30,10 @@ voucherApi.getUserVouchers = (params = {}) => {
   });
 };
 
+voucherApi.checkVoucher = (data) => {
+  return axiosAuth.post('/vouchers/check-voucher', data, {
+    withCredentials: true,
+  });
+};
+
 export default voucherApi;

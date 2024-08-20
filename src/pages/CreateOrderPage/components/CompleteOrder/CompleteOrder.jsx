@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import StatusView from '@/components/StatusView';
 import { toast } from 'react-toastify';
@@ -10,6 +10,7 @@ import { getCartItemList, getNotificationList } from '@/store/slices/shopSlice';
 
 const CompleteOrder = ({ summaryOrderData }) => {
   if (!summaryOrderData) return <></>;
+  const canCreateOrder = useRef(true);
   const { paymentMethod, note, address, voucher } = summaryOrderData;
   const { type, title, code } = paymentMethod;
   const { addressId } = address;
@@ -25,8 +26,8 @@ const CompleteOrder = ({ summaryOrderData }) => {
         voucherId: voucher?.voucherId,
       };
       const response = await orderApi.createOrder(bodyData);
-      dispatch(getCartItemList());
-      dispatch(getNotificationList());
+      dispatch(getCartItemList({}));
+      dispatch(getNotificationList({}));
       setFetching(statusView.SUCCESS);
     } catch (error) {
       setFetching(statusView.FAILED);
@@ -35,9 +36,14 @@ const CompleteOrder = ({ summaryOrderData }) => {
   };
 
   useEffect(() => {
+    if (!canCreateOrder.current) return;
     if (type === 'cod' && code === 0) {
       fetchCreateOrder();
     }
+
+    return () => {
+      canCreateOrder.current = false;
+    };
   }, []);
 
   return (

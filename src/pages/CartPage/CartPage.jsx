@@ -11,8 +11,9 @@ import Spinner from '@/components/Spinner';
 import { formatCurrency } from '@/utils/currency';
 import { toast } from 'react-toastify';
 import cartApi from '@/api/cartApi';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCartItemList } from '@/store/slices/shopSlice';
+import { removeHistoryCartById } from '@/store/slices/historySlice';
 
 const CartPage = () => {
   const dispatch = useDispatch();
@@ -22,6 +23,7 @@ const CartPage = () => {
   const cartCheckboxListRef = useRef(null);
   const [cartItemList, setCartItemList] = useState([]);
   const [checkedCartItemList, setCheckedCartItemList] = useState([]);
+  const { historyCart } = useSelector((state) => state.history);
 
   const summaryResult = useMemo(() => {
     let result = {
@@ -38,7 +40,12 @@ const CartPage = () => {
       );
       result.items = summaryCartItemList;
       result.totalPrice = summaryCartItemList?.reduce(
-        (acc, cartItem) => acc + cartItem.price * cartItem.count,
+        (acc, cartItem) =>
+          acc +
+          (cartItem.percent
+            ? ((100 - cartItem.percent) / 100) * cartItem.price
+            : cartItem.price) *
+            cartItem.count,
         0
       );
     }
@@ -53,6 +60,16 @@ const CartPage = () => {
   const handleDeleteCartItem = async (cart_item_id) => {
     try {
       await cartApi.removeOne(cart_item_id).then(() => {
+        let cartItemData = [...cartItemList].find(
+          (cartItem) => cartItem.cartItemId === cart_item_id
+        );
+        if (cartItemData) {
+          dispatch(
+            removeHistoryCartById({
+              productDetailId: cartItemData.productDetailId,
+            })
+          );
+        }
         let _cartItemList = [...cartItemList].filter(
           (cartItem) => cartItem.cartItemId !== cart_item_id
         );
@@ -113,8 +130,17 @@ const CartPage = () => {
     cartApi
       .getUserCart()
       .then((response) => {
-        if (response?.result?.cartItemResponses)
-          setCartItemList(response?.result?.cartItemResponses);
+        if (response?.result?.cartItemResponses) {
+          let cartData = response?.result?.cartItemResponses;
+          cartData = cartData?.map((cartItemData) => {
+            const { percent } = historyCart?.find(
+              (historyCartItem) =>
+                historyCartItem.productDetailId === cartItemData.productDetailId
+            );
+            return { ...cartItemData, percent };
+          });
+          setCartItemList(cartData);
+        }
       })
       .catch((error) => {
         console.log('Failed to get Cart List in Cart Page', error);

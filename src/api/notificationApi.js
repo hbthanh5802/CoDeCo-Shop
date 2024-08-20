@@ -2,7 +2,7 @@ import axiosAuth from './axiosAuth';
 
 const notificationApi = {};
 
-notificationApi.getUserNotifications = (params) => {
+notificationApi.getUserNotifications = (params = {}) => {
   const searchParams = { page: 1, pageSize: 99999, ...params };
   return axiosAuth.get('/notifications', { params: searchParams });
 };

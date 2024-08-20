@@ -48,7 +48,7 @@ const ProductCard = ({ data }) => {
 
   const handleError = (e) => {
     e.target.src =
-      randomImages[Math.round(Math.random() * randomImages.length)];
+      randomImages[Math.floor(Math.random() * randomImages.length + 1)];
   };
 
   return (
@@ -62,7 +62,7 @@ const ProductCard = ({ data }) => {
       )}
       {/* Product Image */}
       <div
-        className="product-img h-[300px] overflow-hidden rounded-t-[20px] cursor-pointer border-b border-b-[#f7f7f7]"
+        className={`product-img h-[300px] overflow-hidden rounded-t-[20px] cursor-pointer border-b border-b-[#f7f7f7]`}
         onClick={handleProductCardClick}
       >
         <img
