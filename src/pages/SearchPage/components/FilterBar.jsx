@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import Collapse from '@/components/Collapse';
 import { BiFilterAlt } from 'react-icons/bi';
@@ -6,6 +6,7 @@ import CheckboxGroup from '@/components/CustomCheckbox/CheckboxGroup';
 import Spinner from '@/components/Spinner';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import categoryApi from '@/api/categoryApi';
 
 const FilterBar = ({ filterData, handleSetFilterData }) => {
   const [loading, setLoading] = useState(true);
@@ -20,6 +21,9 @@ const FilterBar = ({ filterData, handleSetFilterData }) => {
     toPrice: '',
   });
 
+  const [sizeList, setSizeList] = useState([]);
+  const [colorList, setColorList] = useState([]);
+  const [materialList, setMaterialList] = useState([]);
   const { categoryList } = useSelector((state) => state.shop);
   const categoryFilterList = useMemo(() => {
     return categoryList.map((categoryItem, index) => {
@@ -30,6 +34,36 @@ const FilterBar = ({ filterData, handleSetFilterData }) => {
       };
     });
   }, [categoryList]);
+
+  const renderedSizeFilterList = useMemo(() => {
+    return sizeList.map((sizeItem, index) => {
+      const { sizeId, name } = sizeItem;
+      return {
+        label: name,
+        value: sizeId,
+      };
+    });
+  }, [sizeList]);
+
+  const renderedColorFilterList = useMemo(() => {
+    return colorList.map((colorItem, index) => {
+      const { colorId, name } = colorItem;
+      return {
+        label: name,
+        value: colorId,
+      };
+    });
+  }, [colorList]);
+
+  const renderedMaterialFilterList = useMemo(() => {
+    return materialList.map((materialItem, index) => {
+      const { materialId, name } = materialItem;
+      return {
+        label: name,
+        value: materialId,
+      };
+    });
+  }, [materialList]);
 
   const handleSetFilterByFilterChange = (name, value) => {
     let _filterData = { ...filterData };
@@ -94,6 +128,28 @@ const FilterBar = ({ filterData, handleSetFilterData }) => {
     );
   };
 
+  useEffect(() => {
+    Promise.all([
+      categoryApi.getAllColors(),
+      categoryApi.getAllSizes(),
+      categoryApi.getAllMaterials(),
+    ])
+      .then(([colorResponse, sizeResponse, materialResponse]) => {
+        if (colorResponse.result && colorResponse.result.data) {
+          setColorList(colorResponse.result.data);
+        }
+        if (sizeResponse.result && sizeResponse.result.data) {
+          setSizeList(sizeResponse.result.data);
+        }
+        if (materialResponse.result && materialResponse.result.data) {
+          setMaterialList(materialResponse.result.data);
+        }
+      })
+      .catch((error) => {
+        console.log('Failed to get product categories in Filter bar', error);
+      });
+  }, []);
+
   return (
     <div>
       <div className="flex gap-2 items-center duration-300 transition-all px-[16px] mb-[24px]">
@@ -114,25 +170,37 @@ const FilterBar = ({ filterData, handleSetFilterData }) => {
           />
         </div>
       </Collapse>
-      {/* Color Filter */}
-      <Collapse label="Theo chất liệu">
+      {/* Size Filter */}
+      <Collapse label="Theo kích cỡ">
         <div className="my-2 mb-[24px] max-h-[500px] overflow-auto w-full">
           <CheckboxGroup
             ref={(el) => (filterRefs.current[filterRefs.current.length++] = el)}
             name="sizeIds"
-            items={[]}
+            items={renderedSizeFilterList}
             onChange={(data) => handleGroupCheckboxChange(data)}
             className={'max-h-[300px] overflow-y-auto'}
           />
         </div>
       </Collapse>
       {/* Color Filter */}
-      <Collapse label="Màu sắc">
+      <Collapse label="Theo màu sắc">
         <div className="my-2 mb-[24px] max-h-[500px] overflow-auto w-full">
           <CheckboxGroup
             ref={(el) => (filterRefs.current[filterRefs.current.length++] = el)}
             name="colorIds"
-            items={[]}
+            items={renderedColorFilterList}
+            onChange={(data) => handleGroupCheckboxChange(data)}
+            className={'max-h-[300px] overflow-y-auto'}
+          />
+        </div>
+      </Collapse>
+      {/* Material Filter */}
+      <Collapse label="Theo chất liệu">
+        <div className="my-2 mb-[24px] max-h-[500px] overflow-auto w-full">
+          <CheckboxGroup
+            ref={(el) => (filterRefs.current[filterRefs.current.length++] = el)}
+            name="materialIds"
+            items={renderedMaterialFilterList}
             onChange={(data) => handleGroupCheckboxChange(data)}
             className={'max-h-[300px] overflow-y-auto'}
           />

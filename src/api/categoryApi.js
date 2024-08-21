@@ -29,7 +29,7 @@ categoryApi.getAllMaterials = () => {
     sortBy: 'materialId',
     direction: 'asc',
   };
-  return axiosClient.get('/categories/size', {
+  return axiosClient.get('/categories/material', {
     params: searchParams,
   });
 };

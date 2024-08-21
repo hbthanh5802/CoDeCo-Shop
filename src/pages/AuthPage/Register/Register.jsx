@@ -12,10 +12,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Background from '../components/Background';
 import VerifyOTP from '../components/VerifyOTP';
-import SuccessView from '../components/SuccessView';
 import { useSelector } from 'react-redux';
 import authApi from '@/api/authApi';
-import { serializeSearchParams } from '@/utils/url';
 import { statusView } from '@/constants';
 import StatusView from '@/components/StatusView';
 
@@ -74,9 +72,6 @@ const Register = () => {
           })
           .catch((error) => {
             console.log('Failed to verify link in Register Page', error);
-            toast.error('Xác minh thất bại ❌😴, vui lòng thử lại', {
-              autoClose: 2000,
-            });
             setRegisterStatus(statusView.FAILED);
           });
       }
