@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import StatusView from '@/components/StatusView';
-import { toast } from 'react-toastify';
-import { fakeApi, serializeSearchParams } from '@/utils/url';
+import { serializeSearchParams } from '@/utils/url';
 import { statusView } from '@/constants';
 import orderApi from '@/api/orderApi';
 import { useDispatch } from 'react-redux';
@@ -46,6 +45,8 @@ const CompleteOrder = ({ summaryOrderData, paymentStatus }) => {
     } catch (error) {
       setFetching(statusView.FAILED);
       console.log('Failed to create order at process #4', error);
+    } finally {
+      dispatch(setOrderData(null));
     }
   };
 
@@ -92,6 +93,9 @@ const CompleteOrder = ({ summaryOrderData, paymentStatus }) => {
     if (!canCreateOrder.current) return;
     if (paymentStatus === statusView.SUCCESS) {
       fetchCreateOrder();
+    } else if (paymentStatus === statusView.FAILED) {
+      setFetching(statusView.FAILED);
+      dispatch(setOrderData(null));
     } else if (type === 'cod' && code === 0) {
       fetchCreateOrder();
     } else if (type === 'vn-pay' && code === 1) {

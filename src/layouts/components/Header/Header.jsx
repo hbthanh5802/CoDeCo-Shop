@@ -244,22 +244,22 @@ const Header = forwardRef((props, ref) => {
                   pathname === '/' && 'text-white'
                 } cursor-pointer px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
               >
-                <span className="text-[16px]">
-                  {currentUser.avatarUrl ? (
-                    <img
-                      src={currentUser.avatarUrl}
-                      alt="Avatar"
-                      className="size-[28px] rounded-full border border-white"
-                    />
-                  ) : (
+                {currentUser.avatarUrl ? (
+                  <img
+                    src={currentUser.avatarUrl}
+                    alt="Avatar"
+                    className="size-[28px] aspect-square rounded-full border border-white"
+                  />
+                ) : (
+                  <span className="text-[16px]">
                     <FaUserCircle className="text-[22px]" />
-                  )}
-                </span>
-                <span className="capitalize hidden md:block">
+                  </span>
+                )}
+                <p className="capitalize hidden md:line-clamp-1">
                   {(currentUser.firstName || '') +
                     ' ' +
                     (currentUser.lastName || '')}
-                </span>
+                </p>
                 <span className="text-[16px]">
                   <FaCaretDown className="text-[18px]" />
                 </span>
