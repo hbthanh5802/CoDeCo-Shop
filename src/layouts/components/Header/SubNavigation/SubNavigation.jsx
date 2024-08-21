@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { MenuExpand } from '@/components/Popper/Menu';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const SubNavigation = () => {
@@ -71,7 +71,7 @@ const SubNavigation = () => {
                 <NavLink
                   to={navigationItem.to || '#'}
                   className={
-                    'p-[8px] px-[12px] hover:bg-black/[.05] hover:font-medium rounded-lg'
+                    'duration-100 ease-in-out p-[8px] px-[12px] hover:bg-black/[.05] hover:font-medium rounded-lg'
                   }
                 >
                   {navigationItem.title}
@@ -79,6 +79,18 @@ const SubNavigation = () => {
               </MenuExpand>
             );
           })}
+          <NavLink
+            to={'/shop/vouchers'}
+            className={({ isActive }) => {
+              return `duration-100 ease-linear p-[8px] px-[12px] hover:border-dashed hover:border-b-2 hover:border-[#3aa39f] hover:font-medium rounded-lg ${
+                isActive
+                  ? 'text-[#3aa39f] font-medium border-dashed border-b-2 border-b-[#3aa39f] bg-[#3aa39f]/[.1]'
+                  : ''
+              }`;
+            }}
+          >
+            Vouchers
+          </NavLink>
         </div>
       )}
     </>

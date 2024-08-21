@@ -1,9 +1,12 @@
 import React from 'react';
 
 import './NotFound.scss';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const NotFound = () => {
+  const { state } = useLocation();
+  const { redirectTo } = state || {};
+
   return (
     <div className="w-full flex flex-col items-center justify-center mt-16 mb-[120px] gap-10">
       <div className="wrapper w-[600px]">
@@ -451,10 +454,10 @@ const NotFound = () => {
         Không thấy nội dung cần tìm !
       </p>
       <Link
-        to={'/'}
+        to={redirectTo || '/'}
         className="px-[24px] py-[12px] bg-[var(--color-primary)] text-white rounded-lg shadow-lg hover:brightness-105 duration-150 animate__animated animate__rubberBand animate__repeat-2"
       >
-        Quay lại trang chủ
+        Quay lại
       </Link>
     </div>
   );

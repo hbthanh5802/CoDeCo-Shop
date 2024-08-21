@@ -11,6 +11,7 @@ import PaymentPage from '@/pages/PaymentPage';
 import ProductPage from '@/pages/ProductPage';
 import SearchPage from '@/pages/SearchPage';
 import Shop from '@/pages/Shop';
+import VoucherPage from '@/pages/VoucherPage';
 
 const routes = [
   {
@@ -20,6 +21,10 @@ const routes = [
   {
     path: '/shop',
     component: Shop,
+  },
+  {
+    path: '/shop/vouchers',
+    component: VoucherPage,
   },
   {
     path: '/shop/search',

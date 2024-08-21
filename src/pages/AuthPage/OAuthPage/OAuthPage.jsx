@@ -47,14 +47,16 @@ const OAuthPage = () => {
         authApi
           .loginWithGoogle({ code })
           .then((response) => {
-            toast.info('Chào mừng 💐🤩', { autoClose: 1000 });
+            toast.info('Chào mừng 💐🤩', {
+              autoClose: 500,
+              onClose: () => navigate(previous || '/'),
+            });
             setStatus(statusView.SUCCESS);
             if (response.result) {
               const { userResponse, accessToken, refreshToken } =
                 response.result;
               dispatch(addToken({ accessToken, refreshToken }));
               dispatch(setCurrentUser(userResponse));
-              navigate(previous || '/');
             }
           })
           .catch((error) => {
