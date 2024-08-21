@@ -49,7 +49,17 @@ const Register = () => {
       const registerResponse = await authApi.registerUser(data);
       setProcess(2);
     } catch (error) {
-      toast.error('Có lỗi xảy ra. Vui lòng kiểm tra lại thông tin và thử lại');
+      console.log('Failed to register in Register Page', error);
+      const { message, code } = error?.response?.data || {};
+      if (message === 'Existed' && code === 1101) {
+        toast.error('Email đã được sử dụng. Vui lòng sử dụng email khác.', {
+          autoClose: 2000,
+        });
+      } else {
+        toast.error(
+          'Có lỗi xảy ra. Vui lòng kiểm tra lại thông tin và thử lại'
+        );
+      }
     }
   };
 
