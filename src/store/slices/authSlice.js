@@ -19,6 +19,9 @@ const authSlice = createAppSlice({
       if (accessToken) state.accessToken = accessToken;
       if (refreshToken) state.refreshToken = refreshToken;
     }),
+    setCurrentUser: create.reducer((state, action) => {
+      state.currentUser = action.payload;
+    }),
     loginUser: create.asyncThunk(
       async (args, thunkApi) => {
         return await authApi.loginUser({
@@ -80,6 +83,6 @@ const authSlice = createAppSlice({
   }),
 });
 
-export const { addToken, loginUser, clearState, logoutUser } =
+export const { addToken, loginUser, clearState, logoutUser, setCurrentUser } =
   authSlice.actions;
 export default authSlice.reducer;

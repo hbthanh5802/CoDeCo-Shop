@@ -9,6 +9,10 @@ authApi.loginUser = (data) => {
   });
 };
 
+authApi.loginWithGoogle = (params = {}) => {
+  return axiosClient.get('/auth/oauth/google', { params });
+};
+
 authApi.logoutUser = (data) => {
   return axiosAuth.post('/auth/logout-once', data, {
     withCredentials: true,

@@ -1,5 +1,6 @@
 import ForgotPassword from '@/pages/AuthPage/ForgotPassword';
 import Login from '@/pages/AuthPage/Login';
+import OAuthPage from '@/pages/AuthPage/OAuthPage';
 import Register from '@/pages/AuthPage/Register';
 import VerifyLink from '@/pages/AuthPage/components/VerifyLink';
 import CartPage from '@/pages/CartPage';
@@ -59,6 +60,11 @@ const routes = [
   {
     path: '/auth/forgot-password',
     component: ForgotPassword,
+    layout: null,
+  },
+  {
+    path: '/authenticate/oauth',
+    component: OAuthPage,
     layout: null,
   },
   {

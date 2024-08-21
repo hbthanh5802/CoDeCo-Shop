@@ -7,16 +7,14 @@ import CustomTextInput from '@/components/Auth/CustomTextInput/CustomTextInput';
 import schemas from '@/schemas';
 import Spinner from '@/components/Spinner';
 import { MdChevronLeft } from 'react-icons/md';
-import { FcGoogle } from 'react-icons/fc';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Background from '../components/Background';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '@/store/slices/authSlice';
-import { signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '@/configs/firebase';
 import { goBackHistory } from '@/store/slices/historySlice';
 import { resetAll } from '@/store/slices/shopSlice';
+import GoogleAuthO from '../components/GoogleAuthO';
 
 const Login = () => {
   const { previous } = useSelector((state) => state.history);
@@ -49,16 +47,6 @@ const Login = () => {
         autoClose: 500,
       });
     }
-  };
-
-  const handleLoginWithGoogle = () => {
-    signInWithPopup(auth, googleProvider)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   };
 
   const handleReCaptchaChange = (value) => {
@@ -141,13 +129,7 @@ const Login = () => {
 
         <div className="other-method flex flex-col items-center space-y-6">
           <h3 className="text-sm uppercase">Hoặc</h3>
-          <button
-            className="flex space-x-2 items-center justify-center px-6 py-3 text-base border border-slate-300 w-full rounded-lg hover:bg-slate-100 duration-150"
-            onClick={handleLoginWithGoogle}
-          >
-            <FcGoogle className="w-5 h-5" />
-            <p>Đăng nhập bằng Google</p>
-          </button>
+          <GoogleAuthO />
           <p>
             Quý khách chưa có có tài khoản?
             <Link

@@ -80,7 +80,8 @@ const CompleteOrder = ({ summaryOrderData, paymentStatus }) => {
           },
         };
         dispatch(setOrderData(orderData));
-        window.open(redirectUrl, '_blank');
+        window.location.href = redirectUrl;
+        // window.open(redirectUrl, '_blank');
       }
     } catch (error) {
       console.log('Failed to payment with VNPay', error);
@@ -93,7 +94,7 @@ const CompleteOrder = ({ summaryOrderData, paymentStatus }) => {
       fetchCreateOrder();
     } else if (type === 'cod' && code === 0) {
       fetchCreateOrder();
-    } else if (type === 'vn-pay' && code === 2) {
+    } else if (type === 'vn-pay' && code === 1) {
       const totalAmount = totalPrice + shippingFee - discountedPrice;
       paymentWithVnp({ totalAmount });
     }

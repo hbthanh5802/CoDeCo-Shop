@@ -7,7 +7,6 @@ import schemas from '@/schemas';
 import Spinner from '@/components/Spinner';
 import CustomCheckboxInput from '@/components/Auth/CustomCheckboxInput';
 import { MdChevronLeft } from 'react-icons/md';
-import { FcGoogle } from 'react-icons/fc';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Background from '../components/Background';
@@ -16,6 +15,7 @@ import { useSelector } from 'react-redux';
 import authApi from '@/api/authApi';
 import { statusView } from '@/constants';
 import StatusView from '@/components/StatusView';
+import GoogleAuthO from '../components/GoogleAuthO';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -172,10 +172,7 @@ const Register = () => {
 
           <div className="other-method flex flex-col items-center space-y-6">
             <h3 className="text-sm uppercase">Hoặc</h3>
-            <button className="flex space-x-2 items-center justify-center px-6 py-3 text-base border border-slate-300 w-full rounded-lg hover:bg-slate-100 duration-150">
-              <FcGoogle className="w-5 h-5" />
-              <p>Đăng ký bằng Google</p>
-            </button>
+            <GoogleAuthO />
             <p>
               Quý khách đã có tài khoản?
               <Link
