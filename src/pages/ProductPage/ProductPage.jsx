@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   Link,
   useLocation,
+  useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
@@ -26,6 +27,7 @@ import productApi from '@/api/productApi';
 
 const ProductPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { productId } = useParams();
   const { pathname, search } = useLocation();
   const { categoryList } = useSelector((state) => state.shop);
@@ -61,8 +63,8 @@ const ProductPage = () => {
         if (productImages) setProductImages(productImages);
       }
     } catch (error) {
-      toast.error('Có lỗi xảy ra. Vui lòng thử lại sau.', { autoClose: 1000 });
       console.log('Failed to get Product Detail', error);
+      navigate('/404', { state: { redirectTo: '/shop' } });
     } finally {
       setLoading(false);
     }

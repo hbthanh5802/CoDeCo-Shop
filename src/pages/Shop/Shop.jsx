@@ -14,12 +14,14 @@ import { TbCoin } from 'react-icons/tb';
 import { BsChatDots } from 'react-icons/bs';
 import { BsCreditCard } from 'react-icons/bs';
 import voucherApi from '@/api/voucherApi';
+import { getVoucherList } from '@/store/slices/shopSlice';
 
 const Shop = () => {
   const categoryId = useId();
   const voucherId = useId();
-  const { pathname, search } = useLocation();
   const dispatch = useDispatch();
+  const { pathname, search } = useLocation();
+  const { currentUser } = useSelector((state) => state.auth);
   const { categoryList, voucherList } = useSelector((state) => state.shop);
   const [userVoucherIdList, setUserVoucherIdList] = useState([]);
 
@@ -66,19 +68,22 @@ const Shop = () => {
 
   useEffect(() => {
     dispatch(setPreviousHistory(pathname + search));
-    voucherApi
-      .getUserVouchers()
-      .then((response) => {
-        if (response?.result?.data) {
-          setUserVoucherIdList(
-            response.result.data?.map((voucherItem) => voucherItem.voucherId)
-          );
-        }
-      })
-      .catch((error) => {
-        console.log('Failed to get user voucher in Shop Page', error);
-      });
-  }, []);
+    dispatch(getVoucherList({}));
+    if (currentUser) {
+      voucherApi
+        .getUserVouchers()
+        .then((response) => {
+          if (response?.result?.data) {
+            setUserVoucherIdList(
+              response.result.data?.map((voucherItem) => voucherItem.voucherId)
+            );
+          }
+        })
+        .catch((error) => {
+          console.log('Failed to get user voucher in Shop Page', error);
+        });
+    }
+  }, [currentUser]);
 
   return (
     <div className="Shop-wrapper">
