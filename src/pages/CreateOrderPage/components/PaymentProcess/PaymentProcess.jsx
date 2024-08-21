@@ -38,7 +38,7 @@ const paymentMethod = [
         </div>
       </div>
     ),
-    value: { title: 'Thanh toán qua VNPay', type: 'vn-pay', code: 2 },
+    value: { title: 'Thanh toán qua VNPay', type: 'vn-pay', code: 1 },
   },
 ];
 
