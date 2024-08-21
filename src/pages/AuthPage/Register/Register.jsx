@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Formik } from 'formik';
 
 import images from '@/assets/images';
@@ -8,18 +8,23 @@ import Spinner from '@/components/Spinner';
 import CustomCheckboxInput from '@/components/Auth/CustomCheckboxInput';
 import { MdChevronLeft } from 'react-icons/md';
 import { FcGoogle } from 'react-icons/fc';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Background from '../components/Background';
 import VerifyOTP from '../components/VerifyOTP';
 import SuccessView from '../components/SuccessView';
 import { useSelector } from 'react-redux';
 import authApi from '@/api/authApi';
+import { serializeSearchParams } from '@/utils/url';
+import { statusView } from '@/constants';
+import StatusView from '@/components/StatusView';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const { previous } = useSelector((state) => state.history);
   const [process, setProcess] = useState(1);
+  const [registerStatus, setRegisterStatus] = useState(statusView.PENDING);
   const [registerData, setRegisterData] = useState({
     firstName: '',
     lastName: '',
@@ -49,6 +54,34 @@ const Register = () => {
       toast.error('Có lỗi xảy ra. Vui lòng kiểm tra lại thông tin và thử lại');
     }
   };
+
+  const handleVerifyOtpSuccess = () => {
+    setProcess(3);
+    setRegisterStatus(statusView.SUCCESS);
+  };
+
+  useEffect(() => {
+    if (state) {
+      const { is_verify_link, verify_token, pass_process } = state;
+      if (pass_process && is_verify_link && verify_token) {
+        setProcess(pass_process);
+        setRegisterStatus(statusView.PENDING);
+        authApi
+          .verifyLink({ params: verify_token })
+          .then((response) => {
+            toast.success('Xác minh thành công 💐🧡', { autoClose: 1500 });
+            setRegisterStatus(statusView.SUCCESS);
+          })
+          .catch((error) => {
+            console.log('Failed to verify link in Register Page', error);
+            toast.error('Xác minh thất bại ❌😴, vui lòng thử lại', {
+              autoClose: 2000,
+            });
+            setRegisterStatus(statusView.FAILED);
+          });
+      }
+    }
+  }, [state]);
 
   return (
     <div className="h-full w-full bg-no-repeat bg-cover flex items-center space-x-6">
@@ -165,17 +198,38 @@ const Register = () => {
           title={'Xác minh Email'}
           data={registerData}
           handleSetProcess={(value) => setProcess(value)}
-          onSubmit={() => setProcess(3)}
+          onSubmit={handleVerifyOtpSuccess}
         />
       )}
       {process === 3 && (
-        <SuccessView to={'/auth/login'}>
-          <p className="text-center">
-            Tài khoản của quý khách đã được xác thực thành công. Hãy đi đến
-            trang chủ để tiếp tục mua sắm với{' '}
-            <span className="font-medium">CoDeco</span>.
-          </p>
-        </SuccessView>
+        <StatusView
+          type={registerStatus}
+          to={'/auth/login'}
+          title={
+            registerStatus === statusView.SUCCESS
+              ? 'Xác minh thành công'
+              : 'Xác minh thất bại'
+          }
+        >
+          {registerStatus === statusView.PENDING && (
+            <p className="text-center">
+              Tài khoản đang được xác minh. Vui lòng chờ
+            </p>
+          )}
+          {registerStatus === statusView.SUCCESS && (
+            <p className="text-center">
+              Tài khoản của quý khách đã được xác thực thành công. Hãy đi đến
+              trang chủ để tiếp tục mua sắm với{' '}
+              <span className="font-medium">CoDeco</span>.
+            </p>
+          )}
+          {registerStatus === statusView.FAILED && (
+            <p className="text-center">
+              Xác minh tài khoản thất bại. VUi lòng kiểm tra lại thông tin và
+              thử lại.
+            </p>
+          )}
+        </StatusView>
       )}
     </div>
   );

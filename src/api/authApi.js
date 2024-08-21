@@ -30,6 +30,10 @@ authApi.verifyOtp = (data) => {
   return axiosClient.post('/auth/verify-otp', data);
 };
 
+authApi.verifyLink = (data) => {
+  return axiosClient.post('/auth/verify-link', data);
+};
+
 authApi.regenerateOtp = (params) => {
   return axiosClient.post('/auth/regenerate-otp', {}, { params });
 };

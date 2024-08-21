@@ -20,14 +20,10 @@ const ReviewOrder = ({ summaryOrderData, handleSetSummaryOrderData }) => {
   } = summaryOrderData;
   const { nameReceiver, phoneReceiver } = address;
   const userAddress =
-    (address.detail ? address.detail : '') +
-    ', ' +
-    (address.ward ? address.ward : '') +
-    ', ' +
-    (address.district ? address.district : '') +
-    ', ' +
-    (address.province ? address.province : '') +
-    ', ' +
+    (address.detail ? address.detail + ', ' : '') +
+    (address.ward ? address.ward + ',' : '') +
+    (address.district ? address.district + ', ' : ',') +
+    (address.province ? address.province + ', ' : ',') +
     (address.nation ? address.nation : '') +
     '.';
   const { title, type, code } = paymentMethod;

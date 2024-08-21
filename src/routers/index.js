@@ -1,6 +1,7 @@
 import ForgotPassword from '@/pages/AuthPage/ForgotPassword';
 import Login from '@/pages/AuthPage/Login';
 import Register from '@/pages/AuthPage/Register';
+import VerifyLink from '@/pages/AuthPage/components/VerifyLink';
 import CartPage from '@/pages/CartPage';
 import CreateOrderPage from '@/pages/CreateOrderPage';
 import Home from '@/pages/Home';
@@ -32,12 +33,18 @@ const routes = [
     component: CartPage,
   },
   {
-    path: '/shop/create-order/payment/:paymentType',
+    path: '/payment/:paymentType',
     component: PaymentPage,
+    layout: null,
   },
   {
     path: '/shop/create-order',
     component: CreateOrderPage,
+  },
+  {
+    path: '/verify',
+    component: VerifyLink,
+    layout: null,
   },
   {
     path: '/auth/register',

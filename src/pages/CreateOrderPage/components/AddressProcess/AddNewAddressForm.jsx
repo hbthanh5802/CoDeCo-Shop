@@ -112,7 +112,6 @@ const AddNewAddressForm = ({ onSubmit = () => {}, onClose = () => {} }) => {
         .createOneAddress(addressData)
         .then((response) => {
           toast.success('Thêm địa chỉ mới thành công', { autoClose: 1000 });
-          console.log(response);
           if (response && response.result) {
             onSubmit(response.result);
           }

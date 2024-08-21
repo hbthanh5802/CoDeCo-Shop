@@ -14,7 +14,7 @@ userApi.getAllAddresses = (params = {}) => {
     direction: 'asc',
     ...params,
   };
-  return axiosAuth.get('/address', {
+  return axiosAuth.get('/address/myAddress/me', {
     params: searchParams,
     withCredentials: true,
   });

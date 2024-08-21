@@ -39,7 +39,6 @@ const authSlice = createAppSlice({
           if (refreshToken) state.refreshToken = refreshToken;
         },
         rejected: (state, action) => {
-          console.log('action.errors', action.error);
           state.errorMessage = action?.error?.message;
         },
         settled: (state) => {
