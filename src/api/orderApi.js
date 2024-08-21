@@ -7,11 +7,7 @@ orderApi.createOrder = (data) => {
 };
 
 orderApi.paymentVnp = (params = {}) => {
-  return axiosAuth.post(
-    '/payment/vn-pay',
-    {},
-    { params, withCredentials: true }
-  );
+  return axiosAuth.get('/payment/vn-pay', { params, withCredentials: true });
 };
 
 export default orderApi;

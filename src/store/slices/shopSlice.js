@@ -11,6 +11,7 @@ const initialState = {
   cartItemList: [],
   categoryList: [],
   voucherList: [],
+  orderData: null,
   errorMessage: null,
 };
 
@@ -18,8 +19,9 @@ const shopSlice = createAppSlice({
   name: 'shop',
   initialState: initialState,
   reducers: (create) => ({
-    setSearchValue: create.reducer((state, action) => {
-      state.searchValue = action.payload;
+    setSearchValue: create.reducer((state, action) => {}),
+    setOrderData: create.reducer((state, action) => {
+      state.orderData = action.payload;
     }),
     getNotificationList: create.asyncThunk(
       async (args, thunkApi) => {
@@ -112,11 +114,11 @@ const shopSlice = createAppSlice({
     ),
     resetAll: create.reducer((state) => {
       state.loading = false;
-      state.searchValue = '';
       state.notificationList = [];
       state.cartItemList = [];
       state.categoryList = [];
       state.voucherList = [];
+      state.orderData = null;
       state.errorMessage = null;
     }),
   }),
@@ -124,6 +126,7 @@ const shopSlice = createAppSlice({
 
 export const {
   setSearchValue,
+  setOrderData,
   searchingProducts,
   getNotificationList,
   getCartItemList,

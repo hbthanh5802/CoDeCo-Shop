@@ -2,19 +2,33 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import StatusView from '@/components/StatusView';
 import { toast } from 'react-toastify';
-import { fakeApi } from '@/utils/url';
+import { fakeApi, serializeSearchParams } from '@/utils/url';
 import { statusView } from '@/constants';
 import orderApi from '@/api/orderApi';
 import { useDispatch } from 'react-redux';
-import { getCartItemList, getNotificationList } from '@/store/slices/shopSlice';
+import {
+  getCartItemList,
+  getNotificationList,
+  setOrderData,
+} from '@/store/slices/shopSlice';
+import { useNavigate } from 'react-router-dom';
 
-const CompleteOrder = ({ summaryOrderData }) => {
+const CompleteOrder = ({ summaryOrderData, paymentStatus }) => {
   if (!summaryOrderData) return <></>;
   const canCreateOrder = useRef(true);
-  const { paymentMethod, note, address, voucher } = summaryOrderData;
+  const {
+    paymentMethod,
+    note,
+    address,
+    voucher,
+    shippingFee,
+    discountedPrice,
+    totalPrice,
+  } = summaryOrderData;
   const { type, title, code } = paymentMethod;
   const { addressId } = address;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [fetching, setFetching] = useState(statusView.PENDING);
 
   const fetchCreateOrder = async () => {
@@ -35,10 +49,53 @@ const CompleteOrder = ({ summaryOrderData }) => {
     }
   };
 
+  const paymentWithVnp = async (data) => {
+    const { totalAmount } = data;
+    if (!totalAmount) return;
+    try {
+      const paymentParams = { amount: totalAmount, bankCode: 'NCB' };
+      const paymentResponse = await orderApi.paymentVnp(paymentParams);
+      if (paymentResponse.result) {
+        const redirectUrl = paymentResponse.result.paymentUrl;
+        const {
+          vnp_BankCode,
+          vnp_OrderInfo,
+          vnp_OrderType,
+          vnp_ReturnUrl,
+          vnp_SecureHash,
+          vnp_TmnCode,
+          vnp_TxnRef,
+        } = serializeSearchParams(redirectUrl);
+        const orderData = {
+          paymentId: vnp_OrderInfo.split(' ')?.pop(),
+          ...summaryOrderData,
+          paymentData: {
+            vnp_BankCode,
+            vnp_OrderInfo,
+            vnp_OrderType,
+            vnp_ReturnUrl,
+            vnp_SecureHash,
+            vnp_TmnCode,
+            vnp_TxnRef,
+          },
+        };
+        dispatch(setOrderData(orderData));
+        window.open(redirectUrl, '_blank');
+      }
+    } catch (error) {
+      console.log('Failed to payment with VNPay', error);
+    }
+  };
+
   useEffect(() => {
     if (!canCreateOrder.current) return;
-    if (type === 'cod' && code === 0) {
+    if (paymentStatus === statusView.SUCCESS) {
       fetchCreateOrder();
+    } else if (type === 'cod' && code === 0) {
+      fetchCreateOrder();
+    } else if (type === 'vn-pay' && code === 2) {
+      const totalAmount = totalPrice + shippingFee - discountedPrice;
+      paymentWithVnp({ totalAmount });
     }
 
     return () => {

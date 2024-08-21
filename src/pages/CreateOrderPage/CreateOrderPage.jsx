@@ -10,6 +10,7 @@ import { TbCoin } from 'react-icons/tb';
 import { BsChatDots, BsCreditCard } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import Modal, { ConfirmBox } from '@/components/Modal';
+import { statusView } from '@/constants';
 
 const orderProcessStep = [
   { process: 1, title: '1. Thiết lập địa chỉ' },
@@ -28,8 +29,10 @@ const checkValid = (data) => {
 const CreateOrderPage = () => {
   const navigate = useNavigate();
   if (!useLocation().state) return <></>;
-  const { orderInformation } = useLocation().state;
+  const { state } = useLocation();
+  const { orderInformation, pass_process, pass_payment_status } = state;
   const [process, setProcess] = useState(1);
+  const [paymentStatus, setPaymentStatus] = useState(statusView.PENDING);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [summaryOrderData, setSummaryOrderData] = useState(orderInformation);
 
@@ -43,9 +46,9 @@ const CreateOrderPage = () => {
     if (process === 3) setProcess(2);
   };
 
-  useEffect(() => {
-    console.log('summaryOrderData', summaryOrderData);
-  }, [summaryOrderData]);
+  // useEffect(() => {
+  //   console.log('summaryOrderData', summaryOrderData);
+  // }, [summaryOrderData]);
 
   const canNext = useMemo(() => {
     if (process === 1) {
@@ -84,6 +87,17 @@ const CreateOrderPage = () => {
       toast.info('Vui lòng hoàn thiện thông tin đơn hàng', { autoClose: 1000 });
   };
 
+  useEffect(() => {
+    setSummaryOrderData(orderInformation);
+  }, [orderInformation]);
+
+  useEffect(() => {
+    if (pass_process && pass_payment_status) {
+      setProcess(pass_process);
+      setPaymentStatus(pass_payment_status);
+    }
+  }, [pass_process, pass_payment_status]);
+
   return (
     <div className="w-full mt-[60px]">
       <div className="flex flex-col gap-[24px] mb-[48px]">
@@ -116,7 +130,10 @@ const CreateOrderPage = () => {
             />
           )}
           {process === 4 && (
-            <CompleteOrder summaryOrderData={summaryOrderData} />
+            <CompleteOrder
+              summaryOrderData={summaryOrderData}
+              paymentStatus={paymentStatus}
+            />
           )}
         </div>
         {/* Right Tab */}

@@ -45,7 +45,6 @@ const VerifyEmail = ({ handleSetProcess, handleSetData }) => {
   };
 
   const handleReCaptchaChange = (value) => {
-    // console.log('ReCAPTCHA', value);
     setReCaptcha(value);
   };
 
