@@ -42,7 +42,7 @@ const OrderBar = ({ filterData, handleSetFilterData }) => {
         <div className="flex flex-col md:flex-row gap-[12px]">
           <label
             htmlFor={`${timeOrderId}-relate`}
-            className="px-[16px] py-[8px] bg-[#EEEEEE] hover:brightness-95 has-[input:checked]:text-white has-[input:checked]:bg-[var(--color-primary)] rounded-[4px] duration-100 select-none"
+            className="px-[16px] py-[8px] bg-[#EEEEEE] hover:brightness-95 has-[input:checked]:text-white has-[input:checked]:bg-[var(--color-primary)] rounded-[4px] duration-100 select-none cursor-pointer"
           >
             <input
               type="radio"
@@ -57,7 +57,7 @@ const OrderBar = ({ filterData, handleSetFilterData }) => {
           </label>
           <label
             htmlFor={`${timeOrderId}-newest`}
-            className="px-[16px] py-[8px] bg-[#EEEEEE] hover:brightness-95 has-[input:checked]:text-white has-[input:checked]:bg-[var(--color-primary)] rounded-[4px] duration-100 select-none"
+            className="px-[16px] py-[8px] bg-[#EEEEEE] hover:brightness-95 has-[input:checked]:text-white has-[input:checked]:bg-[var(--color-primary)] rounded-[4px] duration-100 select-none cursor-pointer"
           >
             <input
               type="radio"
@@ -71,7 +71,7 @@ const OrderBar = ({ filterData, handleSetFilterData }) => {
           </label>
           <label
             htmlFor={`${timeOrderId}-bestSeller`}
-            className="px-[16px] py-[8px] bg-[#EEEEEE] hover:brightness-95 has-[input:checked]:text-white has-[input:checked]:bg-[var(--color-primary)] rounded-[4px] duration-100 select-none"
+            className="px-[16px] py-[8px] bg-[#EEEEEE] hover:brightness-95 has-[input:checked]:text-white has-[input:checked]:bg-[var(--color-primary)] rounded-[4px] duration-100 select-none cursor-pointer"
           >
             <input
               type="radio"

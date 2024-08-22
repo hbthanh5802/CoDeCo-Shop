@@ -84,7 +84,9 @@ const CheckboxGroup = forwardRef(
               style={{ fontSize: checkboxSize }}
               className={`animate-fadeIn ${isCheckedAll ? 'block' : 'hidden'}`}
             />
-            <span className="select-none">Chọn tất cả</span>
+            <span className="duration-300 select-none bg-[#f7f7f7] p-1 px-2 rounded-md font-medium hover:bg-[#e7e7e7]">
+              Chọn tất cả
+            </span>
           </div>
         </div>
         {items.map((item, index) => {
