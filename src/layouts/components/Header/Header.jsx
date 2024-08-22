@@ -30,6 +30,7 @@ import {
 } from '@/store/slices/shopSlice';
 import UserNotificationPopper from '@/components/UserNotificationPopper';
 import notificationApi from '@/api/notificationApi';
+import Tippy from '@tippyjs/react';
 
 const accountMenuList = [
   {
@@ -223,13 +224,15 @@ const Header = forwardRef((props, ref) => {
             >
               <div>
                 <Badge value={notificationList?.length || 0}>
-                  <button
-                    className={`${
-                      pathname === '/' && 'text-white'
-                    } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
-                  >
-                    <IoIosNotifications className="text-[22px]" />
-                  </button>
+                  <Tippy content="Thông báo của bạn">
+                    <button
+                      className={`${
+                        pathname === '/' && 'text-white'
+                      } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+                    >
+                      <IoIosNotifications className="text-[22px]" />
+                    </button>
+                  </Tippy>
                 </Badge>
               </div>
             </UserNotificationPopper>
@@ -267,15 +270,17 @@ const Header = forwardRef((props, ref) => {
             </Menu>
 
             <Badge value={cartItemList?.length || 0}>
-              <button
-                className={`${
-                  pathname === '/' && 'text-white'
-                } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
-              >
-                <Link to={'/shop/cart'}>
-                  <BiSolidCartAlt className="text-[22px]" />
-                </Link>
-              </button>
+              <Tippy content="Tới giỏ hàng">
+                <button
+                  className={`${
+                    pathname === '/' && 'text-white'
+                  } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+                >
+                  <Link to={'/shop/cart'}>
+                    <BiSolidCartAlt className="text-[22px]" />
+                  </Link>
+                </button>
+              </Tippy>
             </Badge>
           </div>
         )}

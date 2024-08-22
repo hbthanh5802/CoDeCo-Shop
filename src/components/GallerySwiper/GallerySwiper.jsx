@@ -17,6 +17,7 @@ import './GallerySwiper.scss';
 import { FreeMode, Pagination, Navigation, Thumbs, Zoom } from 'swiper/modules';
 import { GoArrowLeft, GoArrowRight } from 'react-icons/go';
 import images from '@/assets/images';
+import { randomImages } from '@/constants';
 
 const GallerySwiper = ({
   spaceBetween = 48,
@@ -37,6 +38,12 @@ const GallerySwiper = ({
         <p>Sản phẩm tạm thời chưa có hình ảnh</p>
       </div>
     );
+
+  const handleError = ({ target }) => {
+    target.onerror = null;
+    target.src =
+      randomImages[Math.floor(Math.random() * randomImages.length + 1)];
+  };
 
   return (
     <div className="Custom-Gallery-Swiper max-h-fit flex flex-col justify-center items-center">
@@ -66,7 +73,7 @@ const GallerySwiper = ({
         {imageList.map((imageUrl, index) => (
           <SwiperSlide key={`${imageId}-${index + Math.random()}`}>
             <div className="swiper-zoom-container">
-              <img loading="lazy" src={imageUrl} />
+              <img loading="lazy" src={imageUrl} onError={handleError} />
             </div>
           </SwiperSlide>
         ))}
@@ -87,7 +94,7 @@ const GallerySwiper = ({
         >
           {imageList.map((imageUrl, index) => (
             <SwiperSlide key={`${imageId}-${index + Math.random()}`}>
-              <img loading="lazy" src={imageUrl} />
+              <img loading="lazy" src={imageUrl} onError={handleError} />
             </SwiperSlide>
           ))}
         </Swiper>

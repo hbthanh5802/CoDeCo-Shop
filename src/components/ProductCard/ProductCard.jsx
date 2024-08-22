@@ -46,8 +46,9 @@ const ProductCard = ({ data }) => {
     if (productId) navigation(`/shop/products/${productId}`);
   };
 
-  const handleError = (e) => {
-    e.target.src =
+  const handleError = ({ target }) => {
+    target.onerror = null;
+    target.src =
       randomImages[Math.floor(Math.random() * randomImages.length + 1)];
   };
 
