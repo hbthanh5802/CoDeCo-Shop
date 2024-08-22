@@ -79,6 +79,7 @@ const SubNavigation = () => {
               </MenuExpand>
             );
           })}
+          <span className="p-[8px] px-[12px]">|</span>
           <NavLink
             to={'/shop/vouchers'}
             className={({ isActive }) => {

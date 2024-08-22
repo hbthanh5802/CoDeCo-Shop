@@ -65,7 +65,7 @@ const CartItem = ({
         () => handleDeleteCartItem(cartItemId),
         {
           pending: 'Đang xử lý. Vui lòng chờ...',
-          success: 'Sản phẩ đã được xoá khỏi giỏ hàng. 👌',
+          success: 'Sản phẩm đã được xoá khỏi giỏ hàng. 👌',
           error: 'Có lỗi xảy ra, vui lòng thử lại sau 🤯',
         },
         { autoClose: 1500 }

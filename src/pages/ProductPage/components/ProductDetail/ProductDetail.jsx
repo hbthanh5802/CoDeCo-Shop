@@ -18,7 +18,7 @@ import { hexToRgb } from '@/utils/colorConverter';
 import productApi from '@/api/productApi';
 import cartApi from '@/api/cartApi';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getCartItemList } from '@/store/slices/shopSlice';
 
 const ProductDetail = ({
@@ -30,6 +30,7 @@ const ProductDetail = ({
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
   const [quantity, setQuantity] = useState(0);
+  const { currentUser } = useSelector((state) => state.auth);
   const [chosenProductDetailData, setChosenProductDetailData] = useState({
     totalQuantity: 0,
     price: null,
@@ -134,6 +135,12 @@ const ProductDetail = ({
   };
 
   const handleAddToCart = () => {
+    if (!currentUser) {
+      toast.info('Vui lòng ĐĂNG NHẬP trước khi thực hiện thao tác', {
+        autoClose: 1500,
+      });
+      return;
+    }
     if (!isCanAddToCart) {
       toast.warning('Có lỗi xảy ra, vui lòng thử lại.', { autoClose: 1500 });
       return;
