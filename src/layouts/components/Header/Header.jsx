@@ -5,6 +5,7 @@ import React, {
   useImperativeHandle,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearState, logoutUser } from '@/store/slices/authSlice';
@@ -17,6 +18,7 @@ import { IoIosNotifications } from 'react-icons/io';
 import { FaUserCircle } from 'react-icons/fa';
 import { FaCaretDown } from 'react-icons/fa6';
 import { BiSolidCartAlt } from 'react-icons/bi';
+import { BsList } from 'react-icons/bs';
 import Badge from '@/components/Badge';
 import SearchBox from '@/components/SearchBox';
 import { Menu } from '@/components/Popper/Menu';
@@ -31,6 +33,8 @@ import {
 import UserNotificationPopper from '@/components/UserNotificationPopper';
 import notificationApi from '@/api/notificationApi';
 import Tippy from '@tippyjs/react';
+import Drawer from '@/components/Drawer/Drawer';
+import MobileNavigation from './MobileNavigation/MobileNavigation';
 
 const accountMenuList = [
   {
@@ -52,6 +56,7 @@ const accountMenuList = [
 const Header = forwardRef((props, ref) => {
   const headerRef = useRef(null);
   const { pathname, search } = useLocation();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const { currentUser, loading } = useSelector((state) => state.auth);
   const { notificationList, cartItemList, categoryList } = useSelector(
     (state) => state.shop
@@ -166,7 +171,7 @@ const Header = forwardRef((props, ref) => {
 
         {pathname === '/' ? (
           <div
-            className={`flex items-center space-x-[40px] text-[18px] text-white`}
+            className={`flex items-center gap-[40px] text-[18px] text-white`}
           >
             <Menu items={headerNavItems}>
               <Link to={'#'} className="hidden md:block">
@@ -187,103 +192,123 @@ const Header = forwardRef((props, ref) => {
             </Link>
           </div>
         ) : (
-          <div>
+          <div className="hidden md:block">
             <SearchBox />
           </div>
         )}
 
-        {!currentUser ? (
-          <div className="flex items-center space-x-[24px]">
-            <button
-              className={`text-[18px] ${
-                pathname === '/'
-                  ? 'text-white hover:bg-black/25 rounded-lg duration-150'
-                  : 'hover:text-[var(--color-primary)]'
-              } px-[20px] py-[10px] duration-150`}
-            >
-              <Link to={'/auth/register'}>Đăng ký</Link>
-            </button>
-            <button className="text-[18px]">
-              <Link
-                to={'/auth/login'}
-                className={`px-[20px] py-[10px] border ${
+        <>
+          {!currentUser ? (
+            <div className="flex items-center gap-6">
+              <button
+                className={`text-[18px] ${
                   pathname === '/'
-                    ? 'border-white text-white hover:bg-white/25 duration-150'
-                    : 'border-[var(--color-primary)] text-white bg-[var(--color-primary)] hover:brightness-105'
-                } rounded-lg duration-150`}
+                    ? 'text-white hover:bg-black/25 rounded-lg duration-150'
+                    : 'hover:text-[var(--color-primary)]'
+                } px-[20px] py-[10px] duration-150`}
               >
-                Đăng nhập
-              </Link>
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center space-x-1">
-            <UserNotificationPopper
-              items={notificationList}
-              onClick={(data) => handleNotificationItemClick(data)}
-            >
-              <div>
-                <Badge value={notificationList?.length || 0}>
-                  <Tippy content="Thông báo của bạn">
-                    <button
-                      className={`${
-                        pathname === '/' && 'text-white'
-                      } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
-                    >
-                      <IoIosNotifications className="text-[22px]" />
-                    </button>
-                  </Tippy>
-                </Badge>
-              </div>
-            </UserNotificationPopper>
-
-            <Menu
-              trigger="click"
-              items={accountMenuList}
-              onClick={(value) => handleAccountListSelected(value)}
-            >
-              <div
-                className={`flex space-x-2 items-center ${
-                  pathname === '/' && 'text-white'
-                } cursor-pointer px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
-              >
-                {currentUser.avatarUrl ? (
-                  <img
-                    src={currentUser.avatarUrl}
-                    alt="Avatar"
-                    className="size-[28px] aspect-square rounded-full border border-white"
-                  />
-                ) : (
-                  <span className="text-[16px]">
-                    <FaUserCircle className="text-[22px]" />
-                  </span>
-                )}
-                <p className="capitalize hidden md:line-clamp-1">
-                  {(currentUser.firstName || '') +
-                    ' ' +
-                    (currentUser.lastName || '')}
-                </p>
-                <span className="text-[16px]">
-                  <FaCaretDown className="text-[18px]" />
-                </span>
-              </div>
-            </Menu>
-
-            <Badge value={cartItemList?.length || 0}>
-              <Tippy content="Tới giỏ hàng">
-                <button
-                  className={`${
-                    pathname === '/' && 'text-white'
-                  } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+                <Link to={'/auth/register'}>Đăng ký</Link>
+              </button>
+              <button className="text-[18px]">
+                <Link
+                  to={'/auth/login'}
+                  className={`px-[20px] py-[10px] border ${
+                    pathname === '/'
+                      ? 'border-white text-white hover:bg-white/25 duration-150'
+                      : 'border-[var(--color-primary)] text-white bg-[var(--color-primary)] hover:brightness-105'
+                  } rounded-lg duration-150`}
                 >
-                  <Link to={'/shop/cart'}>
-                    <BiSolidCartAlt className="text-[22px]" />
-                  </Link>
-                </button>
-              </Tippy>
-            </Badge>
-          </div>
-        )}
+                  Đăng nhập
+                </Link>
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3">
+              <UserNotificationPopper
+                items={notificationList}
+                onClick={(data) => handleNotificationItemClick(data)}
+              >
+                <div>
+                  <Badge value={notificationList?.length || 0}>
+                    <Tippy content="Thông báo của bạn">
+                      <button
+                        className={`${
+                          pathname === '/' && 'text-white'
+                        } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+                      >
+                        <IoIosNotifications className="text-[22px]" />
+                      </button>
+                    </Tippy>
+                  </Badge>
+                </div>
+              </UserNotificationPopper>
+
+              <Menu
+                trigger="click"
+                items={accountMenuList}
+                onClick={(value) => handleAccountListSelected(value)}
+              >
+                <div
+                  className={`hidden md:flex space-x-2 items-center ${
+                    pathname === '/' && 'text-white'
+                  } cursor-pointer px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+                >
+                  {currentUser.avatarUrl ? (
+                    <img
+                      src={currentUser.avatarUrl}
+                      alt="Avatar"
+                      className="size-[28px] aspect-square rounded-full border border-white"
+                    />
+                  ) : (
+                    <span className="text-[16px]">
+                      <FaUserCircle className="text-[22px]" />
+                    </span>
+                  )}
+                  <p className="capitalize hidden md:line-clamp-1">
+                    {(currentUser.firstName || '') +
+                      ' ' +
+                      (currentUser.lastName || '')}
+                  </p>
+                  <span className="text-[16px]">
+                    <FaCaretDown className="text-[18px]" />
+                  </span>
+                </div>
+              </Menu>
+
+              <Badge value={cartItemList?.length || 0}>
+                <Tippy content="Tới giỏ hàng">
+                  <button
+                    className={`${
+                      pathname === '/' && 'text-white'
+                    } text-[20px] px-2 py-1 hover:bg-black/10 rounded-lg duration-150`}
+                  >
+                    <Link to={'/shop/cart'}>
+                      <BiSolidCartAlt className="text-[22px]" />
+                    </Link>
+                  </button>
+                </Tippy>
+              </Badge>
+
+              <div className="block md:hidden">
+                <BsList
+                  className={`text-[24px] cursor-pointer ${
+                    pathname === '/' ? 'text-white' : ''
+                  }`}
+                  onClick={() => setMobileNavOpen(true)}
+                />
+                <Drawer
+                  isOpen={mobileNavOpen}
+                  onClose={() => setMobileNavOpen(false)}
+                  className="w-full"
+                  rootClassName="block lg:hidden"
+                  position="top"
+                >
+                  <MobileNavigation />
+                </Drawer>
+              </div>
+            </div>
+          )}
+        </>
       </div>
 
       {pathname !== '/' && (

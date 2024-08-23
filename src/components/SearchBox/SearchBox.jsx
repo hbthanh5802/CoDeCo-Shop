@@ -46,14 +46,14 @@ const SearchBox = ({ className = '', onSearchClick = () => {} }) => {
   return (
     <div
       className={`flex justify-between ${
-        pathname === '/' ? 'min-w-[340px]' : 'min-w-[600px]'
-      } ${
-        inputValue ? 'min-w-[600px]' : ''
+        inputValue ? 'lg:min-w-[600px]' : 'min-w-[340px]'
       } pl-[20px] py-[8px] pr-[8px] border ${
         pathname === '/'
           ? 'border-white/60 bg-white/15 has-[input:focus]:bg-white/10 has-[input:focus]:border-white/80'
           : 'border-[#ccc] has-[input:focus]:border-slate-400 text-[#333]'
-      } rounded-full has-[input:focus]:min-w-[600px] duration-300`}
+      } rounded-full lg:has-[input:focus]:min-w-[600px] duration-300 ${
+        className ? className : ''
+      }`}
     >
       <input
         type="text"

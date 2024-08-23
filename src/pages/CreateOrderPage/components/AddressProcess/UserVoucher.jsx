@@ -12,10 +12,10 @@ const UserVoucher = ({ data = {} }) => {
   } = data;
   return (
     <div className="flex flex-col gap-3 text-[16px]">
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <span className="font-medium">{title}</span>
         <span>|</span>
-        <div className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-1 px-2 rounded-md bg-[#3aa39f]/[.1] text-[#3aa39f]">
           <span className="font-semibold">{`Giảm ${discountPercent}`}</span>
           <span className="font-semibold">%</span>
         </div>

@@ -96,10 +96,24 @@ const CartPage = () => {
   const handleCreateOrder = () => {
     setCreateOrderLoading(true);
     const data = { orderInformation: summaryResult };
-    const selectCartItemPromises = checkedCartItemList.map((carItemId) =>
-      cartApi.selectOne(carItemId)
-    );
-    Promise.all(selectCartItemPromises)
+
+    const selectedCartItemIdsFromApi = [];
+    const unSelectedCartItemIdsFromApi = [];
+    cartItemList.forEach((cartItem) => {
+      if (cartItem.selected)
+        selectedCartItemIdsFromApi.push(cartItem.cartItemId);
+      else unSelectedCartItemIdsFromApi.push(cartItem.cartItemId);
+    });
+
+    const cartItemPromises = [
+      ...checkedCartItemList.filter((checkedCartItem) =>
+        unSelectedCartItemIdsFromApi.includes(checkedCartItem)
+      ),
+      ...selectedCartItemIdsFromApi.filter(
+        (cartItem) => !checkedCartItemList.includes(cartItem)
+      ),
+    ].map((carItemId) => cartApi.selectOne(carItemId));
+    Promise.all(cartItemPromises)
       .then((results) => {
         navigate('/shop/create-order', {
           state: data,
@@ -136,10 +150,10 @@ const CartPage = () => {
     <div className="w-full mt-[60px]">
       <h1 className="font-semibold text-[32px]">Giỏ hàng</h1>
 
-      <div className="w-full flex gap-6 mt-[48px]">
+      <div className="w-full flex flex-col lg:flex-row gap-6 mt-[48px]">
         {cartItemList?.length ? (
           <>
-            <div className="w-2/3">
+            <div className="w-full lg:w-2/3">
               <Collapse label="Sản phẩm" className="font-semibold">
                 <div className="my-[24px] font-normal">
                   <CheckboxGroup
@@ -152,7 +166,7 @@ const CartPage = () => {
                 </div>
               </Collapse>
             </div>
-            <div className="w-1/3 bg-white rounded p-[32px] flex flex-col gap-[32px] border border-[#e7e7e7] h-fit">
+            <div className="w-full lg:w-1/3 bg-white rounded p-[32px] flex flex-col gap-[32px] border border-[#e7e7e7] h-fit">
               <h2 className="font-semibold text-[24px]">Thông tin</h2>
               <div className="w-full flex flex-col gap-[24px]">
                 {/* Total price */}

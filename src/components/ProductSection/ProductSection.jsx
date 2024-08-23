@@ -77,7 +77,13 @@ const ProductSection = ({
                       alt="Empty Image"
                       className="w-[56px] animate-bounce"
                     />
-                    <Spinner color="black" size={24} />
+                    {loading ? (
+                      <Spinner color="black" size={24} />
+                    ) : (
+                      <p className="text-slate-700">
+                        Chưa có thông tin sản phẩm
+                      </p>
+                    )}
                   </div>
                 </SwiperSlide>
               ))

@@ -1,0 +1,65 @@
+.drawer-container {
+  display: none;
+  opacity: 0;
+
+  &.active {
+    display: block;
+    opacity: 1;
+  }
+}
+
+.drawer-wrapper {
+  transition: all 3000ms ease-out;
+  animation-delay: 150ms;
+  animation-duration: 500ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+
+  &.position-top {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateY(-100%) translateX(-50%);
+    animation-name: slideFromTop;
+  }
+
+  &.position-bottom {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateY(100%) translateX(-50%);
+    animation-name: slideFromTop;
+  }
+
+  &.position-right {
+    position: absolute;
+    right: 0;
+    transform: translateX(100%);
+    animation-name: slideFromRight;
+  }
+
+  &.position-left {
+    position: absolute;
+    left: 0;
+    transform: translateX(-100%);
+    animation-name: slideFromLeft;
+  }
+}
+
+@keyframes slideFromRight {
+  to {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slideFromLeft {
+  to {
+    transform: translateX(0%);
+  }
+}
+
+@keyframes slideFromTop {
+  to {
+    transform: translateY(0%) translateX(-50%);
+  }
+}

@@ -22,10 +22,8 @@ const DefaultLayout = ({ children }) => {
     <div className="DefaultLayout flex flex-col items-center flex-wrap container w-full max-w-[1440px] relative">
       <div
         className={`w-full flex justify-center z-[999] ${
-          pathname === '/'
-            ? 'absolute top-0 left-0'
-            : 'bg-white shadow-sm fixed top-0 left-0'
-        } transition-all duration-150`}
+          pathname === '/' ? 'absolute' : 'bg-white shadow-sm fixed'
+        } top-0 left-0 px-6 lg:px-0 transition-all duration-150`}
       >
         <Header ref={headerRef} />
       </div>
