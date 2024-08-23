@@ -130,7 +130,21 @@ const Shop = () => {
           <CustomSwiper
             gridLayout={true}
             gridRow={2}
-            slidesPerView={4}
+            slidesPerView={1}
+            responsive={{
+              768: {
+                slidesPerView: 2,
+                gridRow: 2,
+              },
+              1024: {
+                slidesPerView: 3,
+                gridRow: 2,
+              },
+              1280: {
+                slidesPerView: 4,
+                gridRow: 2,
+              },
+            }}
             spaceBetween={24}
             loop={false}
           >
@@ -234,8 +248,8 @@ const Shop = () => {
         }}
         className="h-[300px] px-[80px] flex items-center justify-stretch mt-[120px] -mx-6 lg:mx-0 md:mt-0"
       >
-        <div className="bg-white p-[60px] w-full flex flex-col lg:flex-row justify-center lg:justify-between lg:items-center gap-[60px] shadow-custom2 rounded-lg">
-          <h1 className="w-full lg:w-1/2 block font-semibold text-[34px]">
+        <div className="bg-white p-[24px] md:p-[60px] w-full flex flex-col lg:flex-row justify-center lg:justify-between lg:items-center gap-[60px] shadow-custom2 rounded-lg">
+          <h1 className="w-full lg:w-1/2 block font-semibold text-[24px] md:text-[34px]">
             Đăng ký để nhận tin tức mới nhất
           </h1>
           <form

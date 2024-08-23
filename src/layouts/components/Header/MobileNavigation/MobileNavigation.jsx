@@ -27,7 +27,7 @@ const MobileNavigation = () => {
     <div className="flex w-full flex-col gap-6 px-6 py-3">
       <div className="flex flex-col gap-2">
         <span>Tìm kiếm:</span>
-        <SearchBox className="!rounded-lg" />
+        <SearchBox className="!rounded-lg !border-[#ccc] !has-[input:focus]:border-slate-400 !text-[#333] [&_input]:placeholder:text-black/70 [&_input]focus:placeholder:text-black/50 [&_input]:text-[#333]" />
       </div>
 
       {currentUser ? (
@@ -75,21 +75,13 @@ const MobileNavigation = () => {
           <button className="block flex-1 text-[18px]">
             <Link
               to={'/auth/login'}
-              className={`w-full block px-[20px] py-[10px] border ${
-                pathname === '/'
-                  ? 'border-white text-white hover:bg-white/25 duration-150'
-                  : 'border-[var(--color-primary)] text-white bg-[var(--color-primary)] hover:brightness-105'
-              } rounded-lg duration-150`}
+              className={`w-full block px-[20px] py-[10px] border border-[var(--color-primary)] text-white bg-[var(--color-primary)] hover:brightness-105 rounded-lg duration-150`}
             >
               Đăng nhập
             </Link>
           </button>
           <button
-            className={`text-[18px] ${
-              pathname === '/'
-                ? 'text-white hover:bg-black/25 rounded-lg duration-150'
-                : 'hover:text-[var(--color-primary)]'
-            } px-[20px] py-[10px] hover:bg-[#f7f7f7] duration-150`}
+            className={`text-[18px] hover:text-[var(--color-primary)] px-[20px] py-[10px] hover:bg-[#f7f7f7] duration-150`}
           >
             <Link to={'/auth/register'} className="block">
               Đăng ký

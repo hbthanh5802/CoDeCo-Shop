@@ -330,6 +330,7 @@ const Home = () => {
               1024: { slidesPerView: 2 },
               1284: { slidesPerView: 3 },
             }}
+            paddingY={100}
           >
             {customerReviewList.map((customerReivewData, index) => (
               <SwiperSlide key={`${customerReviewId}-${index}`}>
