@@ -161,7 +161,7 @@ const AddNewAddressForm = ({ onSubmit = () => {}, onClose = () => {} }) => {
   return (
     <div className="w-full border border-[#f7f7f7] rounded p-[12px]">
       <form action="#" onSubmit={handleSubmitForm} className="space-y-3">
-        <div className="flex gap-[12px]">
+        <div className="flex flex-col md:flex-row gap-[12px]">
           <div className="form-control flex-1 flex flex-col gap-2">
             <input
               name="nameReceiver"
@@ -196,7 +196,7 @@ const AddNewAddressForm = ({ onSubmit = () => {}, onClose = () => {} }) => {
           </div>
         </div>
         {/* Address */}
-        <div className="flex gap-[12px]">
+        <div className="flex flex-col md:flex-row gap-[12px]">
           <div className="form-control flex-1">
             <select
               className="duration-200 w-full p-[12px] text-[14px] outline-none border border-[#ccc] rounded placeholder:text-[#e7e7e7] focus:border-[#333] data-[error=true]:border-red-500"

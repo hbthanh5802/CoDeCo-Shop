@@ -54,12 +54,12 @@ const Login = () => {
   };
 
   return (
-    <div className="h-full w-full bg-no-repeat bg-cover flex items-center space-x-6">
+    <div className="h-full w-full bg-no-repeat bg-cover flex items-center gap-6">
       <div className="hidden w-2/3 h-full md:block">
         <Background imageUrl={images.authBg} />
       </div>
       {/* Form */}
-      <div className="form-container bg-white px-14 py-10 rounded-lg space-y-6 max-w-[800px] min-w-[600px]">
+      <div className="form-container mx-auto bg-white px-14 py-10 rounded-lg space-y-6 max-w-[800px] min-w-[600px]">
         <Link
           to={previous}
           className="flex items-center opacity-80 hover:opacity-100 duration-100"

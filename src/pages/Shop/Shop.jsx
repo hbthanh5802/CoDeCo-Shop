@@ -88,7 +88,7 @@ const Shop = () => {
   return (
     <div className="Shop-wrapper">
       {/* Carousel */}
-      <div className="Shop-Carousel w-full mb-[60px] px-[var(--spacing-padding-container)]">
+      <div className="Shop-Carousel w-full mb-[60px] md:px-[var(--spacing-padding-container)]">
         <CustomSwiper
           spaceBetween={0}
           slidesPerView={1}
@@ -232,7 +232,7 @@ const Shop = () => {
           background: `url(${images.sendEmailBg}) no-repeat center center`,
           backgroundSize: 'fit',
         }}
-        className="h-[300px] px-[80px] flex items-center justify-stretch mt-[120px] md:mt-0"
+        className="h-[300px] px-[80px] flex items-center justify-stretch mt-[120px] -mx-6 lg:mx-0 md:mt-0"
       >
         <div className="bg-white p-[60px] w-full flex flex-col lg:flex-row justify-center lg:justify-between lg:items-center gap-[60px] shadow-custom2 rounded-lg">
           <h1 className="w-full lg:w-1/2 block font-semibold text-[34px]">

@@ -91,7 +91,9 @@ const SearchPage = () => {
   };
 
   useEffect(() => {
-    setProductList(searchedProducts || []);
+    if (searchedProducts) {
+      setProductList(searchedProducts);
+    }
   }, [searchedProducts]);
 
   useEffect(() => {
@@ -126,7 +128,7 @@ const SearchPage = () => {
           <p className="flex gap-[4px] items-center text-[16px]">
             <span>Có tất cả</span>
             <span className="font-semibold">
-              {paginationData.totalCount || 0}
+              {paginationData.totalCount || searchPagination?.totalCount || 0}
             </span>
             <span>sản phẩm liên quan</span>
           </p>

@@ -42,7 +42,7 @@ const CheckboxItem = forwardRef(
     return (
       <div
         ref={checkboxItemRef}
-        className={`flex items-center gap-2 group/checkbox ${className}`}
+        className={`CheckboxItem flex items-center gap-2 group/checkbox ${className}`}
       >
         <label
           htmlFor={checkboxId}

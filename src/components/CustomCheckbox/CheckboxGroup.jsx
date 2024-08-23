@@ -66,7 +66,7 @@ const CheckboxGroup = forwardRef(
     return (
       <div
         ref={checkboxGroupRef}
-        className={`flex flex-col gap-3 ${className}`}
+        className={`CheckboxGroup flex flex-col gap-3 ${className}`}
       >
         <div className="flex items-center gap-2 pb-[4px] border-b">
           <div

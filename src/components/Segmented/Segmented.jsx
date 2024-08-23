@@ -14,7 +14,7 @@ const Segmented = ({ items = [], onChange = () => {}, className }) => {
 
   return (
     <div
-      className={`inline-block p-[6px] bg-[#EEEEEE] rounded-full ${className}`}
+      className={`inline-flex flex-wrap justify-center p-[6px] bg-[#EEEEEE] rounded-full ${className}`}
     >
       {items.map((item, index) => {
         const { label, disable } = item;
