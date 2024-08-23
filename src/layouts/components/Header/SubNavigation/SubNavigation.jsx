@@ -90,7 +90,7 @@ const SubNavigation = () => {
               }`;
             }}
           >
-            Vouchers
+            Mã giảm giá
           </NavLink>
         </div>
       )}

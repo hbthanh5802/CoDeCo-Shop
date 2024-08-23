@@ -33,7 +33,7 @@ import {
 import UserNotificationPopper from '@/components/UserNotificationPopper';
 import notificationApi from '@/api/notificationApi';
 import Tippy from '@tippyjs/react';
-import Drawer from '@/components/Drawer/Drawer';
+import Drawer from '@/components/Drawer';
 import MobileNavigation from './MobileNavigation/MobileNavigation';
 
 const accountMenuList = [
@@ -162,12 +162,21 @@ const Header = forwardRef((props, ref) => {
           {pathname !== '/' && (
             <Link
               to={'/shop'}
-              className="text-[18px] hover:text-[var(--color-primary)] duration-300 px-1 py-1 hover:px-4 hover:bg-[#e58411]/[.02] border border-transparent hover:border-[var(--color-primary)] rounded-md"
+              className="hidden md:block text-[18px] hover:text-[var(--color-primary)] duration-300 px-1 py-1 hover:px-4 hover:bg-[#e58411]/[.02] border border-transparent hover:border-[var(--color-primary)] rounded-md"
             >
               Shop
             </Link>
           )}
         </div>
+
+        {pathname !== '/' && (
+          <Link
+            to={'/shop'}
+            className="block md:hidden text-[18px] hover:text-[var(--color-primary)] duration-300 px-1 py-1 hover:px-4 hover:bg-[#e58411]/[.02] border border-transparent hover:border-[var(--color-primary)] rounded-md"
+          >
+            Shop
+          </Link>
+        )}
 
         {pathname === '/' ? (
           <div
@@ -201,7 +210,7 @@ const Header = forwardRef((props, ref) => {
           {!currentUser ? (
             <div className="flex items-center gap-6">
               <button
-                className={`text-[18px] ${
+                className={`hidden md:block text-[18px] ${
                   pathname === '/'
                     ? 'text-white hover:bg-black/25 rounded-lg duration-150'
                     : 'hover:text-[var(--color-primary)]'
@@ -209,7 +218,7 @@ const Header = forwardRef((props, ref) => {
               >
                 <Link to={'/auth/register'}>Đăng ký</Link>
               </button>
-              <button className="text-[18px]">
+              <button className="hidden md:block text-[18px]">
                 <Link
                   to={'/auth/login'}
                   className={`px-[20px] py-[10px] border ${
@@ -221,6 +230,26 @@ const Header = forwardRef((props, ref) => {
                   Đăng nhập
                 </Link>
               </button>
+
+              <div className="block md:hidden">
+                <BsList
+                  className={`duration-150 text-[32px] border border-transparent rounded  p-1 cursor-pointer ${
+                    pathname === '/'
+                      ? 'text-white backdrop-blur-sm bg-white/20 hover:border-white'
+                      : 'hover:bg-[#e7e7e7] bg-[#f7f7f7]'
+                  }`}
+                  onClick={() => setMobileNavOpen(true)}
+                />
+                <Drawer
+                  isOpen={mobileNavOpen}
+                  onClose={() => setMobileNavOpen(false)}
+                  className="w-full"
+                  rootClassName="block lg:hidden"
+                  position="top"
+                >
+                  <MobileNavigation />
+                </Drawer>
+              </div>
             </div>
           ) : (
             <div className="flex items-center gap-3">
@@ -291,8 +320,10 @@ const Header = forwardRef((props, ref) => {
 
               <div className="block md:hidden">
                 <BsList
-                  className={`text-[24px] cursor-pointer ${
-                    pathname === '/' ? 'text-white' : ''
+                  className={`duration-150 text-[32px] border border-transparent rounded  p-1 cursor-pointer ${
+                    pathname === '/'
+                      ? 'text-white backdrop-blur-sm bg-white/20 hover:border-white'
+                      : 'hover:bg-[#e7e7e7] bg-[#f7f7f7]'
                   }`}
                   onClick={() => setMobileNavOpen(true)}
                 />
